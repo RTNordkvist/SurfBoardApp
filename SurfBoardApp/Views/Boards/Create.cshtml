@@ -51,17 +51,21 @@
                 <span asp-validation-for="Equipment" class="text-danger"></span>
             </div>
             <br />
+
             <!-- Tilføj billeder -->
-            <form method="post" enctype="multipart/form-data">
+            <form method="post" enctype="multipart/form-data" asp-controller="Image" asp-action="Create">
                 <div>
                     <label for="image">Add Image:</label>
-                    <input type="file" id="image" name="image" accept=".jpg, .jpeg, .png">
+                    <input type="file" id="image" name="ImageFile" accept=".jpg, .jpeg, .png">
                 </div>
-            <br />
-            <div class="form-group">
-                <input type="submit" value="Submit" class="btn btn-primary" />
-            </div>
-            <br />
+                <br />
+                <img id="preview" src="#" alt="Preview" style="display:none; max-width: 200px; max-height: 200px;" />
+                <br />
+                <br />
+                <br />
+                <div class="form-group">
+                    <input type="submit" value="Submit" class="btn btn-primary" />
+                </div>
             </form>
         </form>
     </div>
@@ -74,6 +78,8 @@
 
 @section Scripts {
     @{
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="site.js"></script>
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
