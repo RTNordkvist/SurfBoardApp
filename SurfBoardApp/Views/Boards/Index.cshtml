@@ -4,10 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
-<p>
-    <a asp-action="Create" class="create-new-link">Create New</a>
-</p>
+<h1>Boards</h1>
 
 <div class="board-container">
     @foreach (var row in Model.Select((item, index) => new { Item = item, Index = index }).GroupBy(x => x.Index / 4))
