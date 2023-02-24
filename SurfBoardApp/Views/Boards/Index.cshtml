@@ -1,0 +1,32 @@
+﻿@model IEnumerable<SurfBoardApp.Models.Board>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create" class="create-new-link">Create New</a>
+</p>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            <div style="width:100px;height:100px">
+
+                <a asp-action="Details" asp-route-id="@item.Id">
+                    @Html.DisplayFor(modelItem => item.Name)
+                </a>
+
+            </div>
+
+        </td>
+    </tr>
+}
+
+
+    </tbody>
+
+</table>
