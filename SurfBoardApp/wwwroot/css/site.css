@@ -1,18 +1,58 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+}
+
+
+/* Views/Boards/Index.cshtml stylesheet*/
+/* Styles for the container element holding all board rows */
+.board-container {
+    flex-wrap: wrap; /* allow the container to wrap rows when it runs out of horizontal space */
+    padding: 20px; /* add some padding to the container */
+    background-color: #212121; /* set the background color of the container */
+}
+
+/* Styles for each row of board items */
+.board-row {
+    display: flex; /* display the row items in a horizontal row */
+    padding: 20px; /* add some padding to the row */
+    width: 100%; /* set the width of the row to 100% to fill the container */
+    gap: 20px; /* add some space between the items in the row */
+    margin-bottom: 20px; /* add some margin below the row */
+}
+
+/* Styles for each individual board item */
+.board-item {
+    display: flex; /* display the item contents in a horizontal row */
+    justify-content: center; /* center the item contents horizontally within the item */
+    align-items: center; /* center the item contents vertically within the item */
+    width: 23%; /* set the width of the item to occupy 23% of its container */
+    height: 120px; /* set the height of the item */
+    border-radius: 5px; /* add a rounded corner border to the item */
+    box-shadow: 0 0 5px #CCCCCC; /* add a drop shadow to the item */
+    background-color: #303030; /* set the background color of the item */
+    padding: 10px; /* add some padding to the item */
+    font-size: 18px; /* set the font size of the item text */
+    color: #fff; /* set the text color of the item */
+    text-align: center; /* center the item text horizontally within the item */
+}
+
+/* Styles for the link within each board item */
+.board-item a {
+    text-decoration: none; /* remove the underline from the link */
+    color: #fff; /* set the link text color */
 }

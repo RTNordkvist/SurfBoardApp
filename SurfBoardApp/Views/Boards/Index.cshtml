@@ -9,18 +9,18 @@
     <a asp-action="Create" class="create-new-link">Create New</a>
 </p>
 
-@foreach (var item in Model)
-{
-    <tr>
-        <td>
-            <div style="width:100px;height:100px">
-
-                <a asp-action="Details" asp-route-id="@item.Id">
-                    @Html.DisplayFor(modelItem => item.Name)
-                </a>
-
-            </div>
-
-        </td>
-    </tr>
-}
+<div class="board-container">
+    @foreach (var row in Model.Select((item, index) => new { Item = item, Index = index }).GroupBy(x => x.Index / 4))
+    {
+        <div class="board-row">
+            @foreach (var item in row.Select(x => x.Item))
+            {
+                <div class="board-item">
+                    <a asp-action="Details" asp-route-id="@item.Id">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </a>
+                </div>
+            }
+        </div>
+    }
+</div>
