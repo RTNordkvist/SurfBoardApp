@@ -1,6 +1,7 @@
 ﻿namespace SurfBoardApp.Models
 {
     // Test
+    //test 2
     public class Board
     {
 
