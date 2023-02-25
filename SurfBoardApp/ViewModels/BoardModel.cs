@@ -1,16 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SurfBoardApp.Models
+namespace SurfBoardApp.ViewModels
 {
-    // Test
-    //test 2
-    public class Board
+    public class BoardModel
     {
-
-        public int Id { get; set; }
-
         [Required]
-        [MinLength(1, ErrorMessage ="The board name must be at least 1 character long")]
+        [MinLength(1, ErrorMessage = "The board name must be at least 1 character long")]
         public string? Name { get; set; }
         public double? Length { get; set; }
         public double? Width { get; set; }
@@ -19,9 +14,9 @@ namespace SurfBoardApp.Models
         public string? Type { get; set; }
 
         [Required]
-        [Range(0.0, (double)decimal.MaxValue, ErrorMessage="The price must be a positive value")]
+        [Range(0.0, (double)decimal.MaxValue, ErrorMessage = "The price must be a positive value")]
         public decimal? Price { get; set; }
         public string? Equipment { get; set; }
-        public List<Image>? Images { get; set; }
+        public List<IFormFile>? Images { get; set; }
     }
 }

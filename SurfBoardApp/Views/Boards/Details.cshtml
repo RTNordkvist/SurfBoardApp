@@ -61,6 +61,11 @@
         </dd>
     </dl>
 </div>
+@foreach(var image in Model.Images)
+{
+    <img src="@image.Picture" style="max-width:250px"/>
+}
+
 <div>
     <a asp-action="Delete" asp-route-id="@Model?.Id">Delete</a> |
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
