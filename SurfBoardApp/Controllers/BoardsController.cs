@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SurfBoardApp.Data;
 using SurfBoardApp.Models;
+using SurfBoardApp.ViewModels;
 
 namespace SurfBoardApp.Controllers
 {
@@ -34,7 +35,9 @@ namespace SurfBoardApp.Controllers
             }
 
             var board = await _context.Board
+                .Include(x => x.Images)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (board == null)
             {
                 return NotFound();
@@ -54,15 +57,48 @@ namespace SurfBoardApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Length,Width,Thickness,Volume,Type,Price,Equipment")] Board board)
+        public async Task<IActionResult> Create(BoardModel boardModel)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(board);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(boardModel);
             }
-            return View(board);
+
+            var images = new List<Image>();
+
+            if (boardModel.Images != null)
+                foreach (var file in boardModel.Images)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        file.CopyTo(ms);
+                        var fileBytes = ms.ToArray();
+                        string s = Convert.ToBase64String(fileBytes);
+
+                        var Image = new Image
+                        {
+                            Picture = "data:" + file.ContentType + ";base64, " + s
+                        };
+                        images.Add(Image);
+                    }
+                };
+
+            var board = new Board
+            {
+                Name = boardModel.Name,
+                Length = boardModel.Length,
+                Width = boardModel.Width,
+                Thickness = boardModel.Thickness,
+                Volume = boardModel.Volume,
+                Type = boardModel.Type,
+                Price = boardModel.Price,
+                Equipment = boardModel.Equipment,
+                Images = images
+            };
+
+            _context.Add(board);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Boards/Edit/5
@@ -93,27 +129,29 @@ namespace SurfBoardApp.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(board);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BoardExists(board.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return View(board);
             }
-            return View(board);
+
+            try
+            {
+                _context.Update(board);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!BoardExists(board.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Boards/Delete/5
