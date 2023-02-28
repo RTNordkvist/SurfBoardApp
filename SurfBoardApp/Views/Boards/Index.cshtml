@@ -1,11 +1,19 @@
-﻿@model IEnumerable<SurfBoardApp.Models.Board>
+﻿@model PaginatedList<SurfBoardApp.Models.Board>
 
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1>Boards</h1>
-
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Search by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default btn-search" />
+            <a asp-action="Index">Back to Full List</a>
+        </p>
+    </div>
+</form>
 <div class="board-container">
     @foreach (var row in Model.Select((item, index) => new { Item = item, Index = index }).GroupBy(x => x.Index / 4))
     {
@@ -20,4 +28,7 @@
             }
         </div>
     }
+</div>
+<div class="pagination-container">
+    @await Html.PartialAsync("_Pagination", Model)
 </div>
