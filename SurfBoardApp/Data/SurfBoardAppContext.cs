@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SurfBoardApp.Models;
 
 namespace SurfBoardApp.Data
 {
-    public class SurfBoardAppContext : DbContext
+    public class SurfBoardAppContext : IdentityDbContext
     {
+
         public SurfBoardAppContext (DbContextOptions<SurfBoardAppContext> options)
             : base(options)
         {
