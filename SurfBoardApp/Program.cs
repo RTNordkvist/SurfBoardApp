@@ -14,7 +14,7 @@ namespace SurfBoardApp
                 options.UseSqlServer(builder.Configuration.GetConnectionString("SurfBoardAppContext") ?? throw new InvalidOperationException("Connection string 'SurfBoardAppContext' not found.")));
 
             builder
-                .Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false) //change to true if emailsender is added
+                .Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<SurfBoardAppContext>();
 
@@ -23,13 +23,15 @@ namespace SurfBoardApp
 
             var app = builder.Build();
 
-
-            using (var scope = app.Services.CreateScope())
+            Task.Run(async () =>
             {
-
-                var services = scope.ServiceProvider;
-                SeedData.GetDataFromExcel(services);
-            }
+                using (var scope = app.Services.CreateScope())
+                {
+                    var services = scope.ServiceProvider;
+                    SeedData.GetDataFromExcel(services);
+                    await SeedData.CreateRolesAndAdministrator(services);
+                }
+            });
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
