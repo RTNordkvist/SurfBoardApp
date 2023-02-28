@@ -1,0 +1,26 @@
+﻿@model PaginatedList<SurfBoardApp.Models.Board>
+
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+            <a class="page-link" asp-action="Index"
+               asp-route-pageNumber="@(Model.PageIndex - 1)"
+               asp-route-searchString="@ViewData["SearchString"]">&laquo;</a>
+        </li>
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                <a class="page-link" asp-action="Index"
+               asp-route-pageNumber="@i"
+               asp-route-searchString="@ViewData["SearchString"]">@i</a>
+            </li>
+        }
+        <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+            <a class="page-link" asp-action="Index"
+               asp-route-pageNumber="@(Model.PageIndex + 1)"
+               asp-route-searchString="@ViewData["SearchString"]">
+                &raquo;
+            </a>
+        </li>
+    </ul>
+</nav>

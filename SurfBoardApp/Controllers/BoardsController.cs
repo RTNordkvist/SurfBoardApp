@@ -22,13 +22,29 @@ namespace SurfBoardApp.Controllers
         }
 
         // GET: Boards
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
-            return View(await _context.Board.ToListAsync());
+            ViewData["CurrentFilter"] = searchString;
+
+            var boards = from b in _context.Board
+                         select b;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                boards = boards.Where(b => b.Name.Contains(searchString));
+            }
+
+            int pageSize = 10;
+
+            return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
+
+
+
 
         // GET: Boards/Details/5
         public async Task<IActionResult> Details(int? id)
+
         {
             if (id == null || _context.Board == null)
             {
