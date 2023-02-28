@@ -23,7 +23,7 @@ namespace SurfBoardApp
 
             var app = builder.Build();
 
-            Task.Run(async () =>
+            var seedTask = Task.Run(async () =>
             {
                 using (var scope = app.Services.CreateScope())
                 {
@@ -32,6 +32,7 @@ namespace SurfBoardApp
                     await SeedData.CreateRolesAndAdministrator(services);
                 }
             });
+            seedTask.ConfigureAwait(false).GetAwaiter().GetResult();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
