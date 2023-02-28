@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SurfBoardApp.Data;
+using Microsoft.AspNetCore.Identity;
 namespace SurfBoardApp
 {
     public class Program
@@ -8,8 +9,14 @@ namespace SurfBoardApp
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            builder.Services.AddDbContext<SurfBoardAppContext>(options =>
+            builder.
+                Services.AddDbContext<SurfBoardAppContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("SurfBoardAppContext") ?? throw new InvalidOperationException("Connection string 'SurfBoardAppContext' not found.")));
+
+            builder
+                .Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false) //change to true if emailsender is added
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<SurfBoardAppContext>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -24,7 +31,6 @@ namespace SurfBoardApp
                 SeedData.GetDataFromExcel(services);
             }
 
-
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -37,12 +43,14 @@ namespace SurfBoardApp
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseAuthentication(); ;
 
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Boards}/{action=Index}/{id?}");
+            app.MapRazorPages();
 
             app.Run();
         }
