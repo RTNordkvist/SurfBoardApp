@@ -17,7 +17,8 @@ namespace SurfBoardApp.Data
         }
 
         public DbSet<Board> Board { get; set; } = default!;
-
         public DbSet<Image> Image { get; set; }
+        public DbSet<RentPeriod> RentPeriod { get; set; }
+
     }
 }
