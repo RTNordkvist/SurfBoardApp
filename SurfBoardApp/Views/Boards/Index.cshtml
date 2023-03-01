@@ -19,22 +19,22 @@
     @foreach (var board in Model)
     {
         <!-- Create a column that spans 3 of 12 columns in a Bootstrap grid -->
-        <div class="col-sm-3">
+        <div class="col-sm-2">
             <!-- Create a card element with a margin bottom of 3 -->
-            <div class="card mb-3">
-                <!-- Display the first image associated with the board object -->
+            <div class="card mb-2 h-100 d-flex flex-column">
                 <img class="card-img-top" src="@board.Images?.FirstOrDefault()?.Picture" alt="Board Image">
-                <!-- Create a card body element -->
-                <div class="card-body">
-                    <!-- Display the name of the board object -->
+                <div class="card-body flex-grow-1">
                     <h5 class="card-title">@board.Name</h5>
-                    <!-- Display the type of the board object -->
                     <p class="card-text">@board.Type</p>
-                    <!-- Create a link to the details view of the board object -->
+                </div>
+                <div class="card-footer d-flex justify-content-center">
                     <a href="@Url.Action("Details", new { id = board.Id })" class="btn btn-primary">Details</a>
                 </div>
+
             </div>
+
         </div>
+
     }
 </div>
 

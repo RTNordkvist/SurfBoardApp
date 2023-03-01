@@ -33,7 +33,7 @@ namespace SurfBoardApp.Controllers
                 boards = boards.Where(b => b.Name.Contains(searchString));
             }
 
-            int pageSize = 10;
+            int pageSize = 12; //number of images on index page
 
             return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
