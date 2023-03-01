@@ -2,8 +2,6 @@
 
 namespace SurfBoardApp.Models
 {
-    // Test
-    //test 2
     public class Board
     {
 
@@ -26,7 +24,7 @@ namespace SurfBoardApp.Models
         public double? Volume { get; set; }
         
         public string? Type { get; set; }
-
+        
         [Required]
         [Range(0.0, (double)decimal.MaxValue, ErrorMessage="The price must be a positive value")]
         public decimal? Price { get; set; }

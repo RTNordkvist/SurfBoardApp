@@ -1,16 +1,13 @@
 html {
     font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
     html {
         font-size: 16px;
     }
-}
-
-html {
-    position: relative;
-    min-height: 100%;
 }
 
 body {
@@ -33,7 +30,7 @@ body {
 .board-container {
     flex-wrap: wrap; /* allow the container to wrap rows when it runs out of horizontal space */
     padding: 20px; /* add some padding to the container */
-    background-color: #212121; /* set the background color of the container */
+    background-color: #fff; /* set the background color of the container */
 }
 
 /* Styles for each row of board items */
@@ -54,7 +51,7 @@ body {
     height: 120px; /* set the height of the item */
     border-radius: 5px; /* add a rounded corner border to the item */
     box-shadow: 0 0 5px #CCCCCC; /* add a drop shadow to the item */
-    background-color: #303030; /* set the background color of the item */
+    background-color: #6F2E00; /* set the background color of the item */
     padding: 10px; /* add some padding to the item */
     font-size: 18px; /* set the font size of the item text */
     color: #fff; /* set the text color of the item */
@@ -65,4 +62,49 @@ body {
 .board-item a {
     text-decoration: none; /* remove the underline from the link */
     color: #fff; /* set the link text color */
+}
+
+.container-fluid {
+    width: 100%;
+    margin: auto;
+    padding: 35px 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar ul li {
+    list-style: none;
+    display: inline-block;
+    margin: 0 20px;
+    position: relative;
+}
+
+    .navbar ul li a {
+        text-decoration: none;
+        color: #fff;
+        text-transform: uppercase;
+    }
+
+    .navbar ul li::after {
+        content: '';
+        height: 5px;
+        width: 0%;
+        background: #D9691C;
+        position: absolute;
+        left: 0;
+        bottom: -10px;
+        transition: 0.5s;
+    }
+
+    .navbar ul li:hover::after {
+        width: 100%;
+    }
+.navbar-nav{
+    align-items: center
+}
+
+.logo {
+    width: 200px;
+    cursor: pointer;
 }
