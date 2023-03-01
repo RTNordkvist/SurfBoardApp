@@ -25,20 +25,19 @@ namespace SurfBoardApp.Controllers
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
             ViewData["CurrentFilter"] = searchString;
-
-            var boards = from b in _context.Board
+            // Retrieve all boards from the database, including their associated images (This is what makes the images show up on the index page)
+            var boards = from b in _context.Board.Include(b => b.Images)
                          select b;
 
             if (!string.IsNullOrEmpty(searchString))
             {
                 boards = boards.Where(b => b.Name.Contains(searchString));
             }
-
-            int pageSize = 10;
+            // Define the number of items to display per page (Set to 12 to make it even 3 rows of 4)
+            int pageSize = 12;
 
             return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
-
 
 
 
