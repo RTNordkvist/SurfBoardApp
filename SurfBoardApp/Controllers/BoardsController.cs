@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SurfBoardApp.Data;
 using SurfBoardApp.Models;
-using SurfBoardApp.ViewModels;
+using SurfBoardApp.ViewModels.Boards;
 
 namespace SurfBoardApp.Controllers
 {
