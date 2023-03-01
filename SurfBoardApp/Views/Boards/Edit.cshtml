@@ -1,4 +1,4 @@
-﻿@model SurfBoardApp.Models.Board
+﻿@model SurfBoardApp.ViewModels.EditBoardVM
 
 @{
     ViewData["Title"] = "Edit";
@@ -10,9 +10,10 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ExistingImages" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -53,6 +54,12 @@
                 <input asp-for="Equipment" class="form-control" />
                 <span asp-validation-for="Equipment" class="text-danger"></span>
             </div>
+            <br />
+            <div>
+                <label for="newimages">Add Images:</label>
+                <input type="file" name="NewImages" id="NewImages" accept=".jpg, .jpeg, .png" multiple>
+            </div>
+            <br />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

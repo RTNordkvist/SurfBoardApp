@@ -1,4 +1,4 @@
-﻿@model SurfBoardApp.ViewModels.BoardModel
+﻿@model SurfBoardApp.ViewModels.CreateBoardVM
 
 @{
     ViewData["Title"] = "Create";
@@ -51,7 +51,6 @@
                 <span asp-validation-for="Equipment" class="text-danger"></span>
             </div>
             <br />
-            <!-- Tilføj billeder  - Man kan ikke lægge en form i en form-->
             <div>
                 <label for="images">Add Images:</label>
                 <input type="file" name="images" id="images" accept=".jpg, .jpeg, .png" multiple>

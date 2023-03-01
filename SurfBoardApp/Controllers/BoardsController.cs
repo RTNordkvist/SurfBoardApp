@@ -25,19 +25,19 @@ namespace SurfBoardApp.Controllers
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
             ViewData["CurrentFilter"] = searchString;
-            // Retrieve all boards from the database, including their associated images (This is what makes the images show up on the index page)
-            var boards = from b in _context.Board.Include(b => b.Images)
-                         select b;
+
+            var boards = _context.Board.Include(x => x.Images).AsQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
             {
                 boards = boards.Where(b => b.Name.Contains(searchString));
             }
-            // Define the number of items to display per page (Set to 12 to make it even 3 rows of 4)
-            int pageSize = 12;
+
+            int pageSize = 10;
 
             return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
+
 
 
 
@@ -75,7 +75,7 @@ namespace SurfBoardApp.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(BoardModel boardModel)
+        public async Task<IActionResult> Create(CreateBoardVM boardModel)
         {
             if (!ModelState.IsValid)
             {
@@ -85,6 +85,7 @@ namespace SurfBoardApp.Controllers
             var images = new List<Image>();
 
             if (boardModel.Images != null)
+            {
                 foreach (var file in boardModel.Images)
                 {
                     using (var ms = new MemoryStream())
@@ -100,6 +101,7 @@ namespace SurfBoardApp.Controllers
                         images.Add(Image);
                     }
                 };
+            }
 
             var board = new Board
             {
@@ -128,12 +130,27 @@ namespace SurfBoardApp.Controllers
                 return NotFound();
             }
 
-            var board = await _context.Board.FindAsync(id);
+            var board = await _context.Board.Include(x => x.Images).FirstOrDefaultAsync(x => x.Id == id);
             if (board == null)
             {
                 return NotFound();
             }
-            return View(board);
+
+            var boardModel = new EditBoardVM
+            {
+                Id = board.Id,
+                Name = board.Name,
+                Length = board.Length,
+                Width = board.Width,
+                Thickness = board.Thickness,
+                Volume = board.Volume,
+                Type = board.Type,
+                Price = board.Price,
+                Equipment = board.Equipment,
+                ExistingImages = board.Images
+            };
+
+            return View(boardModel);
         }
 
         // POST: Boards/Edit/5
@@ -142,34 +159,59 @@ namespace SurfBoardApp.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Length,Width,Thickness,Volume,Type,Price,Equipment")] Board board)
+        public async Task<IActionResult> Edit(EditBoardVM boardModel)
         {
-            if (id != board.Id)
+            if (!ModelState.IsValid)
+            {
+                return View(boardModel);
+            }
+
+            var board = await _context.Board.Include(x => x.Images).FirstOrDefaultAsync(x => x.Id == boardModel.Id);
+            if (board == null)
             {
                 return NotFound();
             }
 
-            if (!ModelState.IsValid)
+            board.Id = boardModel.Id;
+            board.Name = boardModel.Name;
+            board.Length = boardModel.Length;
+            board.Width = boardModel.Width;
+            board.Thickness = boardModel.Thickness;
+            board.Volume = boardModel.Volume;
+            board.Type = boardModel.Type;
+            board.Price = boardModel.Price;
+            board.Equipment = boardModel.Equipment;
+            //board.Images = boardModel.ExistingImages;
+
+            if (boardModel.NewImages != null)
             {
-                return View(board);
+                //If there is no existing images for the board, a new empty list is created to contain the new images
+                if (board.Images == null)
+                {
+                    board.Images = new List<Image>();
+                }
+
+                //New files are read and converted to the Image Class and added to the Board
+                foreach (var file in boardModel.NewImages)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        file.CopyTo(ms);
+                        var fileBytes = ms.ToArray();
+                        string s = Convert.ToBase64String(fileBytes);
+
+                        var Image = new Image
+                        {
+                            BoardId= board.Id,
+                            Picture = "data:" + file.ContentType + ";base64, " + s
+                        };
+                        board.Images.Add(Image);
+                    }
+                };
             }
 
-            try
-            {
-                _context.Update(board);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BoardExists(board.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            _context.Update(board);
+            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
