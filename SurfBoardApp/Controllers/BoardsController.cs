@@ -259,5 +259,35 @@ namespace SurfBoardApp.Controllers
         {
             return _context.Board.Any(e => e.Id == id);
         }
+
+
+
+        //Remove Image Action (button click)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RemoveImage(int boardId, int imageId)
+        {
+            var board = await _context.Board.Include(b => b.Images).FirstOrDefaultAsync(b => b.Id == boardId);
+
+            if (board == null)
+            {
+                return NotFound();
+            }
+
+            var image = board.Images.FirstOrDefault(i => i.Id == imageId);
+
+            if (image == null)
+            {
+                return NotFound();
+            }
+
+            board.RemoveImage(image);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Edit), new { id = boardId });
+        }
+
     }
 }

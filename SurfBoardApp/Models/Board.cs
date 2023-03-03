@@ -32,5 +32,15 @@ namespace SurfBoardApp.Models
         public string? Equipment { get; set; }
         
         public List<Image>? Images { get; set; }
+
+        public void RemoveImage(Image image)
+        {
+            if (Images != null && Images.Contains(image))
+            {
+                Images.Remove(image);
+            }
+        }
+
     }
+
 }

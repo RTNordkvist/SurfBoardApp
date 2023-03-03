@@ -9,7 +9,7 @@
 <h4>Board</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-8">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
@@ -64,6 +64,19 @@
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
+    </div>
+    <div class="col-md-4">
+        @foreach (var image in Model.ExistingImages)
+        {
+            <div>
+                <img src="@image.Picture" alt="Board Image">
+                <form asp-action="RemoveImage" method="post">
+                    <input type="hidden" name="boardId" value="@Model.Id" />
+                    <input type="hidden" name="imageId" value="@image.Id" />
+                    <button type="submit">Remove Image</button>
+                </form>
+            </div>
+        }
     </div>
 </div>
 
