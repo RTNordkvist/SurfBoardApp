@@ -1,5 +1,4 @@
-﻿@using SurfBoardApp.ViewModels.BoardViewModels;
-@model IndexVM
+﻿@model PaginatedList<SurfBoardApp.Models.Board>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,33 +8,15 @@
 <form asp-action="Index" method="get">
     <div class="form-actions no-color">
         <p>
-            Search by name: <input asp-for="SearchString" class="form-floating col-9" />
+            Search by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
             <input type="submit" value="Search" class="btn btn-default btn-search" />
-            <a asp-action="Index" class="btn btn-secondary">Clear</a>
+            <a asp-action="Index">Back to Full List</a>
         </p>
     </div>
 </form>
-<div>
-    <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" style="margin-bottom: 20px">
-        Rent a board
-    </button>
-</div>
-<div class="collapse @(Model.BookingStartDate != null ? "show" : "")" id="collapseExample">
-    <form asp-action="Index" method="get">
-        <div class="form-actions no-color">
-            <p>
-                Select booking period:
-                <input asp-for="BookingStartDate" class="form-floating" />
-                <input asp-for="BookingEndDate" class="form-floating" />
-                <input type="submit" value="View available boards" class="btn btn-default btn-search" />
-            </p>
-        </div>
-        <div asp-validation-summary="All" class="text-danger"></div>
-    </form>
-</div>
 <div class="row">
     <!-- Loop through the collection of objects in the Model -->
-    @foreach (var board in Model.Boards)
+    @foreach (var board in Model)
     {
         <!-- Create a column that spans 3 of 12 columns in a Bootstrap grid -->
         <div class="col-sm-2">
@@ -48,24 +29,16 @@
                 </div>
                 <div class="card-footer d-flex justify-content-center">
                     <a href="@Url.Action("Details", new { id = board.Id })" class="btn btn-primary">Details</a>
-                    @if (Model.ShowBookingOptions == true && User.Identity.IsAuthenticated)
-                    {
-                        <form asp-action="RentBoard" method="POST">
-                            <input type="hidden" value="@Model.BookingStartDate" name="StartDate"/>
-                            <input type="hidden" value="@Model.BookingEndDate" name="EndDate" />
-                            <input type="hidden" value="@board.Id" name="BoardId"/>
-                            <div class="form-actions no-color">
-                                <input type="submit" value="Book" class="btn btn-primary" style="margin-left:10px" />
-                            </div>
-                        </form>
-                    }
                 </div>
+
             </div>
+
         </div>
+
     }
 </div>
 
 <div class="pagination-container">
-    @await Html.PartialAsync("_Pagination", Model.Boards)
+    @await Html.PartialAsync("_Pagination", Model)
 </div>
 

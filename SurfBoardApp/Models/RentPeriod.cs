@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
 
 namespace SurfBoardApp.Models
 {
     public class RentPeriod
     {
         public int Id { get; set; }
-        public DateTime StartDate { get; set; } 
+        public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string CustomerId { get; set; }
         public IdentityUser Customer { get; set; }

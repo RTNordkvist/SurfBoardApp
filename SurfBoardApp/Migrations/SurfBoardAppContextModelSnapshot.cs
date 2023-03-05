@@ -260,7 +260,7 @@ namespace SurfBoardApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Board", (string)null);
+                    b.ToTable("Board");
                 });
 
             modelBuilder.Entity("SurfBoardApp.Models.Image", b =>
@@ -282,7 +282,7 @@ namespace SurfBoardApp.Migrations
 
                     b.HasIndex("BoardId");
 
-                    b.ToTable("Image", (string)null);
+                    b.ToTable("Image");
                 });
 
             modelBuilder.Entity("SurfBoardApp.Models.RentPeriod", b =>
@@ -312,7 +312,7 @@ namespace SurfBoardApp.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("RentPeriod", (string)null);
+                    b.ToTable("RentPeriod");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

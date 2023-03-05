@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SurfBoardApp.ViewModels.BoardViewModels
+namespace SurfBoardApp.ViewModels.Boards
 {
     public class CreateBoardVM
     {
