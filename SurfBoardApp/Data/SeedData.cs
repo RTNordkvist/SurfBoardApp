@@ -7,18 +7,31 @@ namespace SurfBoardApp.Data
 {
     public class SeedData
     {
+        //Specifies the location of the Datasheet excel file
         private const string FILE_PATH = "Data/Datasheet.xlsx";
 
+        // This method retrieves data from an Excel file and adds it to the database
         public static void GetDataFromExcel(IServiceProvider serviceProvider)
         {
+            // Create a new list to hold Board objects
             var boards = new List<Board>();
+
+            // Create a FileInfo object for the Excel file
             FileInfo existingFile = new FileInfo(FILE_PATH);
+
+            // Open the Excel file using the EPPlus library
             using (ExcelPackage package = new ExcelPackage(existingFile))
             {
+                // Get the first worksheet in the workbook
                 ExcelWorksheet boardWorksheet = package.Workbook.Worksheets[1];
+
+                // Get the number of rows in the worksheet
                 int rowCount = boardWorksheet.Dimension.End.Row;
+
+                // Loop through each row in the worksheet, starting from row 2 (header row is excluded)
                 for (int row = 2; row <= rowCount; row++)
                 {
+                    // Retrieve values from each column in the current row
                     var name = boardWorksheet.Cells[row, 1].Value?.ToString().Trim();
                     var length = boardWorksheet.Cells[row, 2].Value?.ToString().Trim();
                     var width = boardWorksheet.Cells[row, 3].Value?.ToString().Trim();
@@ -28,6 +41,7 @@ namespace SurfBoardApp.Data
                     var price = boardWorksheet.Cells[row, 7].Value?.ToString().Trim();
                     var equipment = boardWorksheet.Cells[row, 8].Value?.ToString().Trim();
 
+                    // Create a new Board object with the retrieved values
                     var board = new Board
                     {
                         Name = name,
@@ -39,13 +53,19 @@ namespace SurfBoardApp.Data
                         Price = decimal.TryParse(price, out decimal resultPrice) ? resultPrice : null,
                         Equipment = equipment
                     };
+
+                    // Add the new Board object to the list
                     boards.Add(board);
                 }
             }
 
+            // Save the retrieved Board objects to the database
             using (var context = new SurfBoardAppContext(serviceProvider.GetRequiredService<DbContextOptions<SurfBoardAppContext>>()))
             {
+                // If the database is not empty, return
                 if (context.Board.Any()) { return; }
+
+                // Add each Board object to the context and save changes to the database
                 foreach (var board in boards)
                 {
                     context.Add(board);
@@ -53,6 +73,7 @@ namespace SurfBoardApp.Data
                 context.SaveChanges();
             }
         }
+
 
         public static async Task CreateRolesAndAdministrator(IServiceProvider serviceProvider)
         {
@@ -76,7 +97,7 @@ namespace SurfBoardApp.Data
             var adminUser = new IdentityUser
             {
                 Email = "admin@surf.com",
-                EmailConfirmed= true
+                EmailConfirmed = true
             };
             adminUser.UserName = adminUser.Email;
 
