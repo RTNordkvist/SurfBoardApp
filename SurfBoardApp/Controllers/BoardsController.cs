@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using SurfBoardApp.Data;
 using SurfBoardApp.Models;
 using SurfBoardApp.ViewModels.BoardViewModels;
-using SurfBoardApp.ViewModels.RentPeriodViewModels;
+using SurfBoardApp.ViewModels.BookingViewModels;
 
 namespace SurfBoardApp.Controllers
 {
@@ -67,7 +67,7 @@ namespace SurfBoardApp.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RentBoard(RentBoardVM model)
+        public async Task<IActionResult> BookBoard(BookBoardVM model)
         {
             if (!ModelState.IsValid)
             {
@@ -81,14 +81,14 @@ namespace SurfBoardApp.Controllers
                 return View(nameof(Index), await GetIndexViewModel(new IndexVM { BookingStartDate = model.StartDate, BookingEndDate = model.EndDate })); //TODO unittest
             }
 
-            if (await _context.RentPeriod.AnyAsync(x => x.StartDate <= model.EndDate && x.EndDate >= model.StartDate && x.BoardId == model.BoardId))
+            if (await _context.Booking.AnyAsync(x => x.StartDate <= model.EndDate && x.EndDate >= model.StartDate && x.BoardId == model.BoardId))
             {
                 ModelState.AddModelError("BoardUnavailable", "Board is unavailable for the selected period");
                 //ViewData["BoardUnavailable"] = true;
                 return View(nameof(Index), await GetIndexViewModel(new IndexVM { BookingStartDate = model.StartDate, BookingEndDate = model.EndDate }));
             }
 
-            var rentPeriod = new RentPeriod
+            var booking = new Booking
             {
                 StartDate = model.StartDate,
                 EndDate = model.EndDate,
@@ -96,10 +96,10 @@ namespace SurfBoardApp.Controllers
                 CustomerId = _userManager.GetUserId(User)
             };
 
-            _context.RentPeriod.Add(rentPeriod);
+            _context.Booking.Add(booking);
             _context.SaveChanges();
 
-            return View(new RentPeriodConfirmationVM {StartDate = rentPeriod.StartDate, EndDate = rentPeriod.EndDate, BoardName = _context.Board.AsNoTracking().First(x => x.Id == rentPeriod.BoardId).Name});
+            return View(new BookingConfirmationVM {StartDate = booking.StartDate, EndDate = booking.EndDate, BoardName = _context.Board.AsNoTracking().First(x => x.Id == booking.BoardId).Name});
         }
 
         // GET: Boards/Details/5

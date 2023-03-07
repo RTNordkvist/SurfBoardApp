@@ -33,7 +33,7 @@ namespace SurfBoardApp.Models
         
         public List<Image>? Images { get; set; }
 
-        public List<RentPeriod>? RentPeriods { get; set; }
+        public List<Booking>? RentPeriods { get; set; }
 
         public void RemoveImage(Image image)
         {

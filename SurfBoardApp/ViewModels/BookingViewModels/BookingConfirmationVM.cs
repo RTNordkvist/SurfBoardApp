@@ -1,9 +1,9 @@
 ﻿using SurfBoardApp.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace SurfBoardApp.ViewModels.RentPeriodViewModels
+namespace SurfBoardApp.ViewModels.BookingViewModels
 {
-    public class RentPeriodConfirmationVM
+    public class BookingConfirmationVM
     {
         [DataType(DataType.Date)]
         public DateTime StartDate { get; set; }

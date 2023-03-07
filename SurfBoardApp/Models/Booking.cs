@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SurfBoardApp.Models
 {
-    public class RentPeriod
+    public class Booking
     {
         public int Id { get; set; }
         public DateTime StartDate { get; set; } 

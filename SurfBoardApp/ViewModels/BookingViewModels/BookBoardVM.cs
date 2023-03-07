@@ -1,6 +1,6 @@
-﻿namespace SurfBoardApp.ViewModels.RentPeriodViewModels
+﻿namespace SurfBoardApp.ViewModels.BookingViewModels
 {
-    public class RentBoardVM
+    public class BookBoardVM
     {
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

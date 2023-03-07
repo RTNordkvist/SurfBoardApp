@@ -17,7 +17,7 @@
 </form>
 <div>
     <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" style="margin-bottom: 20px">
-        Rent a board
+        Book a board
     </button>
 </div>
 <div class="collapse @(Model.BookingStartDate != null ? "show" : "")" id="collapseExample">
@@ -50,7 +50,7 @@
                     <a href="@Url.Action("Details", new { id = board.Id })" class="btn btn-primary">Details</a>
                     @if (Model.ShowBookingOptions == true && User.Identity.IsAuthenticated)
                     {
-                        <form asp-action="RentBoard" method="POST">
+                        <form asp-action="BookBoard" method="POST">
                             <input type="hidden" value="@Model.BookingStartDate" name="StartDate"/>
                             <input type="hidden" value="@Model.BookingEndDate" name="EndDate" />
                             <input type="hidden" value="@board.Id" name="BoardId"/>
