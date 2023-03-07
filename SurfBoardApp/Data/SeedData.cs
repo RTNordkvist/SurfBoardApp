@@ -79,7 +79,7 @@ namespace SurfBoardApp.Data
         {
             //initializing custom roles 
             var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var UserManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var UserManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             string[] roleNames = { "Admin" };
             IdentityResult roleResult;
 
@@ -94,10 +94,12 @@ namespace SurfBoardApp.Data
             }
 
             //Here you could create a super user who will maintain the web app
-            var adminUser = new IdentityUser
+            var adminUser = new ApplicationUser
             {
                 Email = "admin@surf.com",
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                FirstName = "Ulla",
+                LastName = "Knudsen"
             };
             adminUser.UserName = adminUser.Email;
 
