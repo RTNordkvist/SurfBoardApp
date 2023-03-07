@@ -26,6 +26,7 @@ namespace SurfBoardApp.Models
 
         public bool HasNextPage
         {
+
             get { return (PageIndex < TotalPages); }
         }
 
