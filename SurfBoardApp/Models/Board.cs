@@ -35,6 +35,8 @@ namespace SurfBoardApp.Models
 
         public List<Booking>? RentPeriods { get; set; }
 
+        public int? ClickCount { get; set; }
+
         public void RemoveImage(Image image)
         {
             if (Images != null && Images.Contains(image))

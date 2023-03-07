@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SurfBoardApp.Data;
 
@@ -11,9 +12,11 @@ using SurfBoardApp.Data;
 namespace SurfBoardApp.Migrations
 {
     [DbContext(typeof(SurfBoardAppContext))]
-    partial class SurfBoardAppContextModelSnapshot : ModelSnapshot
+    [Migration("20230307121007_AddClickCountToSurfboards")]
+    partial class AddClickCountToSurfboards
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

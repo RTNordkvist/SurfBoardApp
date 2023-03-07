@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SurfBoardApp.Data;
 using Microsoft.AspNetCore.Identity;
+using SurfBoardApp.Middleware;
+
 namespace SurfBoardApp
 {
     public class Program
@@ -20,7 +22,7 @@ namespace SurfBoardApp
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
+            builder.Services.AddScoped<BoardCounterMiddleware>();
             var app = builder.Build();
 
             var seedTask = Task.Run(async () =>
@@ -44,7 +46,7 @@ namespace SurfBoardApp
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseMiddleware<BoardCounterMiddleware>();
             app.UseRouting();
             app.UseAuthentication(); ;
 
