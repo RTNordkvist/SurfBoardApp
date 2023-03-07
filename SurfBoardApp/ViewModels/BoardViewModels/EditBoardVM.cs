@@ -1,7 +1,7 @@
 ﻿using SurfBoardApp.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace SurfBoardApp.ViewModels.Boards
+namespace SurfBoardApp.ViewModels.BoardViewModels
 {
     public class EditBoardVM
     {

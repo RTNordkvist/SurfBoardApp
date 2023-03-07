@@ -3,43 +3,104 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SurfBoardApp.Data;
 using SurfBoardApp.Models;
-using SurfBoardApp.ViewModels.Boards;
+using SurfBoardApp.ViewModels.BoardViewModels;
+using SurfBoardApp.ViewModels.RentPeriodViewModels;
 
 namespace SurfBoardApp.Controllers
 {
     public class BoardsController : Controller
     {
         private readonly SurfBoardAppContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public BoardsController(SurfBoardAppContext context)
+        public BoardsController(SurfBoardAppContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Boards
-        public async Task<IActionResult> Index(string searchString, int? pageNumber)
+        public async Task<IActionResult> Index(IndexVM model)
         {
-            ViewData["CurrentFilter"] = searchString;
-
-            var boards = _context.Board.Include(x => x.Images).AsQueryable();
-
-            if (!string.IsNullOrEmpty(searchString))
+            if (model.BookingEndDate < model.BookingStartDate)
             {
-                boards = boards.Where(b => b.Name.Contains(searchString));
+                ModelState.AddModelError("InvalidEndDate", "End date cannot be before start date");
             }
 
-            int pageSize = 12; //number of images on index page
+            model = await GetIndexViewModel(model);
 
-            return View(await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), pageNumber ?? 1, pageSize));
+            return View(model);
         }
 
+        private async Task<IndexVM> GetIndexViewModel(IndexVM model)
+        {
+            model.PageNumber = 1;
+            model.PageSize = 12;
+            model.ShowBookingOptions = false;
 
+            var boards = _context.Board.Include(x => x.Images).Include(x => x.RentPeriods).OrderBy(x => x.Name).AsQueryable();
 
+            if (!string.IsNullOrEmpty(model.SearchString))
+            {
+                boards = boards.Where(b => b.Name.Contains(model.SearchString));
+            }
+
+            if (model.BookingStartDate != null && model.BookingEndDate != null)
+            {
+                model.ShowBookingOptions = true;
+                boards = boards.Where(b => b.RentPeriods == null || !b.RentPeriods.Any(x => x.StartDate <= model.BookingEndDate && x.EndDate >= model.BookingStartDate));
+            }
+
+            var paginatedBoards = await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), model.PageNumber ?? 1, model.PageSize);
+
+            model.Boards = paginatedBoards;
+
+            return model;
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RentBoard(RentBoardVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(nameof(Index), await GetIndexViewModel(new IndexVM {BookingStartDate = model.StartDate, BookingEndDate = model.EndDate})); //TODO Redirect to Index
+            }
+
+            if(model.EndDate < model.StartDate)
+            {
+                ModelState.AddModelError("InvalidEndDate", "End date cannot be before start date");
+                //ViewData["InvalidEndDate"] = true;
+                return View(nameof(Index), await GetIndexViewModel(new IndexVM { BookingStartDate = model.StartDate, BookingEndDate = model.EndDate })); //TODO unittest
+            }
+
+            if (await _context.RentPeriod.AnyAsync(x => x.StartDate <= model.EndDate && x.EndDate >= model.StartDate && x.BoardId == model.BoardId))
+            {
+                ModelState.AddModelError("BoardUnavailable", "Board is unavailable for the selected period");
+                //ViewData["BoardUnavailable"] = true;
+                return View(nameof(Index), await GetIndexViewModel(new IndexVM { BookingStartDate = model.StartDate, BookingEndDate = model.EndDate }));
+            }
+
+            var rentPeriod = new RentPeriod
+            {
+                StartDate = model.StartDate,
+                EndDate = model.EndDate,
+                BoardId = model.BoardId,
+                CustomerId = _userManager.GetUserId(User)
+            };
+
+            _context.RentPeriod.Add(rentPeriod);
+            _context.SaveChanges();
+
+            return View(new RentPeriodConfirmationVM {StartDate = rentPeriod.StartDate, EndDate = rentPeriod.EndDate, BoardName = _context.Board.AsNoTracking().First(x => x.Id == rentPeriod.BoardId).Name});
+        }
 
         // GET: Boards/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -202,7 +263,7 @@ namespace SurfBoardApp.Controllers
 
                         var Image = new Image
                         {
-                            BoardId= board.Id,
+                            BoardId = board.Id,
                             Picture = "data:" + file.ContentType + ";base64, " + s
                         };
                         board.Images.Add(Image);
