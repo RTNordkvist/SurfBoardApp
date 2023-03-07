@@ -259,5 +259,41 @@ namespace SurfBoardApp.Controllers
         {
             return _context.Board.Any(e => e.Id == id);
         }
+
+        //Remove Image Action (button click)
+        // This method handles an HTTP POST request and is only accessible with a valid anti-forgery token
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        // This method can only be accessed by users with the "Admin" role
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RemoveImage(int boardId, int imageId)
+        {
+            // Retrieve the board with the specified boardId, including its images
+            var board = await _context.Board.Include(b => b.Images).FirstOrDefaultAsync(b => b.Id == boardId);
+
+            // If the board is not found, return a NotFound result
+            if (board == null)
+            {
+                return NotFound();
+            }
+
+            // Retrieve the image with the specified imageId from the board's images
+            var image = board.Images.FirstOrDefault(i => i.Id == imageId);
+
+            // If the image is not found, return a NotFound result
+            if (image == null)
+            {
+                return NotFound();
+            }
+
+            // Remove the image from the board
+            board.RemoveImage(image);
+
+            // Save changes to the database
+            await _context.SaveChangesAsync();
+
+            // Redirect to the Edit method of the current controller with the boardId parameter
+            return RedirectToAction(nameof(Edit), new { id = boardId });
+        }
     }
 }
