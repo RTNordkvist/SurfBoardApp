@@ -52,6 +52,7 @@ namespace SurfBoardApp.Controllers
             }
 
             if (model.BookingStartDate != null && model.BookingEndDate != null)
+
             {
                 model.ShowBookingOptions = true;
                 boards = boards.Where(b => b.RentPeriods == null || !b.RentPeriods.Any(x => x.StartDate <= model.BookingEndDate && x.EndDate >= model.BookingStartDate));
