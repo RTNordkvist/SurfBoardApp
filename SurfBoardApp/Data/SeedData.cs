@@ -107,7 +107,7 @@ namespace SurfBoardApp.Data
             string userPWD = "Admin123!";
             var _user = await UserManager.FindByEmailAsync(adminUser.Email);
 
-            if (_user == null)
+            /*if (_user == null)
             {
                 var createAdminUser = await UserManager.CreateAsync(adminUser, userPWD);
                 if (createAdminUser.Succeeded)
@@ -116,7 +116,7 @@ namespace SurfBoardApp.Data
                     await UserManager.AddToRoleAsync(adminUser, "Admin");
 
                 }
-            }
+            }*/
         }
     }
 }
