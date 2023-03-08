@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SurfBoardApp.Data;
 using Microsoft.AspNetCore.Identity;
+using SurfBoardApp.Models;
+
 namespace SurfBoardApp
 {
     public class Program
@@ -14,7 +16,7 @@ namespace SurfBoardApp
                 options.UseSqlServer(builder.Configuration.GetConnectionString("SurfBoardAppContext") ?? throw new InvalidOperationException("Connection string 'SurfBoardAppContext' not found.")));
 
             builder
-                .Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<SurfBoardAppContext>();
 

@@ -15,7 +15,7 @@ namespace SurfBoardApp.Data
             : base(options)
         {
         }
-
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Board> Board { get; set; } = default!;
         public DbSet<Image> Image { get; set; }
         public DbSet<Booking> Booking { get; set; }
