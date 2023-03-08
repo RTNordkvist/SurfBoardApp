@@ -6,12 +6,13 @@
 
 @if (Model.Any())
 {
-    <table>
+    <div class="table-responsive-lg">
+    <table class="table table-primary table-striped">
         <thead>
             <tr>
-                <th>Board</th>
-                <th>Start Date</th>
-                <th>End Date</th>
+                <th scope="col">Board</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
             </tr>
         </thead>
         <tbody>
@@ -21,10 +22,15 @@
                     <td>@booking.BoardName</td>
                     <td>@booking.StartDate.ToShortDateString()</td>
                     <td>@booking.EndDate.ToShortDateString()</td>
+                    <td>
+                        <a asp-action="edit" asp-route-id="100">edit</a>
+                        <a asp-action="delete" asp-route-id="100">delete</a>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
+        </div>
 }
 else
 {
