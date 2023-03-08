@@ -45,38 +45,81 @@ namespace SurfBoardApp.Controllers
             }
             return View(bookingViewModels);
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public async Task<IActionResult> BookBoard(DateTime startDate, DateTime endDate, int boardId)
+
+        public IActionResult EditBooking(string boardName, DateTime startDate, DateTime endDate)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            var model = new EditBookingVM
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-            var board = await _context.Board.FindAsync(boardId); if (board == null)
-            {
-                return NotFound($"Unable to load board with ID '{boardId}'.");
-            }
-            if (startDate >= endDate)
-            {
-                ModelState.AddModelError(string.Empty, "The start date must be before the end date.");
-                return RedirectToAction("Index");
-            }
-            var existingBooking = await _context.Booking.FirstOrDefaultAsync(b => b.BoardId == boardId && b.EndDate > startDate && b.StartDate < endDate); if (existingBooking != null)
-            {
-                ModelState.AddModelError(string.Empty, $"The board '{board.Name}' is not available during the selected period.");
-                return RedirectToAction("Index");
-            }
-            var booking = new Booking
-            {
-                CustomerId = user.Id,
-                BoardId = boardId,
+                BoardName = boardName,
                 StartDate = startDate,
                 EndDate = endDate
-            }; _context.Booking.Add(booking);
-            await _context.SaveChangesAsync(); return RedirectToAction("Index");
+            };
+
+            return View(model);
         }
+
+        
+        [HttpPost]
+        public IActionResult EditBooking(EditBookingVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                var booking = _context.Booking.SingleOrDefault(b => b.StartDate == model.StartDate && b.EndDate == model.EndDate);
+
+                if (booking != null)
+                {
+                    booking.StartDate = model.StartDate;
+                    booking.EndDate = model.EndDate;
+
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Booking not found.");
+                }
+            }
+
+            return RedirectToAction("MyBookings");
+        }
+
+
+        // Delete booking
+        public async Task<IActionResult> DeleteBooking(int? id)
+        {
+            if (id == null || _context.Booking == null)
+            {
+                return NotFound();
+            }
+
+            var board = await _context.Booking
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (board == null)
+            {
+                return NotFound();
+            }
+
+            return View(MyBookings);
+        }
+
+        // Delete booking
+        [Authorize]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            if (_context.Booking == null)
+            {
+                return Problem("Entity set 'SurferDemoContext.Booking'  is null.");
+            }
+            var booking = await _context.Booking.FindAsync(id);
+            if (booking != null)
+            {
+                _context.Booking.Remove(booking);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("MyBookings");
+        }
+
+
+
     }
 }

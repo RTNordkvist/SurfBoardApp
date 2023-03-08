@@ -13,6 +13,7 @@
                 <th scope="col">Board</th>
                 <th scope="col">Start Date</th>
                 <th scope="col">End Date</th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
@@ -23,8 +24,11 @@
                     <td>@booking.StartDate.ToShortDateString()</td>
                     <td>@booking.EndDate.ToShortDateString()</td>
                     <td>
-                        <a asp-action="edit" asp-route-id="100">edit</a>
-                        <a asp-action="delete" asp-route-id="100">delete</a>
+                       <a asp-controller="Booking" asp-action="EditBooking" asp-route-boardName="@booking.BoardName"
+                       asp-route-startDate="@booking.StartDate.ToString("yyyy-MM-dd")" asp-route-endDate="@booking.EndDate.ToString("yyyy-MM-dd")">Edit Booking</a>
+
+                        <br/>
+                       <a asp-controller="Booking" asp-action="DeleteBooking" asp-route-boardName="@booking.BoardName">Delete Booking</a>
                     </td>
                 </tr>
             }
