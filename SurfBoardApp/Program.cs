@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SurfBoardApp.Data;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
+using SurfBoardApp.Middleware;
 using SurfBoardApp.Models;
 using Microsoft.Extensions.Options;
 using System.Configuration;
@@ -29,6 +30,9 @@ namespace SurfBoardApp
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddScoped<BoardCounterMiddleware>();
+
+
             //External Logins
             builder.Services.AddAuthentication().AddGoogle(googleOptions =>
             {
@@ -42,7 +46,6 @@ namespace SurfBoardApp
                 options.ClientId = FBAuthNSection["ClientId"];
                 options.ClientSecret = FBAuthNSection["ClientSecret"];
             });
-
 
             var app = builder.Build();
 
@@ -67,7 +70,7 @@ namespace SurfBoardApp
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseMiddleware<BoardCounterMiddleware>();
             app.UseRouting();
             app.UseAuthentication(); ;
 

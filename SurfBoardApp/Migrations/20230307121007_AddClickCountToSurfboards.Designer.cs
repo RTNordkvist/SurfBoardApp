@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SurfBoardApp.Data;
 
@@ -11,9 +12,11 @@ using SurfBoardApp.Data;
 namespace SurfBoardApp.Migrations
 {
     [DbContext(typeof(SurfBoardAppContext))]
-    partial class SurfBoardAppContextModelSnapshot : ModelSnapshot
+    [Migration("20230307121007_AddClickCountToSurfboards")]
+    partial class AddClickCountToSurfboards
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,10 +89,6 @@ namespace SurfBoardApp.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -141,10 +140,6 @@ namespace SurfBoardApp.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -271,7 +266,7 @@ namespace SurfBoardApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Board", (string)null);
+                    b.ToTable("Board");
                 });
 
             modelBuilder.Entity("SurfBoardApp.Models.Booking", b =>
@@ -301,7 +296,7 @@ namespace SurfBoardApp.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Booking", (string)null);
+                    b.ToTable("Booking");
                 });
 
             modelBuilder.Entity("SurfBoardApp.Models.Image", b =>
@@ -323,20 +318,7 @@ namespace SurfBoardApp.Migrations
 
                     b.HasIndex("BoardId");
 
-                    b.ToTable("Image", (string)null);
-                });
-
-            modelBuilder.Entity("SurfBoardApp.Models.ApplicationUser", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasDiscriminator().HasValue("ApplicationUser");
+                    b.ToTable("Image");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
