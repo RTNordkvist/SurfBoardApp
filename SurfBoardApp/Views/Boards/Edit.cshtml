@@ -74,7 +74,7 @@
                 <form asp-action="RemoveImage" method="post">
                     <input type="hidden" name="boardId" value="@Model.Id" />
                     <input type="hidden" name="imageId" value="@image.Id" />
-                    <button type="submit">Remove Image</button>
+                    <button class="btn btn-outline-danger" type="submit">Remove Image</button>
                 </form>
             </div>
         }
