@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SurfBoardApp.Data;
 
@@ -11,9 +12,11 @@ using SurfBoardApp.Data;
 namespace SurfBoardApp.Migrations
 {
     [DbContext(typeof(SurfBoardAppContext))]
-    partial class SurfBoardAppContextModelSnapshot : ModelSnapshot
+    [Migration("20230307124903_AddedApplicationUser")]
+    partial class AddedApplicationUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -240,9 +243,6 @@ namespace SurfBoardApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ClickCount")
-                        .HasColumnType("int");
-
                     b.Property<string>("Equipment")
                         .HasColumnType("nvarchar(max)");
 
@@ -271,7 +271,7 @@ namespace SurfBoardApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Board", (string)null);
+                    b.ToTable("Board");
                 });
 
             modelBuilder.Entity("SurfBoardApp.Models.Booking", b =>
@@ -301,7 +301,7 @@ namespace SurfBoardApp.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Booking", (string)null);
+                    b.ToTable("Booking");
                 });
 
             modelBuilder.Entity("SurfBoardApp.Models.Image", b =>
@@ -323,7 +323,7 @@ namespace SurfBoardApp.Migrations
 
                     b.HasIndex("BoardId");
 
-                    b.ToTable("Image", (string)null);
+                    b.ToTable("Image");
                 });
 
             modelBuilder.Entity("SurfBoardApp.Models.ApplicationUser", b =>

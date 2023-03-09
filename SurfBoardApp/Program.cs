@@ -1,28 +1,52 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SurfBoardApp.Data;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using SurfBoardApp.Middleware;
+using SurfBoardApp.Models;
+using Microsoft.Extensions.Options;
+using System.Configuration;
 
 namespace SurfBoardApp
 {
     public class Program
     {
+
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var services = builder.Services;
+            var configuration = builder.Configuration;
             builder.
                 Services.AddDbContext<SurfBoardAppContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("SurfBoardAppContext") ?? throw new InvalidOperationException("Connection string 'SurfBoardAppContext' not found.")));
 
             builder
-                .Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<SurfBoardAppContext>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
             builder.Services.AddScoped<BoardCounterMiddleware>();
+
+
+            //External Logins
+            builder.Services.AddAuthentication().AddGoogle(googleOptions =>
+            {
+                IConfigurationSection googleAuthNSection = configuration.GetSection("Authentication:Google");
+                googleOptions.ClientId = googleAuthNSection["ClientId"];
+                googleOptions.ClientSecret = googleAuthNSection["ClientSecret"];
+            })
+                .AddFacebook(options =>
+            {
+                IConfigurationSection FBAuthNSection = configuration.GetSection("Authentication:Facebook");
+                options.ClientId = FBAuthNSection["ClientId"];
+                options.ClientSecret = FBAuthNSection["ClientSecret"];
+            });
+
             var app = builder.Build();
 
             var seedTask = Task.Run(async () =>
