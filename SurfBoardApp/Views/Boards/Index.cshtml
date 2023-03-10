@@ -47,7 +47,7 @@
                     <p class="card-text">@board.Type</p>
                 </div>
                 <div class="card-footer d-flex justify-content-center">
-                    <a href="@Url.Action("Details", new { id = board.Id })" class="btn btn-primary">Details</a>
+                    <a href="@Url.Action("Details", new { id = board.Id })" class="btn btn-outline-primary">Details</a>
                     @if (Model.ShowBookingOptions == true && User.Identity.IsAuthenticated)
                     {
                         <form asp-action="BookBoard" method="POST">
