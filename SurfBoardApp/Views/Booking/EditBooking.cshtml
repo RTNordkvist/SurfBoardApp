@@ -2,12 +2,10 @@
 @model EditBookingVM
 
 <h2>Edit Booking</h2>
+<br/>
+<h3>@Model.BoardName</h3>
 
 <form asp-action="EditBooking" method="post">
-    <div class="form-group">
-        <label for="boardName">Board Name:</label>
-        <input type="text" class="form-control" id="boardName" name="BoardName" value="@Model.BoardName">
-    </div>
     <div class="form-group">
         <label for="startDate">Start Date:</label>
         <input type="date" class="form-control" id="startDate" name="StartDate" value="@Model.StartDate.ToString("yyyy-MM-dd")">
