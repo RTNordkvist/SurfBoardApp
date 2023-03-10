@@ -28,7 +28,7 @@
                        asp-route-startDate="@booking.StartDate.ToString("yyyy-MM-dd")" asp-route-endDate="@booking.EndDate.ToString("yyyy-MM-dd")">Edit Booking</a>
 
                         <br/>
-                       <a asp-controller="Booking" asp-action="DeleteBooking" asp-route-boardName="@booking.BoardName">Delete Booking</a>
+                            <a asp-controller="Booking" asp-action="DeleteBooking" asp-route-boardName="@booking.BoardName" onclick="return confirm('Are you sure you want to delete this booking?')">Delete Booking</a>
                     </td>
                 </tr>
             }

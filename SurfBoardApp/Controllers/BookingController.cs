@@ -112,41 +112,44 @@ namespace SurfBoardApp.Controllers
         }
 
 
-        // Delete booking
-        public async Task<IActionResult> DeleteBooking(int? id)
+        [Authorize]
+        public async Task<IActionResult> DeleteBooking(string boardName)
         {
-            if (id == null || _context.Booking == null)
+            var booking = await _context.Booking.Include(b => b.Board)
+                                                 .FirstOrDefaultAsync(b => b.Board.Name == boardName);
+
+            if (booking == null)
             {
                 return NotFound();
             }
 
-            var board = await _context.Booking
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (board == null)
-            {
-                return NotFound();
-            }
+            _context.Booking.Remove(booking);
+            await _context.SaveChangesAsync();
 
-            return View(MyBookings);
+            return RedirectToAction("MyBookings");
         }
 
         // Delete booking
         [Authorize]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string boardName)
         {
             if (_context.Booking == null)
             {
                 return Problem("Entity set 'SurferDemoContext.Booking'  is null.");
             }
-            var booking = await _context.Booking.FindAsync(id);
+
+            var booking = await _context.Booking.FirstOrDefaultAsync(b => b.Board.Name == boardName);
+
             if (booking != null)
             {
                 _context.Booking.Remove(booking);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction("MyBookings");
         }
+
+
 
 
 
