@@ -61,29 +61,36 @@
                 <input type="file" name="NewImages" id="NewImages" accept=".jpg, .jpeg, .png" multiple>
             </div>
             <br />
+            <br />
+
+            <h1>Images</h1>
+            <div class="col-md-12">
+                <div class="row">
+                    @foreach (var image in Model.ExistingImages)
+                    {
+                        <div class="col-md-4 text-center mb-3">
+                            <div class="border" style="height: 500px;">
+                                <img src="@image.Picture" alt="Board Image" class="img-fluid" style="height: 100%; object-fit: cover;">
+                            </div>
+                            <form asp-action="RemoveImage" method="post">
+                                <input type="hidden" name="boardId" value="@Model.Id" />
+                                <input type="hidden" name="imageId" value="@image.Id" />
+                                <button class="btn btn-outline-danger mt-2" type="submit">Remove Image</button>
+                            </form>
+                        </div>
+                    }
+                </div>
+            </div>
+            <br />
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-outline-primary" />
+                <a asp-action="Index" class="btn btn-outline-dark ">Back to List</a>
             </div>
         </form>
     </div>
-    <div class="col-md-4">
-        @foreach (var image in Model.ExistingImages)
-        {
-            <div>
-                <img src="@image.Picture" alt="Board Image">
-                <form asp-action="RemoveImage" method="post">
-                    <input type="hidden" name="boardId" value="@Model.Id" />
-                    <input type="hidden" name="imageId" value="@image.Id" />
-                    <button class="btn btn-outline-danger" type="submit">Remove Image</button>
-                </form>
-            </div>
-        }
-    </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section Scripts {
     @{

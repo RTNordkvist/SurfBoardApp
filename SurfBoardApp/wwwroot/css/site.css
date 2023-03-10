@@ -98,3 +98,13 @@ body {
     width: 200px;
     cursor: pointer;
 }
+
+.col-md-4 img {
+    max-width: auto;
+    height: auto;
+}
+
+
+
+
+
