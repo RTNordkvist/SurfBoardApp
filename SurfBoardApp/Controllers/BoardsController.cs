@@ -44,7 +44,7 @@ namespace SurfBoardApp.Controllers
             model.PageSize = 12;
             model.ShowBookingOptions = false;
 
-            var boards = _context.Board.Include(x => x.Images).Include(x => x.RentPeriods).OrderBy(x => x.Name).AsQueryable();
+            var boards = _context.Board.Include(x => x.Images).Include(x => x.Bookings).OrderBy(x => x.Name).AsQueryable();
 
             if (!string.IsNullOrEmpty(model.SearchString))
             {
@@ -55,7 +55,7 @@ namespace SurfBoardApp.Controllers
 
             {
                 model.ShowBookingOptions = true;
-                boards = boards.Where(b => b.RentPeriods == null || !b.RentPeriods.Any(x => x.StartDate <= model.BookingEndDate && x.EndDate >= model.BookingStartDate));
+                boards = boards.Where(b => b.Bookings == null || !b.Bookings.Any(x => x.StartDate <= model.BookingEndDate && x.EndDate >= model.BookingStartDate));
             }
 
             var paginatedBoards = await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), model.PageNumber ?? 1, model.PageSize);
