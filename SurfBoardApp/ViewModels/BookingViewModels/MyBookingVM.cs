@@ -12,5 +12,7 @@ namespace SurfBoardApp.ViewModels.BookingViewModels
         public string BoardName { get; set; }
 
         public int BoardId { get; set; } 
+
+        public int BookingId { get; set; }
     }
 }
