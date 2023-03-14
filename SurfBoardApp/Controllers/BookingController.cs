@@ -13,16 +13,14 @@ using SurfBoardApp.ViewModels.BookingViewModels;
 
 namespace SurfBoardApp.Controllers
 {
-    public class BookingController : Controller
+    public class BookingController : BaseController
     {
         // BookingController constructor with required dependencies
         private readonly SurfBoardAppContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public BookingController(SurfBoardAppContext context, UserManager<ApplicationUser> userManager)
+        public BookingController(SurfBoardAppContext context, UserManager<ApplicationUser> userManager) : base(userManager)
         {
             _context = context;
-            _userManager = userManager;
         }
 
         // Action method that displays bookings of the authenticated user

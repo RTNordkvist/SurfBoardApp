@@ -14,15 +14,13 @@ using SurfBoardApp.ViewModels.BookingViewModels;
 
 namespace SurfBoardApp.Controllers
 {
-    public class BoardsController : Controller
+    public class BoardsController : BaseController
     {
         private readonly SurfBoardAppContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public BoardsController(SurfBoardAppContext context, UserManager<ApplicationUser> userManager)
+        public BoardsController(SurfBoardAppContext context, UserManager<ApplicationUser> userManager) : base(userManager)
         {
             _context = context;
-            _userManager = userManager;
         }
 
         // GET: Boards
