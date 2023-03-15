@@ -19,12 +19,12 @@ namespace SurfBoardApp.Controllers
     {
         //DBContext is injected through dependency injection
         private readonly SurfBoardAppContext _context;
-        private readonly BoardService _boardService;
+        // private readonly BoardService _boardService;
 
-        public BoardsController(SurfBoardAppContext context, UserManager<ApplicationUser> userManager, BoardService boardService) : base(userManager)
+        public BoardsController(SurfBoardAppContext context, UserManager<ApplicationUser> userManager/*, BoardService boardService*/) : base(userManager)
         {
             _context = context;
-            _boardService = boardService;
+            //_boardService = boardService;
         }
 
         // GET: Boards

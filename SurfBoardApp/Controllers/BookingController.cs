@@ -43,6 +43,7 @@ namespace SurfBoardApp.Controllers
             {
                 var bookingVM = new MyBookingVM()
                 {
+                    BookingId = booking.Id,
                     StartDate = booking.StartDate,
                     EndDate = booking.EndDate,
                     BoardId = booking.BoardId,
@@ -59,15 +60,28 @@ namespace SurfBoardApp.Controllers
         // This method is called when the user wants to edit a booking. It receives the board name, 
         // start date and end date as parameters and returns the EditBooking view with a new 
         // EditBookingVM object as a model.
-        public IActionResult EditBooking(string boardName, DateTime startDate, DateTime endDate)
+        public async Task<IActionResult> EditBooking(int? id)
         {
+            if (id == null || _context.Booking == null)
+            {
+                return NotFound();
+            }
+
+            var booking = await _context.Booking.Include(x => x.Board).FirstOrDefaultAsync(x => x.Id == id);
+
+            if (booking == null)
+            {
+                return NotFound();
+            }
+
             // Creates a new EditBookingVM object with the data passed by the user and the original 
             // start and end dates of the booking.
             var model = new EditBookingVM
             {
-                BoardName = boardName,
-                StartDate = startDate,
-                EndDate = endDate,
+                Id = booking.Id,
+                BoardName = booking.Board.Name,
+                StartDate = booking.StartDate,
+                EndDate = booking.EndDate
             };
 
             // Returns the EditBooking view with the model.
@@ -78,30 +92,30 @@ namespace SurfBoardApp.Controllers
         // object as a parameter with the updated data and updates the corresponding booking in the 
         // database.
         [HttpPost]
-        public IActionResult EditBooking(EditBookingVM model)
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditBooking(EditBookingVM model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // Searches for the booking in the database based on the original start and end dates.
-                var booking = _context.Booking.SingleOrDefault(b => b.StartDate == model.OriginalStartDate && b.EndDate == model.OriginalEndDate);
-
-                if (booking != null)
-                {
-                    // If the booking was found and the start or end dates have changed, updates the 
-                    // booking in the database and saves the changes.
-                    if (booking.StartDate != model.StartDate || booking.EndDate != model.EndDate)
-                    {
-                        booking.StartDate = model.StartDate;
-                        booking.EndDate = model.EndDate;
-                        _context.SaveChanges();
-                    }
-                }
-                else
-                {
-                    // If the booking was not found, adds an error to the ModelState.
-                    ModelState.AddModelError("", "Booking not found.");
-                }
+                return View(model);
             }
+
+            // Searches for the booking in the database based on the original start and end dates.
+            var booking = _context.Booking.FirstOrDefault(x => x.Id == model.Id);
+
+            if (booking == null)
+            {
+                // If the booking was not found, adds an error to the ModelState.
+                ModelState.AddModelError("", "Booking not found.");
+                return View(model);
+            }
+
+            // If the booking was found and the start or end dates have changed, updates the 
+            // booking in the database and saves the changes.
+            booking.StartDate = model.StartDate;
+            booking.EndDate = model.EndDate;
+            await _context.SaveChangesAsync();
 
             // Redirects the user to the MyBookings action.
             return RedirectToAction("MyBookings");
@@ -109,10 +123,9 @@ namespace SurfBoardApp.Controllers
 
 
         [Authorize]
-        public async Task<IActionResult> DeleteBooking(string boardName)
+        public async Task<IActionResult> DeleteBooking(int? id)
         {
-            var booking = await _context.Booking.Include(b => b.Board)
-                                                 .FirstOrDefaultAsync(b => b.Board.Name == boardName);
+            var booking = await _context.Booking.FirstOrDefaultAsync(x => x.Id == id);
 
             if (booking == null)
             {
@@ -127,14 +140,14 @@ namespace SurfBoardApp.Controllers
 
         // Delete booking
         [Authorize]
-        public async Task<IActionResult> DeleteConfirmed(string boardName)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Booking == null)
             {
-                return Problem("Entity set 'SurferDemoContext.Booking'  is null.");
+                return Problem("Entity set 'SurferDemoContext.Booking' is null.");
             }
 
-            var booking = await _context.Booking.FirstOrDefaultAsync(b => b.Board.Name == boardName);
+            var booking = await _context.Booking.FirstOrDefaultAsync(x => x.Id == id);
 
             if (booking != null)
             {
