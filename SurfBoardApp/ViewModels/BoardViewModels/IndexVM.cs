@@ -5,7 +5,7 @@ namespace SurfBoardApp.ViewModels.BoardViewModels
 {
     public class IndexVM
     {
-        public PaginatedList<Board>? Boards { get; set; }
+        public PaginatedList<IndexBoardVM>? Boards { get; set; }
 
         public string? SearchString { get; set; }
 

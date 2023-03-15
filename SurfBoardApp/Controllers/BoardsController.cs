@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SurfBoardApp.Data;
 using SurfBoardApp.Data.Models;
+using SurfBoardApp.Domain.Services;
 using SurfBoardApp.ViewModels.BoardViewModels;
 using SurfBoardApp.ViewModels.BookingViewModels;
 
@@ -16,12 +17,32 @@ namespace SurfBoardApp.Controllers
 {
     public class BoardsController : BaseController
     {
+        //DBContext is injected through dependency injection
         private readonly SurfBoardAppContext _context;
+        private readonly BoardService _boardService;
 
-        public BoardsController(SurfBoardAppContext context, UserManager<ApplicationUser> userManager) : base(userManager)
+        public BoardsController(SurfBoardAppContext context, UserManager<ApplicationUser> userManager, BoardService boardService) : base(userManager)
         {
             _context = context;
+            _boardService = boardService;
         }
+
+        public async Task<IActionResult> Index2(IndexVM model)
+        {
+            if(!ModelState.IsValid)
+                return View(model);
+
+            if (model.BookingEndDate < model.BookingStartDate)
+            {
+                ModelState.AddModelError("InvalidEndDate", "End date cannot be before start date");
+                return View(model);
+            }
+
+            model = _boardService.GetBoardModels();// await GetIndexViewModel(model);
+
+            return View(model);
+        }
+
 
         // GET: Boards
         public async Task<IActionResult> Index(IndexVM model)
@@ -50,13 +71,21 @@ namespace SurfBoardApp.Controllers
             }
 
             if (model.BookingStartDate != null && model.BookingEndDate != null)
-
             {
                 model.ShowBookingOptions = true;
                 boards = boards.Where(b => b.Bookings == null || !b.Bookings.Any(x => x.StartDate <= model.BookingEndDate && x.EndDate >= model.BookingStartDate));
             }
 
-            var paginatedBoards = await PaginatedList<Board>.CreateAsync(boards.AsNoTracking(), model.PageNumber ?? 1, model.PageSize);
+            IQueryable<IndexBoardVM> boardVMs = boards.Select(x => new IndexBoardVM
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Type = x.Type,
+                Price = x.Price,
+                Image = x.Images != null ? x.Images.FirstOrDefault() : null
+            }).AsNoTracking();
+
+            var paginatedBoards = await PaginatedList<IndexBoardVM>.CreateAsync(boardVMs, model.PageNumber ?? 1, model.PageSize);
 
             model.Boards = paginatedBoards;
 
@@ -243,7 +272,7 @@ namespace SurfBoardApp.Controllers
             board.Equipment = boardModel.Equipment;
             //board.Images = boardModel.ExistingImages;
 
-            if (boardModel.NewImages != null)
+            if (boardModel.Images != null)
             {
                 //If there is no existing images for the board, a new empty list is created to contain the new images
                 if (board.Images == null)
@@ -252,7 +281,7 @@ namespace SurfBoardApp.Controllers
                 }
 
                 //New files are read and converted to the Image Class and added to the Board
-                foreach (var file in boardModel.NewImages)
+                foreach (var file in boardModel.Images)
                 {
                     using (var ms = new MemoryStream())
                     {

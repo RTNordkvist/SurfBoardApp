@@ -5,7 +5,9 @@ VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfBoardApp", "SurfBoardApp\SurfBoardApp.csproj", "{47AEF45B-B149-45E0-9E48-D09B1B22ABA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurfBoardApp.Data", "SurfBoardApp.Data\SurfBoardApp.Data.csproj", "{CBCD41CB-7FE4-408C-B73B-9ADC311A0EAD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfBoardApp.Data", "SurfBoardApp.Data\SurfBoardApp.Data.csproj", "{CBCD41CB-7FE4-408C-B73B-9ADC311A0EAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurfBoardApp.Domain", "SurfBoardApp.Domain\SurfBoardApp.Domain.csproj", "{B4EB92E4-431E-4F2E-8D80-8EB6716BA590}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{CBCD41CB-7FE4-408C-B73B-9ADC311A0EAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBCD41CB-7FE4-408C-B73B-9ADC311A0EAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBCD41CB-7FE4-408C-B73B-9ADC311A0EAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4EB92E4-431E-4F2E-8D80-8EB6716BA590}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4EB92E4-431E-4F2E-8D80-8EB6716BA590}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4EB92E4-431E-4F2E-8D80-8EB6716BA590}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4EB92E4-431E-4F2E-8D80-8EB6716BA590}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
