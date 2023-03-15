@@ -1,4 +1,6 @@
-﻿using SurfBoardApp.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels;
+using SurfBoardApp.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,11 @@ namespace SurfBoardApp.Domain.Services
         public BoardService(SurfBoardAppContext context)
         {
             _context = context;
+        }
+
+        public IndexVM GetBoardModels(IndexVM model)
+        {
+            return new IndexVM();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SurfBoardApp.ViewModels.BookingViewModels
+namespace SurfBoardApp.Blazor.Shared.ViewModels.BookingViewModels
 {
     public class MyBookingVM
     {
@@ -11,7 +11,7 @@ namespace SurfBoardApp.ViewModels.BookingViewModels
         public DateTime EndDate { get; set; }
         public string BoardName { get; set; }
 
-        public int BoardId { get; set; } 
+        public int BoardId { get; set; }
 
         public int BookingId { get; set; }
     }

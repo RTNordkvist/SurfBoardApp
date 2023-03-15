@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SurfBoardApp.Blazor.Shared.ViewModels;
+using SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels;
+using SurfBoardApp.Blazor.Shared.ViewModels.BookingViewModels;
 using SurfBoardApp.Data;
 using SurfBoardApp.Data.Models;
 using SurfBoardApp.Domain.Services;
-using SurfBoardApp.ViewModels.BoardViewModels;
-using SurfBoardApp.ViewModels.BookingViewModels;
 
 namespace SurfBoardApp.Controllers
 {
@@ -36,6 +37,23 @@ namespace SurfBoardApp.Controllers
             }
 
             model = await GetIndexViewModel(model);
+
+            return View(model);
+        }
+
+
+        public async Task<IActionResult> Index2(IndexVM model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            if (model.BookingEndDate < model.BookingStartDate)
+            {
+                ModelState.AddModelError("InvalidEndDate", "End date cannot be before start date");
+                return View(model);
+            }
+
+            model = _boardService.GetBoardModels(model); // await GetIndexViewModel(model);
 
             return View(model);
         }

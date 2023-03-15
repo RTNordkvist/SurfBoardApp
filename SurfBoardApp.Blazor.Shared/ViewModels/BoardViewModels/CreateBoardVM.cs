@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
-namespace SurfBoardApp.ViewModels.BoardViewModels
+namespace SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels
 {
     public class CreateBoardVM
     {
