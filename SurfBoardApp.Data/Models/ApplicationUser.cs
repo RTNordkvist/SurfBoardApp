@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace SurfBoardApp.Models
+namespace SurfBoardApp.Data.Models
 {
     public class ApplicationUser : IdentityUser
     {

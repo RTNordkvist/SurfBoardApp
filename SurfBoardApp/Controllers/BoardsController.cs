@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SurfBoardApp.Data;
-using SurfBoardApp.Models;
+using SurfBoardApp.Data.Models;
 using SurfBoardApp.ViewModels.BoardViewModels;
 using SurfBoardApp.ViewModels.BookingViewModels;
 

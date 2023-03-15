@@ -1,4 +1,4 @@
-﻿using SurfBoardApp.Models;
+﻿using SurfBoardApp.Data.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace SurfBoardApp.ViewModels.BoardViewModels

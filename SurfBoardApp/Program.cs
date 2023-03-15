@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using SurfBoardApp.Data;
+using SurfBoardApp.Data.Models;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using SurfBoardApp.Middleware;
-using SurfBoardApp.Models;
 using Microsoft.Extensions.Options;
 using System.Configuration;
+using SurfBoardApp.Data;
 
 namespace SurfBoardApp
 {

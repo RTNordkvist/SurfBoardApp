@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using SurfBoardApp.Models;
+using SurfBoardApp.Data.Models;
 
 namespace SurfBoardApp.Areas.Identity.Pages.Account
 {

@@ -1,4 +1,4 @@
-﻿namespace SurfBoardApp.Models
+﻿namespace SurfBoardApp.Data.Models
 {
     public class Image
     {

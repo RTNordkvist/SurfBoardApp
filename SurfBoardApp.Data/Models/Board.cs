@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SurfBoardApp.Models
+namespace SurfBoardApp.Data.Models
 {
     public class Board
     {
@@ -8,12 +8,12 @@ namespace SurfBoardApp.Models
         public int Id { get; set; }
 
         [Required]
-        [MinLength(1, ErrorMessage ="The board name must be at least 1 character long")]
+        [MinLength(1, ErrorMessage = "The board name must be at least 1 character long")]
         public string? Name { get; set; }
 
         [Range(0.0, double.MaxValue, ErrorMessage = "The length must be a positive value")]
         public double? Length { get; set; }
-        
+
         [Range(0.0, double.MaxValue, ErrorMessage = "The width must be a positive value")]
         public double? Width { get; set; }
 
@@ -22,15 +22,15 @@ namespace SurfBoardApp.Models
 
         [Range(0.0, double.MaxValue, ErrorMessage = "The volume must be a positive value")]
         public double? Volume { get; set; }
-        
+
         public string? Type { get; set; }
-        
+
         [Required]
-        [Range(0.0, (double)decimal.MaxValue, ErrorMessage="The price must be a positive value")]
+        [Range(0.0, (double)decimal.MaxValue, ErrorMessage = "The price must be a positive value")]
         public decimal? Price { get; set; }
-        
+
         public string? Equipment { get; set; }
-        
+
         public List<Image>? Images { get; set; }
 
         public List<Booking>? Bookings { get; set; }

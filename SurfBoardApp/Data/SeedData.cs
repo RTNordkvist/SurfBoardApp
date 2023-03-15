@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
-using SurfBoardApp.Models;
+using SurfBoardApp.Data.Models;
 
 namespace SurfBoardApp.Data
 {
