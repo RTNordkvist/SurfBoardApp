@@ -7,6 +7,7 @@ using SurfBoardApp.Middleware;
 using Microsoft.Extensions.Options;
 using System.Configuration;
 using SurfBoardApp.Data;
+using SurfBoardApp.Domain.Services;
 
 namespace SurfBoardApp
 {
@@ -27,11 +28,14 @@ namespace SurfBoardApp
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<SurfBoardAppContext>();
 
+            builder.Services.AddHttpContextAccessor();
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<BoardCounterMiddleware>();
-
+            builder.Services.AddScoped<BoardService>();
+            builder.Services.AddScoped<BookingService>();
 
             //External Logins
             builder.Services.AddAuthentication().AddGoogle(googleOptions =>

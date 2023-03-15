@@ -48,9 +48,9 @@
                 </div>
                 <div class="card-footer d-flex justify-content-center">
                     <a href="@Url.Action("Details", new { id = board.Id })" class="btn btn-outline-primary">Details</a>
-                    @if (Model.ShowBookingOptions == true && User.Identity.IsAuthenticated)
+                    @if (Model.BookingStartDate != null && Model.BookingEndDate != null && User.Identity.IsAuthenticated)
                     {
-                        <form asp-action="BookBoard" method="POST">
+                        <form asp-controller="Booking" asp-action="BookBoard" method="POST">
                             <input type="hidden" value="@Model.BookingStartDate" name="StartDate"/>
                             <input type="hidden" value="@Model.BookingEndDate" name="EndDate" />
                             <input type="hidden" value="@board.Id" name="BoardId"/>

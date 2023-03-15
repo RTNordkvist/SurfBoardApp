@@ -18,7 +18,5 @@ namespace SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels
 
         [DataType(DataType.Date)]
         public DateTime? BookingEndDate { get; set; }
-
-        public bool ShowBookingOptions { get; set; }
     }
 }

@@ -12,6 +12,7 @@ using SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels;
 using SurfBoardApp.Blazor.Shared.ViewModels.BookingViewModels;
 using SurfBoardApp.Data;
 using SurfBoardApp.Data.Models;
+using SurfBoardApp.Domain.Exceptions;
 using SurfBoardApp.Domain.Services;
 
 namespace SurfBoardApp.Controllers
@@ -20,136 +21,51 @@ namespace SurfBoardApp.Controllers
     {
         //DBContext is injected through dependency injection
         private readonly SurfBoardAppContext _context;
-        // private readonly BoardService _boardService;
+        private readonly BoardService _boardService;
 
-        public BoardsController(SurfBoardAppContext context, UserManager<ApplicationUser> userManager/*, BoardService boardService*/) : base(userManager)
+        public BoardsController(SurfBoardAppContext context, UserManager<ApplicationUser> userManager, BoardService boardService) : base(userManager)
         {
             _context = context;
-            //_boardService = boardService;
+            _boardService = boardService;
         }
 
         // GET: Boards
         public async Task<IActionResult> Index(IndexVM model)
         {
-            if (model.BookingEndDate < model.BookingStartDate)
-            {
-                ModelState.AddModelError("InvalidEndDate", "End date cannot be before start date");
-            }
-
-            model = await GetIndexViewModel(model);
-
-            return View(model);
-        }
-
-
-        public async Task<IActionResult> Index2(IndexVM model)
-        {
-            if (!ModelState.IsValid)
-                return View(model);
-
-            if (model.BookingEndDate < model.BookingStartDate)
-            {
-                ModelState.AddModelError("InvalidEndDate", "End date cannot be before start date");
-                return View(model);
-            }
-
-            model = _boardService.GetBoardModels(model); // await GetIndexViewModel(model);
-
-            return View(model);
-        }
-
-        private async Task<IndexVM> GetIndexViewModel(IndexVM model)
-        {
+            //sets pagenumber and pagesize. Can later be changed to user input.
             model.PageNumber = 1;
             model.PageSize = 12;
-            model.ShowBookingOptions = false;
 
-            var boards = _context.Board.Include(x => x.Images).Include(x => x.Bookings).OrderBy(x => x.Name).AsQueryable();
-
-            if (!string.IsNullOrEmpty(model.SearchString))
-            {
-                boards = boards.Where(b => b.Name.Contains(model.SearchString));
-            }
-
-            if (model.BookingStartDate != null && model.BookingEndDate != null)
-            {
-                model.ShowBookingOptions = true;
-                boards = boards.Where(b => b.Bookings == null || !b.Bookings.Any(x => x.StartDate <= model.BookingEndDate && x.EndDate >= model.BookingStartDate));
-            }
-
-            IQueryable<IndexBoardVM> boardVMs = boards.Select(x => new IndexBoardVM
-            {
-                Id = x.Id,
-                Name = x.Name,
-                Type = x.Type,
-                Price = x.Price,
-                Image = x.Images != null ? x.Images.FirstOrDefault() : null //Checks if Images is null. Returns first picture in the list if it's not null. Otherwise returns null.
-            }).AsNoTracking();
-
-            var paginatedBoards = await PaginatedList<IndexBoardVM>.CreateAsync(boardVMs, model.PageNumber ?? 1, model.PageSize);
-
-            model.Boards = paginatedBoards;
-
-            return model;
-        }
-
-        [Authorize]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> BookBoard(BookBoardVM model)
-        {
             if (!ModelState.IsValid)
-            {
-                return View(nameof(Index), await GetIndexViewModel(new IndexVM {BookingStartDate = model.StartDate, BookingEndDate = model.EndDate})); //TODO Redirect to Index
-            }
+                return View(model);
 
-            if(model.EndDate < model.StartDate)
+            if (model.BookingEndDate < model.BookingStartDate)
             {
                 ModelState.AddModelError("InvalidEndDate", "End date cannot be before start date");
-                //ViewData["InvalidEndDate"] = true;
-                return View(nameof(Index), await GetIndexViewModel(new IndexVM { BookingStartDate = model.StartDate, BookingEndDate = model.EndDate })); //TODO unittest
+                return View(model);
             }
 
-            if (await _context.Booking.AnyAsync(x => x.StartDate <= model.EndDate && x.EndDate >= model.StartDate && x.BoardId == model.BoardId))
-            {
-                ModelState.AddModelError("BoardUnavailable", "Board is unavailable for the selected period");
-                //ViewData["BoardUnavailable"] = true;
-                return View(nameof(Index), await GetIndexViewModel(new IndexVM { BookingStartDate = model.StartDate, BookingEndDate = model.EndDate }));
-            }
+            model = await _boardService.GetBoardModels(model);
 
-            var booking = new Booking
-            {
-                StartDate = model.StartDate,
-                EndDate = model.EndDate,
-                BoardId = model.BoardId,
-                CustomerId = _userManager.GetUserId(User)
-            };
-
-            _context.Booking.Add(booking);
-            _context.SaveChanges();
-
-            return View(new BookingConfirmationVM {StartDate = booking.StartDate, EndDate = booking.EndDate, BoardName = _context.Board.AsNoTracking().First(x => x.Id == booking.BoardId).Name});
+            return View(model);
         }
 
         // GET: Boards/Details/5
         public async Task<IActionResult> Details(int? id)
-
         {
-            if (id == null || _context.Board == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var board = await _context.Board
-                .Include(x => x.Images)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var result = _boardService.GetBoard((int)id);
 
-            if (board == null)
+            if (result == null)
             {
                 return NotFound();
             }
 
-            return View(board);
+            return View(result); // todo convert to a viewmodel instead of entity model
         }
 
         // GET: Boards/Create
@@ -160,8 +76,6 @@ namespace SurfBoardApp.Controllers
         }
 
         // POST: Boards/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -172,54 +86,22 @@ namespace SurfBoardApp.Controllers
                 return View(boardModel);
             }
 
-            var images = new List<Image>();
+            _boardService.AddBoard(boardModel);
 
-            if (boardModel.Images != null)
-            {
-                foreach (var file in boardModel.Images)
-                {
-                    using (var ms = new MemoryStream())
-                    {
-                        file.CopyTo(ms);
-                        var fileBytes = ms.ToArray();
-                        string s = Convert.ToBase64String(fileBytes);
-
-                        var Image = new Image
-                        {
-                            Picture = "data:" + file.ContentType + ";base64, " + s
-                        };
-                        images.Add(Image);
-                    }
-                };
-            }
-
-            var board = new Board
-            {
-                Name = boardModel.Name,
-                Length = boardModel.Length,
-                Width = boardModel.Width,
-                Thickness = boardModel.Thickness,
-                Volume = boardModel.Volume,
-                Type = boardModel.Type,
-                Price = boardModel.Price,
-                Equipment = boardModel.Equipment,
-                Images = images
-            };
-
-            _context.Add(board);
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
+        // TODO: Refactor from here and below -> move responsibility to BoardService
         // GET: Boards/Edit/5
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Board == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
+            // todo move to boardservice and return EditBoardVM
             var board = await _context.Board.Include(x => x.Images).FirstOrDefaultAsync(x => x.Id == id);
             if (board == null)
             {
@@ -271,7 +153,7 @@ namespace SurfBoardApp.Controllers
             board.Type = boardModel.Type;
             board.Price = boardModel.Price;
             board.Equipment = boardModel.Equipment;
-            //board.Images = boardModel.ExistingImages;
+            board.Images = boardModel.ExistingImages;
 
             if (boardModel.Images != null)
             {
