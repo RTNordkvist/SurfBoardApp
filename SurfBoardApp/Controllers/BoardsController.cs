@@ -27,23 +27,6 @@ namespace SurfBoardApp.Controllers
             _boardService = boardService;
         }
 
-        public async Task<IActionResult> Index2(IndexVM model)
-        {
-            if(!ModelState.IsValid)
-                return View(model);
-
-            if (model.BookingEndDate < model.BookingStartDate)
-            {
-                ModelState.AddModelError("InvalidEndDate", "End date cannot be before start date");
-                return View(model);
-            }
-
-            model = _boardService.GetBoardModels();// await GetIndexViewModel(model);
-
-            return View(model);
-        }
-
-
         // GET: Boards
         public async Task<IActionResult> Index(IndexVM model)
         {
@@ -82,7 +65,7 @@ namespace SurfBoardApp.Controllers
                 Name = x.Name,
                 Type = x.Type,
                 Price = x.Price,
-                Image = x.Images != null ? x.Images.FirstOrDefault() : null
+                Image = x.Images != null ? x.Images.FirstOrDefault() : null //Checks if Images is null. Returns first picture in the list if it's not null. Otherwise returns null.
             }).AsNoTracking();
 
             var paginatedBoards = await PaginatedList<IndexBoardVM>.CreateAsync(boardVMs, model.PageNumber ?? 1, model.PageSize);
