@@ -25,7 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SurfBoardApp.Data\SurfBoardApp.Data.csproj" />
     <ProjectReference Include="..\SurfBoardApp.Domain\SurfBoardApp.Domain.csproj" />
   </ItemGroup>
 
