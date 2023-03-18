@@ -33,9 +33,9 @@ namespace SurfBoardApp
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddScoped<BoardCounterMiddleware>();
             builder.Services.AddScoped<BoardService>();
             builder.Services.AddScoped<BookingService>();
+            builder.Services.AddScoped<BoardCounterMiddleware>();
 
             //External Logins
             builder.Services.AddAuthentication().AddGoogle(googleOptions =>

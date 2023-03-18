@@ -15,7 +15,7 @@ namespace SurfBoardApp.Domain.Services
 {
     public class BookingService
     {
-        private readonly SurfBoardAppContext _context;
+        private readonly SurfBoardAppContext _context; //DBcontext
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
 

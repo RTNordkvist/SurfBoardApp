@@ -17,15 +17,13 @@ using SurfBoardApp.Domain.Services;
 
 namespace SurfBoardApp.Controllers
 {
-    public class BoardsController : BaseController
+    public class BoardsController : Controller
     {
         //DBContext is injected through dependency injection
-        private readonly SurfBoardAppContext _context;
         private readonly BoardService _boardService;
 
-        public BoardsController(SurfBoardAppContext context, UserManager<ApplicationUser> userManager, BoardService boardService) : base(userManager)
+        public BoardsController(BoardService boardService)
         {
-            _context = context;
             _boardService = boardService;
         }
 
@@ -42,6 +40,8 @@ namespace SurfBoardApp.Controllers
             if (model.BookingEndDate < model.BookingStartDate)
             {
                 ModelState.AddModelError("InvalidEndDate", "End date cannot be before start date");
+                model.BookingEndDate = null;
+                model = await _boardService.GetBoardModels(model);
                 return View(model);
             }
 
@@ -58,7 +58,7 @@ namespace SurfBoardApp.Controllers
                 return NotFound();
             }
 
-            var result = _boardService.GetBoard((int)id);
+            var result = await _boardService.GetBoard((int)id);
 
             if (result == null)
             {
@@ -79,14 +79,14 @@ namespace SurfBoardApp.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateBoardVM boardModel)
+        public async Task<IActionResult> Create(CreateBoardVM model)
         {
             if (!ModelState.IsValid)
             {
-                return View(boardModel);
+                return View(model);
             }
 
-            _boardService.AddBoard(boardModel);
+            await _boardService.AddBoard(model);
 
             return RedirectToAction(nameof(Index));
         }
@@ -101,28 +101,14 @@ namespace SurfBoardApp.Controllers
                 return NotFound();
             }
 
-            // todo move to boardservice and return EditBoardVM
-            var board = await _context.Board.Include(x => x.Images).FirstOrDefaultAsync(x => x.Id == id);
-            if (board == null)
+            var model = _boardService.GetEditBoard((int)id);
+
+            if (model == null)
             {
                 return NotFound();
             }
 
-            var boardModel = new EditBoardVM
-            {
-                Id = board.Id,
-                Name = board.Name,
-                Length = board.Length,
-                Width = board.Width,
-                Thickness = board.Thickness,
-                Volume = board.Volume,
-                Type = board.Type,
-                Price = board.Price,
-                Equipment = board.Equipment,
-                ExistingImages = board.Images
-            };
-
-            return View(boardModel);
+            return View(model);
         }
 
         // POST: Boards/Edit/5
@@ -131,59 +117,19 @@ namespace SurfBoardApp.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditBoardVM boardModel)
+        public async Task<IActionResult> Edit(EditBoardVM model)
         {
             if (!ModelState.IsValid)
             {
-                return View(boardModel);
+                return View(model);
             }
 
-            var board = await _context.Board.Include(x => x.Images).FirstOrDefaultAsync(x => x.Id == boardModel.Id);
-            if (board == null)
+            var result = _boardService.UpdateBoard(model);
+
+            if (result == null)
             {
                 return NotFound();
             }
-
-            board.Id = boardModel.Id;
-            board.Name = boardModel.Name;
-            board.Length = boardModel.Length;
-            board.Width = boardModel.Width;
-            board.Thickness = boardModel.Thickness;
-            board.Volume = boardModel.Volume;
-            board.Type = boardModel.Type;
-            board.Price = boardModel.Price;
-            board.Equipment = boardModel.Equipment;
-            board.Images = boardModel.ExistingImages;
-
-            if (boardModel.Images != null)
-            {
-                //If there is no existing images for the board, a new empty list is created to contain the new images
-                if (board.Images == null)
-                {
-                    board.Images = new List<Image>();
-                }
-
-                //New files are read and converted to the Image Class and added to the Board
-                foreach (var file in boardModel.Images)
-                {
-                    using (var ms = new MemoryStream())
-                    {
-                        file.CopyTo(ms);
-                        var fileBytes = ms.ToArray();
-                        string s = Convert.ToBase64String(fileBytes);
-
-                        var Image = new Image
-                        {
-                            BoardId = board.Id,
-                            Picture = "data:" + file.ContentType + ";base64, " + s
-                        };
-                        board.Images.Add(Image);
-                    }
-                };
-            }
-
-            _context.Update(board);
-            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
@@ -192,19 +138,19 @@ namespace SurfBoardApp.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Board == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var board = await _context.Board
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (board == null)
+            var result = _boardService.GetBoard((int)id);
+
+            if (result == null)
             {
                 return NotFound();
             }
 
-            return View(board);
+            return View(result);
         }
 
         // POST: Boards/Delete/5
@@ -213,23 +159,15 @@ namespace SurfBoardApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Board == null)
+            try
             {
-                return Problem("Entity set 'SurferDemoContext.Board'  is null.");
+                var result = await _boardService.RemoveBoard(id); //TODO handle error from delete (try-catch?)
+                return RedirectToAction(nameof(Index));
             }
-            var board = await _context.Board.FindAsync(id);
-            if (board != null)
+            catch (BoardNotFoundException)
             {
-                _context.Board.Remove(board);
+                return NotFound();
             }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool BoardExists(int id)
-        {
-            return _context.Board.Any(e => e.Id == id);
         }
 
         //Remove Image Action (button click)
@@ -240,32 +178,21 @@ namespace SurfBoardApp.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> RemoveImage(int boardId, int imageId)
         {
-            // Retrieve the board with the specified boardId, including its images
-            var board = await _context.Board.Include(b => b.Images).FirstOrDefaultAsync(b => b.Id == boardId);
-
-            // If the board is not found, return a NotFound result
-            if (board == null)
+            try
+            {
+                await _boardService.RemoveImage(boardId, imageId);
+                // Redirect to the Edit method of the current controller with the boardId parameter
+                return RedirectToAction(nameof(Edit), new { id = boardId });
+            }
+            catch (BoardNotFoundException)
             {
                 return NotFound();
             }
-
-            // Retrieve the image with the specified imageId from the board's images
-            var image = board.Images.FirstOrDefault(i => i.Id == imageId);
-
-            // If the image is not found, return a NotFound result
-            if (image == null)
+            catch (ImageNotFoundException)
             {
                 return NotFound();
+
             }
-
-            // Remove the image from the board
-            board.RemoveImage(image);
-
-            // Save changes to the database
-            await _context.SaveChangesAsync();
-
-            // Redirect to the Edit method of the current controller with the boardId parameter
-            return RedirectToAction(nameof(Edit), new { id = boardId });
         }
     }
 }
