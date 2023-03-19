@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿// This code file defines the ExternalAuthenticationController class in the SurfBoardApp.Controllers namespace
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SurfBoardApp.Data.Models;
+using System;
 using System.Security.Claims;
 
 namespace SurfBoardApp.Controllers
@@ -10,17 +12,21 @@ namespace SurfBoardApp.Controllers
     public class ExternalAuthenticationController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
+
+        // Action method to display the Index view
         public IActionResult Index()
         {
             return View();
         }
 
+        // Action method to initiate Google authentication
         public IActionResult Google()
         {
             var properties = new AuthenticationProperties { RedirectUri = "https://localhost/" };
             return Challenge(properties, "Google");
         }
 
+        // Action method to handle the Google authentication callback
         public async Task<IActionResult> GoogleCallback()
         {
             var result = await HttpContext.AuthenticateAsync("ExternalCookie");
@@ -44,8 +50,8 @@ namespace SurfBoardApp.Controllers
 
             var identity = new ClaimsIdentity(new[]
             {
-        new Claim(ClaimTypes.Name, user.Email),
-        new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Name, user.Email),
+            new Claim(ClaimTypes.Email, user.Email),
         }, CookieAuthenticationDefaults.AuthenticationScheme);
 
             var principal = new ClaimsPrincipal(identity);
@@ -54,7 +60,5 @@ namespace SurfBoardApp.Controllers
 
             return RedirectToAction("Index", "Home");
         }
-
-
     }
 }

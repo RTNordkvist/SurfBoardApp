@@ -62,17 +62,20 @@
         </dd>
     </dl>
 </div>
+<!-- This loop displays images related to the current model -->
 @foreach (var image in Model.Images)
 {
     <img src="@image.Picture" style="max-width:250px" />
 }
 
+<!-- This div contains buttons for editing and deleting the model. Only shown to admins. -->
 <div>
     @if (User.IsInRole("Admin"))
     {
         <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger">Delete</a>
         <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
     }
+    <!-- This button takes the user back to the index page -->
     <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>
 

@@ -1,37 +1,35 @@
+/* Set base font size, position, and minimum height for the HTML element */
 html {
     font-size: 14px;
     position: relative;
     min-height: 100%;
 }
 
+/* Set font size for HTML element when screen size is greater than or equal to 768px */
 @media (min-width: 768px) {
     html {
         font-size: 16px;
     }
 }
 
+/* Set margin bottom for body element */
 body {
     margin-bottom: 60px;
 }
 
+/* Style for search button */
 .btn-search {
     background-color: #007bff;
     color: #fff;
     border-color: #007bff;
 }
 
+    /* Style for search button when hovered */
     .btn-search:hover {
         background-color: #0069d9;
         border-color: #0062cc;
         color: #fff;
     }
-/* Views/Boards/Index.cshtml stylesheet*/
-/* Styles for the container element holding all board rows */
-.board-container {
-    flex-wrap: wrap; /* allow the container to wrap rows when it runs out of horizontal space */
-    padding: 20px; /* add some padding to the container */
-    background-color: #fff; /* set the background color of the container */
-}
 
 /* Defines the properties of a row element in a flex container */
 .row {
@@ -90,7 +88,7 @@ body {
 
 /* Defines the properties of the navbar unordered list element in terms of vertical alignment */
 .navbar-nav {
-    align-items: center
+    align-items: center;
 }
 
 /* Defines the properties of the logo element */
@@ -99,21 +97,20 @@ body {
     cursor: pointer;
 }
 
+/* Set maximum width and height for images within column elements */
 .col-md-4 img {
     max-width: auto;
     height: auto;
 }
 
+/* Styles for external login image */
 .external-login-image {
     width: 50px;
     height: 50px;
 }
 
-
+/* Styles for external login button */
 .external-login-btn {
     width: 50px;
     height: 50px;
 }
-
-
-
