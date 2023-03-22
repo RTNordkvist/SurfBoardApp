@@ -31,7 +31,11 @@ namespace SurfBoardApp.Controllers
         public async Task<IActionResult> Index(IndexVM model)
         {
             //sets pagenumber and pagesize. Can later be changed to user input.
-            model.PageNumber = 1;
+            if (model.PageNumber == null)
+            {
+                model.PageNumber = 1;
+            }
+
             model.PageSize = 12;
 
             if (!ModelState.IsValid)
@@ -41,13 +45,13 @@ namespace SurfBoardApp.Controllers
             {
                 ModelState.AddModelError("InvalidEndDate", "End date cannot be before start date");
                 model.BookingEndDate = null;
-                model = await _boardService.GetBoardModels(model);
+                model.Boards = new PaginatedList<IndexBoardVM>(new(), 0, 1, model.PageSize);
                 return View(model);
             }
 
-            model = await _boardService.GetBoardModels(model);
+            var result = await _boardService.GetBoardModels(model);
 
-            return View(model);
+            return View(result);
         }
 
         // GET: Boards/Details/5
@@ -101,14 +105,14 @@ namespace SurfBoardApp.Controllers
                 return NotFound();
             }
 
-            var model = _boardService.GetEditBoard((int)id);
+            var result = _boardService.GetEditBoard((int)id);
 
-            if (model == null)
+            if (result == null)
             {
                 return NotFound();
             }
 
-            return View(model);
+            return View(result);
         }
 
         // POST: Boards/Edit/5
@@ -124,14 +128,15 @@ namespace SurfBoardApp.Controllers
                 return View(model);
             }
 
-            var result = _boardService.UpdateBoard(model);
-
-            if (result == null)
+            try
+            {
+                var result = _boardService.UpdateBoard(model);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (BoardNotFoundException)
             {
                 return NotFound();
             }
-
-            return RedirectToAction(nameof(Index));
         }
 
         // GET: Boards/Delete/5
@@ -162,7 +167,7 @@ namespace SurfBoardApp.Controllers
         {
             try
             {
-                var result = await _boardService.RemoveBoard(id); //TODO handle error from delete (try-catch?)
+                await _boardService.RemoveBoard(id);
                 return RedirectToAction(nameof(Index));
             }
             catch (BoardNotFoundException)

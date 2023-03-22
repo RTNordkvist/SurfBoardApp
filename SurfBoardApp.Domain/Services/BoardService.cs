@@ -82,7 +82,11 @@ namespace SurfBoardApp.Domain.Services
         public async Task<IndexVM> GetBoardModels(IndexVM model)
         {
             // All boards from the DBcontext is found
-            var boards = _context.Board.Include(x => x.Images).Include(x => x.Bookings).OrderBy(x => x.Name).AsQueryable();
+            var boards = _context.Board
+                .Include(x => x.Images)
+                .Include(x => x.Bookings)
+                .OrderBy(x => x.Name)
+                .AsQueryable();
 
             // If the view model contains a search string, the list of boards is filtered to match the search string
             if (!string.IsNullOrEmpty(model.SearchString))
@@ -117,7 +121,7 @@ namespace SurfBoardApp.Domain.Services
         }
 
         // Adds a board to DBcontext from a view model
-        public async Task<bool> AddBoard(CreateBoardVM model)
+        public async Task<int> AddBoard(CreateBoardVM model)
         {
             var images = new List<Image>();
 
@@ -160,16 +164,16 @@ namespace SurfBoardApp.Domain.Services
             _context.Add(board);
             await _context.SaveChangesAsync();
 
-            return true;
+            return board.Id;
         }
 
-        public async Task<bool> UpdateBoard(EditBoardVM model)
+        public async Task UpdateBoard(EditBoardVM model)
         {
             var board = await _context.Board.Include(x => x.Images).FirstOrDefaultAsync(x => x.Id == model.Id);
 
             if (board == null)
             {
-                return false;
+                throw new BoardNotFoundException();
             }
 
             board.Id = model.Id;
@@ -213,11 +217,9 @@ namespace SurfBoardApp.Domain.Services
 
             _context.Update(board);
             await _context.SaveChangesAsync();
-
-            return true;
         }
 
-        public async Task<bool> RemoveBoard(int id)
+        public async Task RemoveBoard(int id)
         {
             var board = await _context.Board.FindAsync(id);
 
@@ -229,11 +231,9 @@ namespace SurfBoardApp.Domain.Services
             _context.Board.Remove(board);
 
             await _context.SaveChangesAsync();
-
-            return true;
         }
 
-        public async Task<bool> RemoveImage(int boardId, int imageId)
+        public async Task RemoveImage(int boardId, int imageId)
         {
             // Retrieve the board with the specified boardId, including its images
             var board = await _context.Board.Include(b => b.Images).FirstOrDefaultAsync(b => b.Id == boardId);
@@ -258,8 +258,6 @@ namespace SurfBoardApp.Domain.Services
 
             // Save changes to the database
             await _context.SaveChangesAsync();
-
-            return true;
         }
     }
 }

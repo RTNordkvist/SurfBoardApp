@@ -11,13 +11,13 @@ using SurfBoardApp.Domain.Services;
 
 namespace SurfBoardApp.Controllers
 {
-    public class BookingController : BaseController
+    public class BookingController : Controller
     {
         // BookingController constructor with required dependencies
         private readonly BookingService _bookingService;
         private readonly BoardService _boardService;
 
-        public BookingController(UserManager<ApplicationUser> userManager, BookingService bookingService, BoardService boardService) : base(userManager)
+        public BookingController(BookingService bookingService, BoardService boardService)
         {
             _bookingService = bookingService;
             _boardService = boardService;
@@ -49,19 +49,10 @@ namespace SurfBoardApp.Controllers
             }
         }
 
-        //TODO Refactor from here and below -> move responsibility to BookingService
-
         // Action method that displays bookings of the authenticated user
         [Authorize]
         public async Task<IActionResult> MyBookings()
         {
-            // Get the user object of the authenticated user
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
             var bookingViewModels = await _bookingService.GetCustomerBookings();
 
             // Return a view that displays the list of booking view models
@@ -79,15 +70,17 @@ namespace SurfBoardApp.Controllers
                 return NotFound();
             }
 
-            var result = await _bookingService.GetEditBooking((int)id);
+            try
+            {
+                var result = await _bookingService.GetEditBooking((int)id);
 
-            if (result == null)
+                // Returns the EditBooking view with the model.
+                return View(result);
+            }
+            catch (BookingNotFoundException)
             {
                 return NotFound();
             }
-
-            // Returns the EditBooking view with the model.
-            return View(result);
         }
 
         // This method is called when the user submits the edit form. It receives an EditBookingVM 

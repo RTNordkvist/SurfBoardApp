@@ -5,17 +5,12 @@ using SurfBoardApp.Blazor.Shared.ViewModels.BookingViewModels;
 using SurfBoardApp.Data;
 using SurfBoardApp.Data.Models;
 using SurfBoardApp.Domain.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SurfBoardApp.Domain.Services
 {
     public class BookingService
     {
-        private readonly SurfBoardAppContext _context; //DBcontext
+        private readonly SurfBoardAppContext _context; 
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -28,7 +23,21 @@ namespace SurfBoardApp.Domain.Services
 
         public async Task<EditBookingVM> GetEditBooking(int id)
         {
-            var booking = await _context.Booking.Include(x => x.Board).FirstOrDefaultAsync(x => x.Id == id);
+            var booking = await _context.Booking
+                .Include(x => x.Board)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if(booking == null)
+            {
+                throw new BookingNotFoundException();
+            }
+
+            var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+
+            if(userId != booking.CustomerId)
+            {
+                throw new BookingNotFoundException(); // For security reasons the system don't reveal that the booking was actually found but doesn't belong to the user
+            }
 
             // Creates a new EditBookingVM object with the data passed by the user and the original 
             // start and end dates of the booking.
@@ -42,41 +51,40 @@ namespace SurfBoardApp.Domain.Services
 
             return model;
         }
+
         public async Task<List<MyBookingVM>> GetCustomerBookings()
         {
             var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
 
             // Get all bookings of the authenticated user and include board information
-            var bookings = await _context.Booking.Include(x => x.Board).Where(b => b.CustomerId == userId).ToListAsync();
-
-            // Create a view model for each booking and add it to a list
-            var bookingViewModels = new List<MyBookingVM>();
-            foreach (var booking in bookings)
-            {
-                var bookingVM = new MyBookingVM()
+            var bookingViewModels = await _context.Booking
+                .Include(x => x.Board)
+                .Where(b => b.CustomerId == userId)
+                // Project to a view model for each booking and add it to a list
+                .Select(x => new MyBookingVM()
                 {
-                    BookingId = booking.Id,
-                    StartDate = booking.StartDate,
-                    EndDate = booking.EndDate,
-                    BoardId = booking.BoardId,
-                    BoardName = booking.Board.Name
-                };
-                bookingViewModels.Add(bookingVM);
-            }
+                    BookingId = x.Id,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                    BoardId = x.BoardId,
+                    BoardName = x.Board.Name
+                })
+                .ToListAsync();
 
             return bookingViewModels;
         }
+
         public async Task<BookingConfirmationVM> AddBooking(BookBoardVM model)
         {
             var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
 
-            //if the endDate lies before the startDate, an exception is thrown
+            // Check if the board is available, if not - throw an exception
             if (await _context.Booking.AnyAsync(x => x.StartDate <= model.EndDate && x.EndDate >= model.StartDate && x.BoardId == model.BoardId))
             {
                 throw new UnavailableBookingException();
             }
 
-            //The viewmodel is projected to a booking entity model
+            // The viewmodel is projected to a booking entity model
             var booking = new Booking
             {
                 StartDate = model.StartDate,
@@ -85,7 +93,7 @@ namespace SurfBoardApp.Domain.Services
                 CustomerId = userId
             };
 
-            //The new booking is updated in the database
+            // The new booking is updated in the database
             _context.Booking.Add(booking);
             await _context.SaveChangesAsync();
 
@@ -99,9 +107,8 @@ namespace SurfBoardApp.Domain.Services
             return bookingConfirmation;
         }
 
-        public async Task<bool> UpdateBookingDates(EditBookingVM model)
+        public async Task UpdateBookingDates(EditBookingVM model)
         {
-            // Searches for the booking in the database based on the original start and end dates.
             var booking = _context.Booking.FirstOrDefault(x => x.Id == model.Id);
 
             if (booking == null)
@@ -109,17 +116,29 @@ namespace SurfBoardApp.Domain.Services
                 throw new BookingNotFoundException();
             }
 
-            // If the booking was found and the start or end dates have changed, updates the 
-            // booking in the database and saves the changes.
+            var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+
+            if (userId != booking.CustomerId)
+            {
+                throw new BookingNotFoundException(); // For security reasons the system don't reveal that the booking was actually found but doesn't belong to the user
+            }
+
+            // Update the start and end date
             booking.StartDate = model.StartDate;
             booking.EndDate = model.EndDate;
             await _context.SaveChangesAsync();
-
-            return true;
         }
 
-        public async Task<bool> RemoveBooking(int id)
+        /// <summary>
+        /// Removes a booking based on the primary key (booking id)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="BookingNotFoundException"></exception>
+        public async Task RemoveBooking(int id)
         {
+            // TODO add security check -> Only the user that has the booking should be able to edit it
+
             var booking = await _context.Booking.FirstOrDefaultAsync(x => x.Id == id);
 
             if (booking == null)
@@ -129,8 +148,6 @@ namespace SurfBoardApp.Domain.Services
 
             _context.Booking.Remove(booking);
             await _context.SaveChangesAsync();
-
-            return true;
         }
     }
 }
