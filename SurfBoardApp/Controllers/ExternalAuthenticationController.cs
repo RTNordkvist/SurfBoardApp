@@ -9,7 +9,7 @@ namespace SurfBoardApp.Controllers
 {
     public class ExternalAuthenticationController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager; //dette field instansieres ingen steder. Bør injectes i constructoren.
         public IActionResult Index()
         {
             return View();

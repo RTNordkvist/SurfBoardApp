@@ -223,7 +223,7 @@ namespace SurfBoardApp.Domain.Services
 
             if (board == null)
             {
-                return false;
+                throw new BookingNotFoundException();
             }
 
             _context.Board.Remove(board);
@@ -241,7 +241,7 @@ namespace SurfBoardApp.Domain.Services
             // If the board is not found, return a NotFound result
             if (board == null)
             {
-                throw new Exception();
+                throw new BoardNotFoundException();
             }
 
             // Retrieve the image with the specified imageId from the board's images
@@ -250,7 +250,7 @@ namespace SurfBoardApp.Domain.Services
             // If the image is not found, an exception is thrown
             if (image == null)
             {
-                throw new Exception();
+                throw new ImageNotFoundException();
             }
 
             // Removes the image from DBcontext

@@ -26,6 +26,46 @@ namespace SurfBoardApp.Domain.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
+        public async Task<EditBookingVM> GetEditBooking(int id)
+        {
+            var booking = await _context.Booking.Include(x => x.Board).FirstOrDefaultAsync(x => x.Id == id);
+
+            // Creates a new EditBookingVM object with the data passed by the user and the original 
+            // start and end dates of the booking.
+            var model = new EditBookingVM
+            {
+                Id = booking.Id,
+                BoardName = booking.Board.Name,
+                StartDate = booking.StartDate,
+                EndDate = booking.EndDate
+            };
+
+            return model;
+        }
+        public async Task<List<MyBookingVM>> GetCustomerBookings()
+        {
+            var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+
+            // Get all bookings of the authenticated user and include board information
+            var bookings = await _context.Booking.Include(x => x.Board).Where(b => b.CustomerId == userId).ToListAsync();
+
+            // Create a view model for each booking and add it to a list
+            var bookingViewModels = new List<MyBookingVM>();
+            foreach (var booking in bookings)
+            {
+                var bookingVM = new MyBookingVM()
+                {
+                    BookingId = booking.Id,
+                    StartDate = booking.StartDate,
+                    EndDate = booking.EndDate,
+                    BoardId = booking.BoardId,
+                    BoardName = booking.Board.Name
+                };
+                bookingViewModels.Add(bookingVM);
+            }
+
+            return bookingViewModels;
+        }
         public async Task<BookingConfirmationVM> AddBooking(BookBoardVM model)
         {
             var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
@@ -57,6 +97,40 @@ namespace SurfBoardApp.Domain.Services
             };
 
             return bookingConfirmation;
+        }
+
+        public async Task<bool> UpdateBookingDates(EditBookingVM model)
+        {
+            // Searches for the booking in the database based on the original start and end dates.
+            var booking = _context.Booking.FirstOrDefault(x => x.Id == model.Id);
+
+            if (booking == null)
+            {
+                throw new BookingNotFoundException();
+            }
+
+            // If the booking was found and the start or end dates have changed, updates the 
+            // booking in the database and saves the changes.
+            booking.StartDate = model.StartDate;
+            booking.EndDate = model.EndDate;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> RemoveBooking(int id)
+        {
+            var booking = await _context.Booking.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (booking == null)
+            {
+                throw new BookingNotFoundException();
+            }
+
+            _context.Booking.Remove(booking);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
     }
 }

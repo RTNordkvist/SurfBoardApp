@@ -143,14 +143,15 @@ namespace SurfBoardApp.Controllers
                 return NotFound();
             }
 
-            var result = _boardService.GetBoard((int)id);
-
-            if (result == null)
+            try
+            {
+                var result = _boardService.GetBoard((int)id);
+                return View(result);
+            }
+            catch (BoardNotFoundException)
             {
                 return NotFound();
             }
-
-            return View(result);
         }
 
         // POST: Boards/Delete/5
