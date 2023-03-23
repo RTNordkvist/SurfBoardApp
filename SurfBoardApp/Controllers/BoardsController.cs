@@ -105,7 +105,7 @@ namespace SurfBoardApp.Controllers
                 return NotFound();
             }
 
-            var result = _boardService.GetEditBoard((int)id);
+            var result = await _boardService.GetEditBoard((int)id);
 
             if (result == null)
             {
@@ -130,7 +130,7 @@ namespace SurfBoardApp.Controllers
 
             try
             {
-                var result = _boardService.UpdateBoard(model);
+                await _boardService.UpdateBoard(model);
                 return RedirectToAction(nameof(Index));
             }
             catch (BoardNotFoundException)
@@ -150,7 +150,7 @@ namespace SurfBoardApp.Controllers
 
             try
             {
-                var result = _boardService.GetBoard((int)id);
+                var result = await _boardService.GetBoard((int)id);
                 return View(result);
             }
             catch (BoardNotFoundException)

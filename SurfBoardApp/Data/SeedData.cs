@@ -78,18 +78,18 @@ namespace SurfBoardApp.Data
         public static async Task CreateRolesAndAdministrator(IServiceProvider serviceProvider)
         {
             //initializing custom roles 
-            var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var UserManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
             string[] roleNames = { "Admin" };
             IdentityResult roleResult;
 
             foreach (var roleName in roleNames)
             {
-                var roleExist = await RoleManager.RoleExistsAsync(roleName);
+                var roleExist = await roleManager.RoleExistsAsync(roleName);
                 if (!roleExist)
                 {
                     //create the roles and seed them to the database: Question 1
-                    roleResult = await RoleManager.CreateAsync(new IdentityRole(roleName));
+                    roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
                 }
             }
 
@@ -105,16 +105,22 @@ namespace SurfBoardApp.Data
 
             //Ensure you have these values in your appsettings.json file
             string userPWD = "Admin123!";
-            var _user = await UserManager.FindByEmailAsync(adminUser.Email.ToUpper());
 
-            if (_user == null)
+            var user = await userManager.FindByEmailAsync(adminUser.Email);
+            if (user == null)
             {
-                var createAdminUser = await UserManager.CreateAsync(adminUser, userPWD);
-                if (createAdminUser.Succeeded)
+                var createAdminUser = await userManager.CreateAsync(adminUser, userPWD);
+                if(createAdminUser.Succeeded)
                 {
-                    //here we tie the new user to the role
-                    await UserManager.AddToRoleAsync(adminUser, "Admin");
-
+                    var addRoleResult = await userManager.AddToRoleAsync(adminUser, "Admin");
+                    if (!addRoleResult.Succeeded)
+                    {
+                        throw new Exception("Error admin to Admin role");
+                    }
+                }
+                else
+                {
+                    throw new Exception("Error creating admin user");
                 }
             }
         }
