@@ -59,6 +59,7 @@
                 <div class="card-footer d-flex justify-content-center">
                     <!-- Details button -->
                     <a href="@Url.Action("Details", new { id = board.Id })" class="btn btn-outline-primary">Details</a>
+                    <!-- Book button (if user is authenticated) -->
                     @if (Model.BookingStartDate != null && Model.BookingEndDate != null && User.Identity.IsAuthenticated)
                     {
                         <form asp-controller="Booking" asp-action="BookBoard" method="POST">
