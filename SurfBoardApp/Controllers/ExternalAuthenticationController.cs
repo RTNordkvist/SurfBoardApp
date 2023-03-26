@@ -14,6 +14,7 @@ namespace SurfBoardApp.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
 
         // Action method to display the Index view
+        private readonly UserManager<ApplicationUser> _userManager; //dette field instansieres ingen steder. Bør injectes i constructoren.
         public IActionResult Index()
         {
             return View();

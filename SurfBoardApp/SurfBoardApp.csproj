@@ -10,13 +10,11 @@
     <PackageReference Include="EPPlus.Core" Version="1.5.4" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="6.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.14" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.14" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.14">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -25,6 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SurfBoardApp.Blazor.Shared\SurfBoardApp.Blazor.Shared.csproj" />
+    <ProjectReference Include="..\SurfBoardApp.Data\SurfBoardApp.Data.csproj" />
     <ProjectReference Include="..\SurfBoardApp.Domain\SurfBoardApp.Domain.csproj" />
   </ItemGroup>
 

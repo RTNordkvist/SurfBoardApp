@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SurfBoardApp
+namespace SurfBoardApp.Blazor.Shared.ViewModels
 {
     //Used for the surf board pages
     public class PaginatedList<T> : List<T>

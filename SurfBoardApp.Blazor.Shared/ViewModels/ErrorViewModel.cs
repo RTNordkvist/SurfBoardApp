@@ -1,6 +1,6 @@
 // This namespace contains the models used in the SurfBoardApp application.
 
-namespace SurfBoardApp.ViewModels
+namespace SurfBoardApp.Blazor.Shared.ViewModels
 {
     // This class represents an error view model.
     public class ErrorViewModel

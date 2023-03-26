@@ -36,15 +36,6 @@ namespace SurfBoardApp.Data.Models
         public List<Booking>? Bookings { get; set; }
 
         public int? ClickCount { get; set; }
-
-        public void RemoveImage(Image image)
-        {
-            if (Images != null && Images.Contains(image))
-            {
-                Images.Remove(image);
-            }
-        }
-
     }
 
 }
