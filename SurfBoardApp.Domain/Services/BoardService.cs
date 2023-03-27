@@ -169,7 +169,7 @@ namespace SurfBoardApp.Domain.Services
             return board.Id;
         }
 
-        public async Task UpdateBoard(EditBoardVM model, bool overWrite = false)
+        public async Task UpdateBoard(EditBoardVM model)
         {
             var board = await _context.Board.Include(x => x.Images).FirstOrDefaultAsync(x => x.Id == model.Id);
 
@@ -178,7 +178,7 @@ namespace SurfBoardApp.Domain.Services
                 throw new BoardNotFoundException();
             }
 
-            if (board.Version != model.Version && overWrite == false)
+            if (board.Version != model.Version && !model.ConfirmedOverwrite)
             {
                 throw new OutdatedBoardInformationException();
             }

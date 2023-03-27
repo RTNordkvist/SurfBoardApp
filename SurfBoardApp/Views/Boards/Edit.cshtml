@@ -22,6 +22,7 @@
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="ExistingImages" />
             <input type="hidden" asp-for="Version" />
+            <input type="hidden" asp-for="ConfirmedOverwrite" value="false"/>
             <!-- Board details input fields -->
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -80,7 +81,7 @@
         </form>
     </div>
     <!-- Display images if there are any -->
-    @if (Model.ExistingImages.Any())
+    @if (Model.ExistingImages != null && Model.ExistingImages.Any())
     {
         <h1>Images</h1>
         <div class="col-md-12">
@@ -103,14 +104,15 @@
             </div>
         </div>
     }
+</div>
 
-    <!-- Include validation scripts -->
-    @section Scripts {
-        @{
-            // This section is used to render any scripts that are required for this view.
-            // Here, we are rendering a partial view called "_ValidationScriptsPartial",
-            // which contains the necessary scripts for client-side validation.
-            await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        }
+<!-- Include validation scripts -->
+@section Scripts {
+    @{
+        // This section is used to render any scripts that are required for this view.
+        // Here, we are rendering a partial view called "_ValidationScriptsPartial",
+        // which contains the necessary scripts for client-side validation.
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     }
 

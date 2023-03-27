@@ -22,13 +22,13 @@
             <!-- Displaying validation errors -->
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <!-- Hidden input fields -->
-            <input type="hidden" asp-for="UserInput.Id" />
-            <input type="hidden" asp-for="UserInput.ExistingImages" />
-            <input type="hidden" asp-for="UserInput.Version" />
+            <input name="Id" type="hidden" asp-for="UserInput.Id" />
+            <input name="Version" type="hidden" asp-for="UserInput.Version" />
+            <input name="ConfirmedOverwrite" type="hidden" asp-for="UserInput.ConfirmedOverwrite" value="true" />
             <!-- Board details input fields -->
             <div class="form-group">
                 <label asp-for="UserInput.Name" class="control-label"></label>
-                <input asp-for="UserInput.Name" class="form-control" />
+                <input name="Name" asp-for="UserInput.Name" class="form-control" />
                 <span asp-validation-for="UserInput.Name" class="text-danger"></span>
                 @if (Model.UserInput.Name != Model.PersistedData.Name)
                 {
@@ -39,7 +39,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="UserInput.Length" class="control-label"></label>
-                <input asp-for="UserInput.Length" class="form-control" />
+                <input name="Length" asp-for="UserInput.Length" class="form-control" />
                 <span asp-validation-for="UserInput.Length" class="text-danger"></span>
                 @if (Model.UserInput.Length != Model.PersistedData.Length)
                 {
@@ -50,7 +50,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="UserInput.Width" class="control-label"></label>
-                <input asp-for="UserInput.Width" class="form-control" />
+                <input name="Width" asp-for="UserInput.Width" class="form-control" />
                 <span asp-validation-for="UserInput.Width" class="text-danger"></span>
                 @if (Model.UserInput.Width != Model.PersistedData.Width)
                 {
@@ -61,7 +61,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="UserInput.Thickness" class="control-label"></label>
-                <input asp-for="UserInput.Thickness" class="form-control" />
+                <input name="Thickness" asp-for="UserInput.Thickness" class="form-control" />
                 <span asp-validation-for="UserInput.Thickness" class="text-danger"></span>
                 @if (Model.UserInput.Thickness != Model.PersistedData.Thickness)
                 {
@@ -72,7 +72,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="UserInput.Volume" class="control-label"></label>
-                <input asp-for="UserInput.Volume" class="form-control" />
+                <input name="Volume" asp-for="UserInput.Volume" class="form-control" />
                 <span asp-validation-for="UserInput.Volume" class="text-danger"></span>
                 @if (Model.UserInput.Volume != Model.PersistedData.Volume)
                 {
@@ -83,7 +83,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="UserInput.Type" class="control-label"></label>
-                <input asp-for="UserInput.Type" class="form-control" />
+                <input name="Type" asp-for="UserInput.Type" class="form-control" />
                 <span asp-validation-for="UserInput.Type" class="text-danger"></span>
                 @if (Model.UserInput.Type != Model.PersistedData.Type)
                 {
@@ -94,7 +94,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="UserInput.Price" class="control-label"></label>
-                <input asp-for="UserInput.Price" class="form-control" />
+                <input name="Price" asp-for="UserInput.Price" class="form-control" />
                 <span asp-validation-for="UserInput.Price" class="text-danger"></span>
                 @if (Model.UserInput.Price != Model.PersistedData.Price)
                 {
@@ -105,7 +105,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="UserInput.Equipment" class="control-label"></label>
-                <input asp-for="UserInput.Equipment" class="form-control" />
+                <input name="Equipment" asp-for="UserInput.Equipment" class="form-control" />
                 <span asp-validation-for="UserInput.Equipment" class="text-danger"></span>
                 @if (Model.UserInput.Equipment != Model.PersistedData.Equipment)
                 {
@@ -122,16 +122,16 @@
             </div>
             <br />
             <br />
-            <!-- Save and cancel buttons -->
+            <!-- Confirm and cancel buttons -->
             <br />
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                <input type="submit" value="Confirm values" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>
     <!-- Display images if there are any -->
-    @if (Model.PersistedData.ExistingImages.Any())
+    @if (Model.PersistedData.ExistingImages != null && Model.PersistedData.ExistingImages.Any())
     {
         <h1>Images</h1>
         <div class="col-md-12">
@@ -154,14 +154,15 @@
             </div>
         </div>
     }
+</div>
 
-    <!-- Include validation scripts -->
-    @section Scripts {
-        @{
-            // This section is used to render any scripts that are required for this view.
-            // Here, we are rendering a partial view called "_ValidationScriptsPartial",
-            // which contains the necessary scripts for client-side validation.
-            await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        }
+<!-- Include validation scripts -->
+@section Scripts {
+    @{
+        // This section is used to render any scripts that are required for this view.
+        // Here, we are rendering a partial view called "_ValidationScriptsPartial",
+        // which contains the necessary scripts for client-side validation.
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     }
 

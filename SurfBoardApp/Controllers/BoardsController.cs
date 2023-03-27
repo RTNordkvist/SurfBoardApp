@@ -148,27 +148,6 @@ namespace SurfBoardApp.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ConfirmEdit(EditBoardVM model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            try
-            {
-                await _boardService.UpdateBoard(model, true);
-                return RedirectToAction(nameof(Index));
-            }
-            catch (BoardNotFoundException)
-            {
-                return NotFound();
-            }
-        }
-
         // GET: Boards/Delete/5
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
