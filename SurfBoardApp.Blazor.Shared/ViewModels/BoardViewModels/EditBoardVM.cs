@@ -10,8 +10,6 @@ namespace SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels
 
         public List<Image>? ExistingImages { get; set; }
 
-        public DateTime CreatedDate { get; set; }
-
-        public DateTime? LastEditedDate { get; set; }
+        public int Version { get; set; }
     }
 }

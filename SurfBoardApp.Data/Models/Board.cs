@@ -37,9 +37,7 @@ namespace SurfBoardApp.Data.Models
 
         public int? ClickCount { get; set; }
 
-        public DateTime CreatedDate { get; set; }
-
-        public DateTime? LastEditedDate { get; set; }
+        public int Version { get; set; }
     }
 
 }

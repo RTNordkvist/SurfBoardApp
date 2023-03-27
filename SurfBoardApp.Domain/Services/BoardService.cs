@@ -72,7 +72,7 @@ namespace SurfBoardApp.Domain.Services
                 Price = board.Price,
                 Equipment = board.Equipment,
                 ExistingImages = board.Images,
-                LastEditedDate = board.LastEditedDate
+                Version = board.Version
             };
 
             // The view model is returned
@@ -159,7 +159,7 @@ namespace SurfBoardApp.Domain.Services
                 Price = model.Price,
                 Equipment = model.Equipment,
                 Images = images,
-                CreatedDate = DateTime.UtcNow
+                Version = 1
             };
 
             // The model is saved to the database
@@ -169,7 +169,7 @@ namespace SurfBoardApp.Domain.Services
             return board.Id;
         }
 
-        public async Task UpdateBoard(EditBoardVM model)
+        public async Task UpdateBoard(EditBoardVM model, bool overWrite = false)
         {
             var board = await _context.Board.Include(x => x.Images).FirstOrDefaultAsync(x => x.Id == model.Id);
 
@@ -178,8 +178,7 @@ namespace SurfBoardApp.Domain.Services
                 throw new BoardNotFoundException();
             }
 
-            if (board.LastEditedDate != null && model.LastEditedDate == null || 
-                board.LastEditedDate.HasValue && model.LastEditedDate.HasValue && board.LastEditedDate.Value.Ticks != model.LastEditedDate.Value.Ticks)
+            if (board.Version != model.Version && overWrite == false)
             {
                 throw new OutdatedBoardInformationException();
             }
@@ -194,7 +193,7 @@ namespace SurfBoardApp.Domain.Services
             board.Price = model.Price;
             board.Equipment = model.Equipment;
             board.Images = model.ExistingImages;
-            board.LastEditedDate = DateTime.UtcNow;
+            board.Version += 1;
 
             if (model.Images != null)
             {
