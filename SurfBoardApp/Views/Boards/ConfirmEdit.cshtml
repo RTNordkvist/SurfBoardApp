@@ -1,0 +1,167 @@
+﻿<!-- Importing the BoardViewModels namespace and setting the EditBoardVM model as the view's model -->
+@using SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels;
+@model ConfirmEditBoardVM
+
+<!-- Setting the view's title -->
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<!-- Main content -->
+<h1>Edit</h1>
+
+<h4>Board</h4>
+<hr />
+<div class="alert alert-danger">
+    The informations have been updated since you began to edit this board. See the updated information for the board below. Please confirm if you wish to continue and overwrite any updated information with your changes.
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <!-- Board edit form -->
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <!-- Displaying validation errors -->
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <!-- Hidden input fields -->
+            <input type="hidden" asp-for="UserInput.Id" />
+            <input type="hidden" asp-for="UserInput.ExistingImages" />
+            <input type="hidden" asp-for="UserInput.LastEditedDate" />
+            <!-- Board details input fields -->
+            <div class="form-group">
+                <label asp-for="UserInput.Name" class="control-label"></label>
+                <input asp-for="UserInput.Name" class="form-control" />
+                <span asp-validation-for="UserInput.Name" class="text-danger"></span>
+                @if (Model.UserInput.Name != Model.PersistedData.Name)
+                {
+                    <div class="text-danger small">
+                        Persisted value: @Model.PersistedData.Name
+                    </div>
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="UserInput.Length" class="control-label"></label>
+                <input asp-for="UserInput.Length" class="form-control" />
+                <span asp-validation-for="UserInput.Length" class="text-danger"></span>
+                @if (Model.UserInput.Length != Model.PersistedData.Length)
+                {
+                    <div class="text-danger small">
+                        Persisted value: @Model.PersistedData.Length
+                    </div>
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="UserInput.Width" class="control-label"></label>
+                <input asp-for="UserInput.Width" class="form-control" />
+                <span asp-validation-for="UserInput.Width" class="text-danger"></span>
+                @if (Model.UserInput.Width != Model.PersistedData.Width)
+                {
+                    <div class="text-danger small">
+                        Persisted value: @Model.PersistedData.Width
+                    </div>
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="UserInput.Thickness" class="control-label"></label>
+                <input asp-for="UserInput.Thickness" class="form-control" />
+                <span asp-validation-for="UserInput.Thickness" class="text-danger"></span>
+                @if (Model.UserInput.Thickness != Model.PersistedData.Thickness)
+                {
+                    <div class="text-danger small">
+                        Persisted value: @Model.PersistedData.Thickness
+                    </div>
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="UserInput.Volume" class="control-label"></label>
+                <input asp-for="UserInput.Volume" class="form-control" />
+                <span asp-validation-for="UserInput.Volume" class="text-danger"></span>
+                @if (Model.UserInput.Volume != Model.PersistedData.Volume)
+                {
+                    <div class="text-danger small">
+                        Persisted value: @Model.PersistedData.Volume
+                    </div>
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="UserInput.Type" class="control-label"></label>
+                <input asp-for="UserInput.Type" class="form-control" />
+                <span asp-validation-for="UserInput.Type" class="text-danger"></span>
+                @if (Model.UserInput.Type != Model.PersistedData.Type)
+                {
+                    <div class="text-danger small">
+                        Persisted value: @Model.PersistedData.Type
+                    </div>
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="UserInput.Price" class="control-label"></label>
+                <input asp-for="UserInput.Price" class="form-control" />
+                <span asp-validation-for="UserInput.Price" class="text-danger"></span>
+                @if (Model.UserInput.Price != Model.PersistedData.Price)
+                {
+                    <div class="text-danger small">
+                        Persisted value: @Model.PersistedData.Price
+                    </div>
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="UserInput.Equipment" class="control-label"></label>
+                <input asp-for="UserInput.Equipment" class="form-control" />
+                <span asp-validation-for="UserInput.Equipment" class="text-danger"></span>
+                @if (Model.UserInput.Equipment != Model.PersistedData.Equipment)
+                {
+                    <div class="text-danger small">
+                        Persisted value: @Model.PersistedData.Equipment
+                    </div>
+                }
+            </div>
+            <!-- Image upload -->
+            <br />
+            <div>
+                <label for="newimages">Add Images:</label>
+                <input type="file" name="Images" accept=".jpg, .jpeg, .png" multiple>
+            </div>
+            <br />
+            <br />
+            <!-- Save and cancel buttons -->
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+    <!-- Display images if there are any -->
+    @if (Model.PersistedData.ExistingImages.Any())
+    {
+        <h1>Images</h1>
+        <div class="col-md-12">
+            <div class="row">
+                <!-- Loop through each image and display it -->
+                @foreach (var image in Model.PersistedData.ExistingImages)
+                {
+                    <div class="col-md-4 text-center mb-3">
+                        <div class="border" style="height: 500px;">
+                            <img src="@image.Picture" alt="Board Image" class="img-fluid" style="height: 100%; object-fit: cover;">
+                        </div>
+                        <!-- Form to remove the image from the database -->
+                        <form asp-action="RemoveImage" method="post" onclick="return confirm('Are you sure you want to delete this image?')">
+                            <input type="hidden" name="boardId" value="@Model.PersistedData.Id" />
+                            <input type="hidden" name="imageId" value="@image.Id" />
+                            <button class="btn btn-danger mt-2" type="submit">Remove Image</button>
+                        </form>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- Include validation scripts -->
+    @section Scripts {
+        @{
+            // This section is used to render any scripts that are required for this view.
+            // Here, we are rendering a partial view called "_ValidationScriptsPartial",
+            // which contains the necessary scripts for client-side validation.
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+

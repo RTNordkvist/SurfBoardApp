@@ -36,6 +36,10 @@ namespace SurfBoardApp.Data.Models
         public List<Booking>? Bookings { get; set; }
 
         public int? ClickCount { get; set; }
+
+        public DateTime CreatedDate { get; set; }
+
+        public DateTime? LastEditedDate { get; set; }
     }
 
 }

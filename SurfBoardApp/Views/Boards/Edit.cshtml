@@ -1,5 +1,4 @@
 ﻿<!-- Importing the BoardViewModels namespace and setting the EditBoardVM model as the view's model -->
-@using SurfBoardApp.ViewModels.BoardViewModels;
 @using SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels;
 @model EditBoardVM
 
@@ -22,6 +21,7 @@
             <!-- Hidden input fields -->
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="ExistingImages" />
+            <input type="hidden" asp-for="LastEditedDate" />
             <!-- Board details input fields -->
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>

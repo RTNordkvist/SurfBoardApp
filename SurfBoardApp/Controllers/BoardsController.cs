@@ -137,6 +137,15 @@ namespace SurfBoardApp.Controllers
             {
                 return NotFound();
             }
+            catch (OutdatedBoardInformationException)
+            {
+                
+                var updatedModel = await _boardService.GetEditBoard(model.Id);
+
+                var viewModel = new ConfirmEditBoardVM { PersistedData = updatedModel, UserInput = model };
+
+                return View("ConfirmEdit", viewModel);
+            }
         }
 
         // GET: Boards/Delete/5

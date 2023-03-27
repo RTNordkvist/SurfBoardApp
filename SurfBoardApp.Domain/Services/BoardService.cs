@@ -71,7 +71,8 @@ namespace SurfBoardApp.Domain.Services
                 Type = board.Type,
                 Price = board.Price,
                 Equipment = board.Equipment,
-                ExistingImages = board.Images
+                ExistingImages = board.Images,
+                LastEditedDate = board.LastEditedDate
             };
 
             // The view model is returned
@@ -157,7 +158,8 @@ namespace SurfBoardApp.Domain.Services
                 Type = model.Type,
                 Price = model.Price,
                 Equipment = model.Equipment,
-                Images = images
+                Images = images,
+                CreatedDate = DateTime.UtcNow
             };
 
             // The model is saved to the database
@@ -176,6 +178,12 @@ namespace SurfBoardApp.Domain.Services
                 throw new BoardNotFoundException();
             }
 
+            if (board.LastEditedDate != null && model.LastEditedDate == null || 
+                board.LastEditedDate.HasValue && model.LastEditedDate.HasValue && board.LastEditedDate.Value.Ticks != model.LastEditedDate.Value.Ticks)
+            {
+                throw new OutdatedBoardInformationException();
+            }
+
             board.Id = model.Id;
             board.Name = model.Name;
             board.Length = model.Length;
@@ -186,6 +194,7 @@ namespace SurfBoardApp.Domain.Services
             board.Price = model.Price;
             board.Equipment = model.Equipment;
             board.Images = model.ExistingImages;
+            board.LastEditedDate = DateTime.UtcNow;
 
             if (model.Images != null)
             {
