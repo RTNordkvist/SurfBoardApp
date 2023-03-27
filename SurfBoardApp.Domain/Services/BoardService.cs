@@ -101,6 +101,44 @@ namespace SurfBoardApp.Domain.Services
                 boards = boards.Where(b => b.Bookings == null || !b.Bookings.Any(x => x.StartDate <= model.BookingEndDate && x.EndDate >= model.BookingStartDate));
             }
 
+            // Apply search criteria
+            if (!string.IsNullOrEmpty(model.SearchParameter) && !string.IsNullOrEmpty(model.SearchValue))
+            {
+                if (model.SearchParameter.ToLower() == "name")
+                {
+                    boards = boards.Where(b => b.Name.Contains(model.SearchValue));
+                }
+                else if (model.SearchParameter.ToLower() == "length")
+                {
+                    double.TryParse(model.SearchValue, out double length);
+                    boards = boards.Where(b => b.Length == length);
+                }
+                else if (model.SearchParameter.ToLower() == "width")
+                {
+                    double.TryParse(model.SearchValue, out double width);
+                    boards = boards.Where(b => b.Width == width);
+                }
+                else if (model.SearchParameter.ToLower() == "thickness")
+                {
+                    double.TryParse(model.SearchValue, out double thickness);
+                    boards = boards.Where(b => b.Thickness == thickness);
+                }
+                else if (model.SearchParameter.ToLower() == "volume")
+                {
+                    double.TryParse(model.SearchValue, out double volume);
+                    boards = boards.Where(b => b.Volume == volume);
+                }
+                else if (model.SearchParameter.ToLower() == "type")
+                {
+                    boards = boards.Where(b => b.Type.Contains(model.SearchValue));
+                }
+                else if (model.SearchParameter.ToLower() == "price")
+                {
+                    decimal.TryParse(model.SearchValue, out decimal price);
+                    boards = boards.Where(b => b.Price == price);
+                }
+            }
+
             // The list of board models is projected to a list of view models
             IQueryable<IndexBoardVM> boardVMs = boards.Select(x => new IndexBoardVM
             {
@@ -120,6 +158,7 @@ namespace SurfBoardApp.Domain.Services
             // The input view model is returned
             return model;
         }
+
 
         // Adds a board to DBcontext from a view model
         public async Task<int> AddBoard(CreateBoardVM model)
@@ -267,5 +306,7 @@ namespace SurfBoardApp.Domain.Services
             // Save changes to the database
             await _context.SaveChangesAsync();
         }
+
+
     }
 }

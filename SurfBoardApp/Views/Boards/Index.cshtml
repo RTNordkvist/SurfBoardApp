@@ -9,15 +9,32 @@
 
 <!-- Search form -->
 <form asp-action="Index" method="get">
-    <div class="form-actions no-color">
-        <p>
-            Search by name: <input asp-for="SearchString" class="form-floating col-9" />
-            <input type="submit" value="Search" class="btn btn-default btn-search" />
-            <a asp-action="Index" class="btn btn-secondary">Clear</a>
-        </p>
+    <div class="form-row">
+        <div class="col-md-3">
+            <label for="searchParameter">Search by:</label>
+            <select asp-for="SearchParameter" class="form-control" id="searchParameter">
+                <option value="name">Name</option>
+                <option value="length">Length</option>
+                <option value="width">Width</option>
+                <option value="thickness">Thickness</option>
+                <option value="volume">Volume</option>
+                <option value="type">Type</option>
+                <option value="price">Price</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="searchValue">Search value:</label>
+            <input asp-for="SearchValue" class="form-control" id="searchValue" />
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <div class="form-actions no-color">
+                <input type="submit" value="Search" class="btn btn-default btn-search" />
+                <a asp-action="Index" class="btn btn-secondary">Clear</a>
+            </div>
+        </div>
     </div>
 </form>
-
+<br>
 <!-- Booking form -->
 <div>
     <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" style="margin-bottom: 20px">
