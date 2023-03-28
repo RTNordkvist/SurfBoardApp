@@ -83,33 +83,45 @@ namespace SurfBoardApp.Controllers
             }
         }
 
-        // This method is called when the user submits the edit form. It receives an EditBookingVM 
-        // object as a parameter with the updated data and updates the corresponding booking in the 
-        // database.
-        [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
+
+        //ModelState en ordbog, der indeholder både data indsendt af brugeren og eventuelle valideringsfejl
+        //genereret under modelbinding.
+        //Det bruges til at kommunikere valideringsfejl tilbage til viewet, så brugeren kan rette dem.
+
+        [HttpPost] // Only accept HTTP POST requests
+        [Authorize] // Requires the user to be authenticated
+        [ValidateAntiForgeryToken] // Protects against cross-site request forgery attacks
         public async Task<IActionResult> EditBooking(EditBookingVM model)
         {
             if (!ModelState.IsValid)
             {
+                // If the model state is invalid, return the same view with the invalid model to display validation errors
                 return View(model);
             }
 
-            try
+            // Attempt to update the booking dates using the BookingService
+            var (success, message, nextAvailableDate) = await _bookingService.UpdateBookingDates(model);
+
+            if (!success)
             {
-                await _bookingService.UpdateBookingDates(model);
-            }
-            catch (BookingNotFoundException)
-            {
-                // If the booking was not found, adds an error to the ModelState.
-                ModelState.AddModelError("", "Booking not found.");
+                // If the booking dates were not updated, add an error message to the model state
+                if (nextAvailableDate != null)
+                {
+                    ModelState.AddModelError("", $"{message} The next available date is {nextAvailableDate?.ToString("yyyy-MM-dd")}");
+                }
+                else
+                {
+                    ModelState.AddModelError("", message);
+                }
+
+                // Return the same view with the invalid model to display the error message
                 return View(model);
             }
 
-            // Redirects the user to the MyBookings action.
+            // If the booking dates were successfully updated, redirect the user to the MyBookings action
             return RedirectToAction("MyBookings");
         }
+
 
 
         [Authorize]
