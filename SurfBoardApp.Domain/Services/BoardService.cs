@@ -1,19 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
+﻿using Microsoft.EntityFrameworkCore;
 using SurfBoardApp.Blazor.Shared.ViewModels;
 using SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels;
-using SurfBoardApp.Blazor.Shared.ViewModels.BookingViewModels;
 using SurfBoardApp.Data;
 using SurfBoardApp.Data.Models;
 using SurfBoardApp.Domain.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SurfBoardApp.Domain.Services
 {
@@ -89,58 +79,13 @@ namespace SurfBoardApp.Domain.Services
                 .OrderBy(x => x.Name)
                 .AsQueryable();
 
-            // If the view model contains a search string, the list of boards is filtered to match the search string
-            if (!string.IsNullOrEmpty(model.SearchString))
-            {
-                boards = boards.Where(b => b.Name.Contains(model.SearchString));
-            }
 
-            // If the view model contains booking dates, the list of boards is filtered to only hold the boards without existing bookings in the selected period
-            if (model.BookingStartDate != null && model.BookingEndDate != null)
-            {
-                boards = boards.Where(b => b.Bookings == null || !b.Bookings.Any(x => x.StartDate <= model.BookingEndDate && x.EndDate >= model.BookingStartDate));
-            }
-
-            // Apply search criteria
-            if (!string.IsNullOrEmpty(model.SearchParameter) && !string.IsNullOrEmpty(model.SearchValue))
-            {
-                if (model.SearchParameter.ToLower() == "name")
-                {
-                    boards = boards.Where(b => b.Name.Contains(model.SearchValue));
-                }
-                else if (model.SearchParameter.ToLower() == "length")
-                {
-                    double.TryParse(model.SearchValue, out double length);
-                    boards = boards.Where(b => b.Length == length);
-                }
-                else if (model.SearchParameter.ToLower() == "width")
-                {
-                    double.TryParse(model.SearchValue, out double width);
-                    boards = boards.Where(b => b.Width == width);
-                }
-                else if (model.SearchParameter.ToLower() == "thickness")
-                {
-                    double.TryParse(model.SearchValue, out double thickness);
-                    boards = boards.Where(b => b.Thickness == thickness);
-                }
-                else if (model.SearchParameter.ToLower() == "volume")
-                {
-                    double.TryParse(model.SearchValue, out double volume);
-                    boards = boards.Where(b => b.Volume == volume);
-                }
-                else if (model.SearchParameter.ToLower() == "type")
-                {
-                    boards = boards.Where(b => b.Type.Contains(model.SearchValue));
-                }
-                else if (model.SearchParameter.ToLower() == "price")
-                {
-                    decimal.TryParse(model.SearchValue, out decimal price);
-                    boards = boards.Where(b => b.Price == price);
-                }
-            }
+            //Filtering 
+            // Call the filter method to filter the boards based on the input view model
+            var filteredBoards = FilterBoards(boards, model);
 
             // The list of board models is projected to a list of view models
-            IQueryable<IndexBoardVM> boardVMs = boards.Select(x => new IndexBoardVM
+            IQueryable<IndexBoardVM> boardVMs = filteredBoards.Select(x => new IndexBoardVM
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -158,7 +103,79 @@ namespace SurfBoardApp.Domain.Services
             // The input view model is returned
             return model;
         }
+        //IQueryable repræsenterer en samling af data, der kan forespørges ved hjælp af LINQ-operatorer,
+        //men den faktiske udførelse af forespørgslen udskydes, indtil dataene er opregnet.
+        //Det betyder, at forespørgslen ikke udføres, før resultaterne rent faktisk er nødvendige
+        private IQueryable<Board> FilterBoards(IQueryable<Board> boards, IndexVM model)
+        {
+            // If the view model contains a search string, the list of boards is filtered to match the search string
+            if (!string.IsNullOrEmpty(model.SearchString))
+            {
+                boards = boards.Where(b => b.Name.Contains(model.SearchString));
+            }
 
+            // If the view model contains booking dates, the list of boards is filtered to only hold the boards without existing bookings in the selected period
+            if (model.BookingStartDate != null && model.BookingEndDate != null)
+            {
+                boards = boards.Where(b => b.Bookings == null || !b.Bookings.Any(x => x.StartDate <= model.BookingEndDate && x.EndDate >= model.BookingStartDate));
+            }
+
+            // Apply search criteria
+            if (!string.IsNullOrEmpty(model.SearchParameter) && !string.IsNullOrEmpty(model.SearchValue))
+            {
+                switch (model.SearchParameter.ToLower())
+                {
+                    case "name":
+                        {
+                            boards = boards.Where(b => b.Name.Contains(model.SearchValue));
+                            break;
+                        }
+
+                    case "length":
+                        {
+                            double.TryParse(model.SearchValue, out double length);
+                            boards = boards.Where(b => b.Length == length);
+                            break;
+                        }
+
+                    case "width":
+                        {
+                            double.TryParse(model.SearchValue, out double width);
+                            boards = boards.Where(b => b.Width == width);
+                            break;
+                        }
+
+                    case "thickness":
+                        {
+                            double.TryParse(model.SearchValue, out double thickness);
+                            boards = boards.Where(b => b.Thickness == thickness);
+                            break;
+                        }
+
+                    case "volume":
+                        {
+                            double.TryParse(model.SearchValue, out double volume);
+                            boards = boards.Where(b => b.Volume == volume);
+                            break;
+                        }
+
+                    case "type":
+                        {
+                            boards = boards.Where(b => b.Type.Contains(model.SearchValue));
+                            break;
+                        }
+
+                    case "price":
+                        {
+                            decimal.TryParse(model.SearchValue, out decimal price);
+                            boards = boards.Where(b => b.Price == price);
+                            break;
+                        }
+                }
+            }
+
+            return boards;
+        }
 
         // Adds a board to DBcontext from a view model
         public async Task<int> AddBoard(CreateBoardVM model)
@@ -306,7 +323,5 @@ namespace SurfBoardApp.Domain.Services
             // Save changes to the database
             await _context.SaveChangesAsync();
         }
-
-
     }
 }

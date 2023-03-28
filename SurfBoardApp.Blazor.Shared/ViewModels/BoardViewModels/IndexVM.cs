@@ -25,11 +25,18 @@ namespace SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels
         public string? SearchParameter { get; set; }
         public string? SearchValue { get; set; }
 
-        public double? SearchLength { get; set; }
-        public double? SearchWidth { get; set; }
-        public double? SearchThickness { get; set; }
-        public double? SearchVolume { get; set; }
-        public string? SearchType { get; set; }
-        public decimal? SearchPrice { get; set; }
+        public double? SearchLengthFrom { get; set; }
+        public double? SearchLengthTo { get; set; }
+
+        public double? SearchWidthFrom { get; set; }
+        public double? SearchWidthTo { get; set; }
+
+        public double? SearchThicknessFrom { get; set; }
+        public double? SearchThicknessTo { get; set; }
+
+        public double? SearchVolumeFrom { get; set; }
+        public double? SearchVolumeTo { get; set; }
+
+        public bool IncludeEquipment { get; set; }
     }
 }
