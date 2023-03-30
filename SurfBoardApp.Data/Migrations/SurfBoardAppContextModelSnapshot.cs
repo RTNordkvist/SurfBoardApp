@@ -232,7 +232,7 @@ namespace SurfBoardApp.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("SurfBoardApp.Models.Board", b =>
+            modelBuilder.Entity("SurfBoardApp.Data.Models.Board", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -263,6 +263,9 @@ namespace SurfBoardApp.Migrations
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Version")
+                        .HasColumnType("int");
+
                     b.Property<double?>("Volume")
                         .HasColumnType("float");
 
@@ -271,10 +274,10 @@ namespace SurfBoardApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Board", (string)null);
+                    b.ToTable("Board");
                 });
 
-            modelBuilder.Entity("SurfBoardApp.Models.Booking", b =>
+            modelBuilder.Entity("SurfBoardApp.Data.Models.Booking", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -301,10 +304,10 @@ namespace SurfBoardApp.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Booking", (string)null);
+                    b.ToTable("Booking");
                 });
 
-            modelBuilder.Entity("SurfBoardApp.Models.Image", b =>
+            modelBuilder.Entity("SurfBoardApp.Data.Models.Image", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -323,10 +326,10 @@ namespace SurfBoardApp.Migrations
 
                     b.HasIndex("BoardId");
 
-                    b.ToTable("Image", (string)null);
+                    b.ToTable("Image");
                 });
 
-            modelBuilder.Entity("SurfBoardApp.Models.ApplicationUser", b =>
+            modelBuilder.Entity("SurfBoardApp.Data.Models.ApplicationUser", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
@@ -390,10 +393,10 @@ namespace SurfBoardApp.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SurfBoardApp.Models.Booking", b =>
+            modelBuilder.Entity("SurfBoardApp.Data.Models.Booking", b =>
                 {
-                    b.HasOne("SurfBoardApp.Models.Board", "Board")
-                        .WithMany("RentPeriods")
+                    b.HasOne("SurfBoardApp.Data.Models.Board", "Board")
+                        .WithMany("Bookings")
                         .HasForeignKey("BoardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -409,9 +412,9 @@ namespace SurfBoardApp.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("SurfBoardApp.Models.Image", b =>
+            modelBuilder.Entity("SurfBoardApp.Data.Models.Image", b =>
                 {
-                    b.HasOne("SurfBoardApp.Models.Board", "Board")
+                    b.HasOne("SurfBoardApp.Data.Models.Board", "Board")
                         .WithMany("Images")
                         .HasForeignKey("BoardId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -420,11 +423,11 @@ namespace SurfBoardApp.Migrations
                     b.Navigation("Board");
                 });
 
-            modelBuilder.Entity("SurfBoardApp.Models.Board", b =>
+            modelBuilder.Entity("SurfBoardApp.Data.Models.Board", b =>
                 {
-                    b.Navigation("Images");
+                    b.Navigation("Bookings");
 
-                    b.Navigation("RentPeriods");
+                    b.Navigation("Images");
                 });
 #pragma warning restore 612, 618
         }

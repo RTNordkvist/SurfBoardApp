@@ -1,7 +1,7 @@
 ﻿using SurfBoardApp.Data.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace SurfBoardApp.ViewModels.BoardViewModels
+namespace SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels
 {
     public class IndexVM
     {
@@ -18,7 +18,5 @@ namespace SurfBoardApp.ViewModels.BoardViewModels
 
         [DataType(DataType.Date)]
         public DateTime? BookingEndDate { get; set; }
-
-        public bool ShowBookingOptions { get; set; }
     }
 }

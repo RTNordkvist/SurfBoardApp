@@ -1,4 +1,4 @@
-﻿@using SurfBoardApp.ViewModels.BoardViewModels;
+﻿@using SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels;
 @model IndexVM
 
 @{
@@ -60,10 +60,10 @@
                     <!-- Details button -->
                     <a href="@Url.Action("Details", new { id = board.Id })" class="btn btn-outline-primary">Details</a>
                     <!-- Book button (if user is authenticated) -->
-                    @if (Model.ShowBookingOptions == true && User.Identity.IsAuthenticated)
+                    @if (Model.BookingStartDate != null && Model.BookingEndDate != null && User.Identity.IsAuthenticated)
                     {
-                        <form asp-action="BookBoard" method="POST">
-                            <input type="hidden" value="@Model.BookingStartDate" name="StartDate" />
+                        <form asp-controller="Booking" asp-action="BookBoard" method="POST">
+                            <input type="hidden" value="@Model.BookingStartDate" name="StartDate"/>
                             <input type="hidden" value="@Model.BookingEndDate" name="EndDate" />
                             <input type="hidden" value="@board.Id" name="BoardId" />
                             <div class="form-actions no-color">

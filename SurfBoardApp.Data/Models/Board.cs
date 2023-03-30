@@ -37,14 +37,7 @@ namespace SurfBoardApp.Data.Models
 
         public int? ClickCount { get; set; }
 
-        public void RemoveImage(Image image)
-        {
-            if (Images != null && Images.Contains(image))
-            {
-                Images.Remove(image);
-            }
-        }
-
+        public int Version { get; set; }
     }
 
 }

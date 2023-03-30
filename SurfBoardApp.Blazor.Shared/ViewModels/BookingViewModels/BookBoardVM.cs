@@ -1,4 +1,4 @@
-﻿namespace SurfBoardApp.ViewModels.BookingViewModels
+﻿namespace SurfBoardApp.Blazor.Shared.ViewModels.BookingViewModels
 {
     public class BookBoardVM
     {
