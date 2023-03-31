@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using System.Configuration;
 using SurfBoardApp.Data;
 using SurfBoardApp.Domain.Services;
+using SurfBoardApp.ModelBinding;
 
 namespace SurfBoardApp
 {
@@ -29,9 +30,22 @@ namespace SurfBoardApp
                 .AddEntityFrameworkStores<SurfBoardAppContext>();
 
             builder.Services.AddHttpContextAccessor();
+            builder.Services.AddLogging();
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(config =>
+            {
+                var loggerFactory = LoggerFactory.Create(
+                    builder =>
+                    {
+                        builder
+                            .AddFilter("Microsoft", LogLevel.Warning)
+                            .AddFilter("System", LogLevel.Warning)
+                            .AddFilter("SurfBoardApp.Program", LogLevel.Debug)
+                            .AddConsole();
+                    });
+                config.ModelBinderProviders.Insert(0, new InvariantDecimalModelBinderProvider(loggerFactory));
+            });
 
             builder.Services.AddScoped<BoardService>();
             builder.Services.AddScoped<BookingService>();

@@ -31,22 +31,22 @@
             </div>
             <div class="form-group">
                 <label asp-for="Length" class="control-label"></label>
-                <input asp-for="Length" class="form-control" />
+                <input asp-for="Length" class="form-control" value="@(Model.Length.HasValue ? Model.Length.Value.ToString().Replace(",", ".") : null)" />
                 <span asp-validation-for="Length" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Width" class="control-label"></label>
-                <input asp-for="Width" class="form-control" />
+                <input asp-for="Width" class="form-control" value="@(Model.Width.HasValue ? Model.Width.Value.ToString().Replace(",", ".") : null)" />
                 <span asp-validation-for="Width" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Thickness" class="control-label"></label>
-                <input asp-for="Thickness" class="form-control" />
+                <input asp-for="Thickness" class="form-control" value="@(Model.Thickness.HasValue ? Model.Thickness.Value.ToString().Replace(",", ".") : null)" />
                 <span asp-validation-for="Thickness" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Volume" class="control-label"></label>
-                <input asp-for="Volume" class="form-control" />
+                <input asp-for="Volume" class="form-control" value="@(Model.Volume.HasValue ? Model.Volume.Value.ToString().Replace(",", ".") : null)" />
                 <span asp-validation-for="Volume" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -56,7 +56,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
+                <input asp-for="Price" class="form-control" value="@(Model.Price.HasValue ? Model.Price.Value.ToString().Replace(",", ".") : null)" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">

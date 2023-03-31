@@ -39,7 +39,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="UserInput.Length" class="control-label"></label>
-                <input name="Length" asp-for="UserInput.Length" class="form-control" />
+                <input name="Length" asp-for="UserInput.Length" class="form-control" value="@(Model.UserInput.Length.HasValue ? Model.UserInput.Length.Value.ToString().Replace(",", ".") : null)" />
                 <span asp-validation-for="UserInput.Length" class="text-danger"></span>
                 @if (Model.UserInput.Length != Model.PersistedData.Length)
                 {
@@ -50,7 +50,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="UserInput.Width" class="control-label"></label>
-                <input name="Width" asp-for="UserInput.Width" class="form-control" />
+                <input name="Width" asp-for="UserInput.Width" class="form-control" value="@(Model.UserInput.Width.HasValue ? Model.UserInput.Width.Value.ToString().Replace(",", ".") : null)" />
                 <span asp-validation-for="UserInput.Width" class="text-danger"></span>
                 @if (Model.UserInput.Width != Model.PersistedData.Width)
                 {
@@ -61,7 +61,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="UserInput.Thickness" class="control-label"></label>
-                <input name="Thickness" asp-for="UserInput.Thickness" class="form-control" />
+                <input name="Thickness" asp-for="UserInput.Thickness" class="form-control" value="@(Model.UserInput.Thickness.HasValue ? Model.UserInput.Thickness.Value.ToString().Replace(",", ".") : null)" />
                 <span asp-validation-for="UserInput.Thickness" class="text-danger"></span>
                 @if (Model.UserInput.Thickness != Model.PersistedData.Thickness)
                 {
@@ -72,7 +72,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="UserInput.Volume" class="control-label"></label>
-                <input name="Volume" asp-for="UserInput.Volume" class="form-control" />
+                <input name="Volume" asp-for="UserInput.Volume" class="form-control" value="@(Model.UserInput.Volume.HasValue ? Model.UserInput.Volume.Value.ToString().Replace(",", ".") : null)" />
                 <span asp-validation-for="UserInput.Volume" class="text-danger"></span>
                 @if (Model.UserInput.Volume != Model.PersistedData.Volume)
                 {
@@ -94,7 +94,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="UserInput.Price" class="control-label"></label>
-                <input name="Price" asp-for="UserInput.Price" class="form-control" />
+                <input name="Price" asp-for="UserInput.Price" class="form-control" value="@(Model.UserInput.Price.HasValue ? Model.UserInput.Price.Value.ToString().Replace(",", ".") : null)" />
                 <span asp-validation-for="UserInput.Price" class="text-danger"></span>
                 @if (Model.UserInput.Price != Model.PersistedData.Price)
                 {
