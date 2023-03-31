@@ -174,8 +174,50 @@ namespace SurfBoardApp.Domain.Services
                 }
             }
 
+            // Apply advanced search options
+            if (model.SearchLengthFrom.HasValue)
+            {
+                boards = boards.Where(b => b.Length >= model.SearchLengthFrom.Value);
+            }
+
+            if (model.SearchLengthTo.HasValue)
+            {
+                boards = boards.Where(b => b.Length <= model.SearchLengthTo.Value);
+            }
+
+            if (model.SearchWidthFrom.HasValue)
+            {
+                boards = boards.Where(b => b.Width >= model.SearchWidthFrom.Value);
+            }
+
+            if (model.SearchWidthTo.HasValue)
+            {
+                boards = boards.Where(b => b.Width <= model.SearchWidthTo.Value);
+            }
+
+            if (model.SearchThicknessFrom.HasValue)
+            {
+                boards = boards.Where(b => b.Thickness >= model.SearchThicknessFrom.Value);
+            }
+
+            if (model.SearchThicknessTo.HasValue)
+            {
+                boards = boards.Where(b => b.Thickness <= model.SearchThicknessTo.Value);
+            }
+
+            if (model.SearchVolumeFrom.HasValue)
+            {
+                boards = boards.Where(b => b.Volume >= model.SearchVolumeFrom.Value);
+            }
+
+            if (model.SearchVolumeTo.HasValue)
+            {
+                boards = boards.Where(b => b.Volume <= model.SearchVolumeTo.Value);
+            }
+
             return boards;
         }
+
 
         // Adds a board to DBcontext from a view model
         public async Task<int> AddBoard(CreateBoardVM model)

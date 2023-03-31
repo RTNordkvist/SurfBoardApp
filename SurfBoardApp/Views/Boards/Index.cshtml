@@ -24,10 +24,6 @@
                 <select asp-for="SearchParameter" class="form-control classic" id="searchParameter">
                     <option value="">-- Select parameter --</option>
                     <option value="name">Name</option>
-                    <option value="length">Length</option>
-                    <option value="width">Width</option>
-                    <option value="thickness">Thickness</option>
-                    <option value="volume">Volume</option>
                     <option value="type">Type</option>
                     <option value="price">Price</option>
                 </select>
@@ -52,7 +48,6 @@
                 <input asp-for="SearchLengthTo" class="form-control" id="searchLengthTo" placeholder="e.g: 55" />
             </div>
         </div>
-
         <div class="col-md-4">
             <div class="form-group">
                 <label for="searchWidthFrom">Width from:</label>
@@ -63,7 +58,6 @@
                 <input asp-for="SearchWidthTo" class="form-control" id="searchWidthTo" placeholder="e.g: 150" />
             </div>
         </div>
-
         <div class="col-md-4">
             <div class="form-group">
                 <label for="searchThicknessFrom">Thickness from:</label>
@@ -74,7 +68,6 @@
                 <input asp-for="SearchThicknessTo" class="form-control" id="searchThicknessTo" placeholder="e.g: 40" />
             </div>
         </div>
-
         <div class="col-md-4">
             <div class="form-group">
                 <label for="searchVolumeFrom">Volume from:</label>
