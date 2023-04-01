@@ -1,5 +1,7 @@
 # Surfboard Rental Website
-This is a website for renting surfboards, created as a 3rd semester project in computer science. The website is built on Asp.net Core with Entityframework and has a webAPI.
+This is a website for renting surfboards, created as a 3rd semester project in computer science at the danish university, UCL Erhvervsakademi og Professionshøjskole. The website is currently built on ASP.net Core with Entityframework wher all the data is saved in a SQL database. The idea is that this website will continue to be developed from 01-01-2023 to 01-07-2023 as a semester project in which we will be examined. 
+
+The project will undergo many changes, depending on the Product Owners demands, but the biggest change we will need to implement, is that this project needs to use blazor in the near future.
 
 ## Installation
 To run this project, you will need to have the following software installed on your machine:
