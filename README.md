@@ -13,12 +13,12 @@ Once you have the necessary software installed, follow these steps:
 
 1. Clone the repository to your local machine
 2. Open the solution file SurfboardRental.sln in Visual Studio or Visual Studio Code
-3. Build the solution
-4. Run the project using the Run button or by pressing F5
+3. Make sure Entityframework is installed
+4. Write 'Update-Database' in the project manager.
+5. Build the solution
+6. Run the project using the Run button or by pressing F5
 ## Usage
 Once you have the project running, you can access the website in your web browser at http://localhost:5000/. From there, you can view available surfboards, create an account, and rent a surfboard.
-
-The website also includes a webAPI, which can be accessed at http://localhost:5000/api/. The API provides endpoints for creating and managing surfboards, customers, and rentals.
 
 ## Contributing
 If you would like to contribute to this project, please follow these steps:
