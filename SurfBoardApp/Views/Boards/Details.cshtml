@@ -5,17 +5,15 @@
     ViewData["Title"] = "Details";
 }
 
+<!-- View component showing details of the board  -->
 <div class="row">
     @(await Component.InvokeAsync("BoardDetails", new { boardId = Model.Id }))
 </div>
 
-<!-- This div contains buttons for editing and deleting the model. Only shown to admins. -->
+<!-- This div contains buttons for editing and deleting the model.  -->
 <div>
-    @if (User.IsInRole("Admin"))
-    {
-        <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger">Delete</a>
-        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
-    }
+    <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger">Delete</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
     <!-- This button takes the user back to the index page -->
     <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>
