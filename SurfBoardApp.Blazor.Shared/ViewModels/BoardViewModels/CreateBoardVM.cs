@@ -30,5 +30,7 @@ namespace SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels
         public string? Equipment { get; set; }
 
         public List<IFormFile>? Images { get; set; }
+
+        public bool MembersOnly { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace SurfBoardApp.Domain.Services
 {
     public class BookingService
     {
-        private readonly SurfBoardAppContext _context; 
+        private readonly SurfBoardAppContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -27,14 +27,14 @@ namespace SurfBoardApp.Domain.Services
                 .Include(x => x.Board)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-            if(booking == null)
+            if (booking == null)
             {
                 throw new BookingNotFoundException();
             }
 
             var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
 
-            if(userId != booking.CustomerId)
+            if (userId != booking.CustomerId)
             {
                 throw new BookingNotFoundException(); // For security reasons the system don't reveal that the booking was actually found but doesn't belong to the user
             }
@@ -74,9 +74,13 @@ namespace SurfBoardApp.Domain.Services
             return bookingViewModels;
         }
 
-        public async Task<BookingConfirmationVM> AddBooking(BookBoardVM model)
+        public async Task<BookingConfirmationVM> AddBooking(CreateBookingVM model)
         {
-            var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+            string? userId = null;
+            if (_httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false)
+            {
+                userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
+            }
 
             // Check if the board is available, if not - throw an exception
             if (await _context.Booking.AnyAsync(x => x.StartDate <= model.EndDate && x.EndDate >= model.StartDate && x.BoardId == model.BoardId))
@@ -90,7 +94,8 @@ namespace SurfBoardApp.Domain.Services
                 StartDate = model.StartDate,
                 EndDate = model.EndDate,
                 BoardId = model.BoardId,
-                CustomerId = userId
+                CustomerId = userId,
+                NonUserEmail = model.NonUserEmail
             };
 
             // The new booking is updated in the database

@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml.Style;
 using SurfBoardApp.Blazor.Shared.ViewModels;
 using SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels;
 using SurfBoardApp.Data;
@@ -10,10 +12,12 @@ namespace SurfBoardApp.Domain.Services
     public class BoardService
     {
         private readonly SurfBoardAppContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public BoardService(SurfBoardAppContext context)
+        public BoardService(SurfBoardAppContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // Receives an id of a board and returns a board view model
@@ -62,6 +66,7 @@ namespace SurfBoardApp.Domain.Services
                 Price = board.Price,
                 Equipment = board.Equipment,
                 ExistingImages = board.Images,
+                MembersOnly = board.MembersOnly,
                 Version = board.Version
             };
 
@@ -108,6 +113,9 @@ namespace SurfBoardApp.Domain.Services
         //Det betyder, at forespørgslen ikke udføres, før resultaterne rent faktisk er nødvendige
         private IQueryable<Board> FilterBoards(IQueryable<Board> boards, IndexVM model)
         {
+            // Checks if the user is logged in and returns either the full list of boards including boards for MembersOnly or a limited amount of boards if the user is not logged in.
+            boards = boards.Where(x => IsUserAuthenticated() ? true : !x.MembersOnly);
+
             // If the view model contains a search string, the list of boards is filtered to match the search string
             if (!string.IsNullOrEmpty(model.SearchString))
             {
@@ -256,6 +264,7 @@ namespace SurfBoardApp.Domain.Services
                 Type = model.Type,
                 Price = model.Price,
                 Equipment = model.Equipment,
+                MembersOnly = model.MembersOnly,
                 Images = images,
                 Version = 1
             };
@@ -291,6 +300,7 @@ namespace SurfBoardApp.Domain.Services
             board.Price = model.Price;
             board.Equipment = model.Equipment;
             board.Images = model.ExistingImages;
+            board.MembersOnly = model.MembersOnly;
             board.Version += 1;
 
             if (model.Images != null)
@@ -364,6 +374,11 @@ namespace SurfBoardApp.Domain.Services
 
             // Save changes to the database
             await _context.SaveChangesAsync();
+        }
+
+        private bool IsUserAuthenticated()
+        {
+            return _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
         }
     }
 }

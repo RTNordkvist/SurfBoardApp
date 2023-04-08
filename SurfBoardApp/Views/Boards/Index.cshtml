@@ -1,6 +1,5 @@
 ﻿@using SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels;
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Needed for the Advanced Search Button Script-->
-
 @model IndexVM
 
 @{
@@ -102,60 +101,42 @@
 
 <br>
 <!-- Booking form -->
-<div>
-    <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" style="margin-bottom: 20px">
-        Book a board
-    </button>
-</div>
-<div class="collapse @(Model.BookingStartDate != null ? "show" : "")" id="collapseExample">
-    <form asp-action="Index" method="get">
-        <div class="form-actions no-color">
-            <p>
-                Select booking period:
-                <input asp-for="BookingStartDate" class="form-floating" />
-                <input asp-for="BookingEndDate" class="form-floating" />
-                <input type="submit" value="View available boards" class="btn btn-default btn-search" />
-            </p>
-        </div>
-        <!-- Attributten "asp-validation-summary" angiver, hvordan valideringsfejl skal vises, i dette tilfælde er den sat til "Alle", hvilket betyder, at alle valideringsfejl vil blive vist. -->
-        <div asp-validation-summary="All" class="text-danger"></div>
-    </form>
-</div>
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Select booking period:
+            <input asp-for="BookingStartDate" class="form-floating" />
+            <input asp-for="BookingEndDate" class="form-floating" />
+            <input type="submit" value="View available boards" class="btn btn-default btn-search" />
+        </p>
+    </div>
+    <!-- Attributten "asp-validation-summary" angiver, hvordan valideringsfejl skal vises, i dette tilfælde er den sat til "Alle", hvilket betyder, at alle valideringsfejl vil blive vist. -->
+    <div asp-validation-summary="All" class="text-danger"></div>
+</form>
 
 <!-- Board cards -->
 <div class="row">
     <!-- Loop through the collection of objects in the Model -->
     @foreach (var board in Model.Boards)
     {
-        <!-- Create a column that spans 2 of 12 columns in a Bootstrap grid -->
-        <div class="col-sm-2">
-            <!-- Create a card element with a margin bottom of 3 -->
-            <div class="card mb-2 h-100 d-flex flex-column">
+        <div class="col-sm-2 cursor-pointer">
+            @{
+                var url = Url.Action("Details", new { id = board.Id });
+                if (!User.IsInRole("Admin"))
+                    url = Url.Action("CreateBooking", "Booking", new { boardId = board.Id, startDate = Model.BookingStartDate, endDate = Model.BookingEndDate });
+            }
+            <a href="@url" class="index-card card mb-2 h-100 d-flex flex-column">
                 <!-- Board image -->
                 <img class="card-img-top" src="@board.Image?.Picture" alt="Board Image">
                 <div class="card-body flex-grow-1">
                     <!-- Board name -->
                     <h5 class="card-title">@board.Name</h5>
+                </div>
+                <div class="card-footer d-flex justify-content-center" style="min-height: 41px;">
                     <!-- Board type -->
                     <p class="card-text">@board.Type</p>
                 </div>
-                <div class="card-footer d-flex justify-content-center">
-                    <!-- Details button -->
-                    <a href="@Url.Action("Details", new { id = board.Id })" class="btn btn-outline-primary">Details</a>
-                    <!-- Book button (if user is authenticated) -->
-                    @if (Model.BookingStartDate != null && Model.BookingEndDate != null && User.Identity.IsAuthenticated)
-                    {
-                        <form asp-controller="Booking" asp-action="BookBoard" method="POST">
-                            <input type="hidden" value="@Model.BookingStartDate" name="StartDate" />
-                            <input type="hidden" value="@Model.BookingEndDate" name="EndDate" />
-                            <input type="hidden" value="@board.Id" name="BoardId" />
-                            <div class="form-actions no-color">
-                                <input type="submit" value="Book" class="btn btn-primary" style="margin-left:10px" />
-                            </div>
-                        </form>
-                    }
-                </div>
-            </div>
+            </a>
         </div>
     }
 </div>
