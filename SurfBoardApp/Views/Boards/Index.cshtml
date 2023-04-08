@@ -1,23 +1,106 @@
 ﻿@using SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels;
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Needed for the Advanced Search Button Script-->
+
 @model IndexVM
 
 @{
     ViewData["Title"] = "Index";
 }
-
 <h1>Boards</h1>
+<style>
+    .col-md-4 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, auto);
+        grid-column-gap: 10px;
+        grid-row-gap: 10px;
+    }
+</style>
+<form asp-action="Index" method="get" class="my-3">
+    <div class="form-row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="searchParameter">Search by:</label>
+                <select asp-for="SearchParameter" class="form-control classic" id="searchParameter">
+                    <option value="">-- Select parameter --</option>
+                    <option value="name">Name</option>
+                    <option value="type">Type</option>
+                    <option value="price">Price</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="searchValue">Search value:</label>
+            <input asp-for="SearchValue" class="form-control" id="searchValue" placeholder="Enter search value" />
+        </div>
+    </div>
+    <button type="button" class="btn btn-success btn-sm" id="advancedSearchBtn">Advanced Search Options</button> <!--btn-sm means the button is smaller -->
+    <div id="advancedSearchOptions" style="display:none">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="searchLengthFrom">Length from:</label>
+                <input asp-for="SearchLengthFrom" class="form-control" id="searchLengthFrom" placeholder="e.g: 30" />
+            </div>
+            <div class="form-group">
+                <label for="searchLengthTo">Length to:</label>
+                <input asp-for="SearchLengthTo" class="form-control" id="searchLengthTo" placeholder="e.g: 55" />
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="searchWidthFrom">Width from:</label>
+                <input asp-for="SearchWidthFrom" class="form-control" id="searchWidthFrom" placeholder="e.g: 100" />
+            </div>
+            <div class="form-group">
+                <label for="searchWidthTo">Width to:</label>
+                <input asp-for="SearchWidthTo" class="form-control" id="searchWidthTo" placeholder="e.g: 150" />
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="searchThicknessFrom">Thickness from:</label>
+                <input asp-for="SearchThicknessFrom" class="form-control" id="searchThicknessFrom" placeholder="e.g: 20" />
+            </div>
+            <div class="form-group">
+                <label for="searchThicknessTo">Thickness to:</label>
+                <input asp-for="SearchThicknessTo" class="form-control" id="searchThicknessTo" placeholder="e.g: 40" />
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="searchVolumeFrom">Volume from:</label>
+                <input asp-for="SearchVolumeFrom" class="form-control" id="searchVolumeFrom" placeholder="e.g: 300" />
+            </div>
+            <div class="form-group">
+                <label for="searchVolumeTo">Volume to:</label>
+                <input asp-for="SearchVolumeTo" class="form-control" id="searchVolumeTo" placeholder="e.g: 340" />
+            </div>
+        </div>
 
-<!-- Search form -->
-<form asp-action="Index" method="get">
-    <div class="form-actions no-color">
-        <p>
-            Search by name: <input asp-for="SearchString" class="form-floating col-9" />
-            <input type="submit" value="Search" class="btn btn-default btn-search" />
-            <a asp-action="Index" class="btn btn-secondary">Clear</a>
-        </p>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>&nbsp;</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" asp-for="IncludeEquipment" id="includeEquipment">
+                    <label class="form-check-label" for="includeEquipment">Include Equipment</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label>&nbsp;</label>
+            <div class="d-flex align-items-end">
+                <input type="submit" value="Search" class="btn btn-primary btn-search" />&nbsp;
+                <a asp-action="Index" class="btn btn-secondary">Clear</a>
+            </div>
+        </div>
     </div>
 </form>
 
+<br>
 <!-- Booking form -->
 <div>
     <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" style="margin-bottom: 20px">
@@ -63,7 +146,7 @@
                     @if (Model.BookingStartDate != null && Model.BookingEndDate != null && User.Identity.IsAuthenticated)
                     {
                         <form asp-controller="Booking" asp-action="BookBoard" method="POST">
-                            <input type="hidden" value="@Model.BookingStartDate" name="StartDate"/>
+                            <input type="hidden" value="@Model.BookingStartDate" name="StartDate" />
                             <input type="hidden" value="@Model.BookingEndDate" name="EndDate" />
                             <input type="hidden" value="@board.Id" name="BoardId" />
                             <div class="form-actions no-color">
@@ -81,3 +164,12 @@
 <div class="pagination-container">
     @await Html.PartialAsync("_Pagination", Model.Boards)
 </div>
+
+<!-- Script for Advanced Search Button Press (Stackoverflow)-->
+<script>
+    $(function () {
+        $('#advancedSearchBtn').click(function () {
+            $('#advancedSearchOptions').toggle();
+        });
+    });
+</script>
