@@ -37,7 +37,6 @@ namespace SurfBoardApp.Controllers
         }
 
         // POST: Boards/Create
-        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateBooking(CreateBookingVM model)
