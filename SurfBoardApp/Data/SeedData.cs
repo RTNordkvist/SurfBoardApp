@@ -50,7 +50,7 @@ namespace SurfBoardApp.Data
                         Thickness = double.TryParse(thickness, out double resultThickness) ? resultThickness : null,
                         Volume = double.TryParse(volume, out double resultVolume) ? resultVolume : null,
                         Type = type,
-                        Price = decimal.TryParse(price, out decimal resultPrice) ? resultPrice : null,
+                        Price = decimal.TryParse(price, out decimal resultPrice) ? resultPrice : 0,
                         Equipment = equipment
                     };
 

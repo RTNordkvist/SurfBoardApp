@@ -7,7 +7,7 @@ namespace SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels
     {
         [Required]
         [MinLength(1, ErrorMessage = "The board name must be at least 1 character long")]
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         [Range(0.0, double.MaxValue, ErrorMessage = "The length must be a positive value")]
         public double? Length { get; set; }
@@ -25,7 +25,7 @@ namespace SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels
 
         [Required]
         [Range(0.0, (double)decimal.MaxValue, ErrorMessage = "The price must be a positive value")]
-        public decimal? Price { get; set; }
+        public decimal Price { get; set; }
 
         public string? Equipment { get; set; }
 
