@@ -1,0 +1,60 @@
+﻿@using SurfBoardApp.Blazor.Shared.ViewModels.BookingViewModels;
+@model CreateBookingVM
+
+@{
+    bool userIsAuthenticated = Context?.User?.Identity?.IsAuthenticated ?? false;
+}
+
+<!-- Info om booking - board navn, etc. datoer, samt bekræft/cancel knapper -->
+
+<div class="row">
+    @(await Component.InvokeAsync("BoardDetails", new { boardId = Model.BoardId }))
+</div>
+
+<div class="row">
+    <div class="col">
+        <form asp-action="CreateBooking" enctype="multipart/form-data">
+            @if (!userIsAuthenticated)
+            {
+                <div class="alert alert-warning text-center">
+                    You're not logged in <br/>
+                    <a class="btn btn-sm btn-outline-primary my-2" href="/identity/account/login">Log in</a> <br/>
+                    <div>
+                        Or
+                    </div>
+                    <a class="btn btn-sm btn-outline-primary my-2" href="/identity/account/register?returnUrl=/booking/createbooking?boardId=@Model.BoardId">Create account</a> <br/>
+                </div>
+                <div class="form-group">
+                    <label asp-for="NonUserEmail" class="control-label">Register by email</label>
+                    <input asp-for="NonUserEmail" class="form-control" />
+                    <span asp-validation-for="NonUserEmail" class="text-danger"></span>
+                </div>
+            }
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="BoardId" />
+            <div class="form-group">
+                <label asp-for="StartDate" class="control-label">Start Date</label>
+                <input asp-for="StartDate" type="date" value="@Model.StartDate.ToString("yyyy-MM-dd")" class="form-control" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndDate" class="control-label">End Date</label>
+                <input asp-for="EndDate" type="date" value="@Model.EndDate.ToString("yyyy-MM-dd")" class="form-control" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-3">
+                <input type="submit" value="Book" class="btn btn-outline-primary" />
+                <a asp-controller="Boards" asp-action="Index" asp-route-id="@Model.BoardId" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+            <br />
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="site.js"></script>
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

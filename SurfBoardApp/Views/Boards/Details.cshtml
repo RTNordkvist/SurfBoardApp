@@ -5,75 +5,15 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>Board</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Length)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Length)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Width)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Width)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Thickness)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Thickness)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Volume)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Volume)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Type)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Type)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Equipment)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Equipment)
-        </dd>
-    </dl>
+<!-- View component showing details of the board  -->
+<div class="row">
+    @(await Component.InvokeAsync("BoardDetails", new { boardId = Model.Id }))
 </div>
-<!-- This loop displays images related to the current model -->
-@foreach (var image in Model.Images)
-{
-    <img src="@image.Picture" style="max-width:250px" />
-}
 
-<!-- This div contains buttons for editing and deleting the model. Only shown to admins. -->
+<!-- This div contains buttons for editing and deleting the model.  -->
 <div>
-    @if (User.IsInRole("Admin"))
-    {
-        <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger">Delete</a>
-        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
-    }
+    <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger">Delete</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
     <!-- This button takes the user back to the index page -->
     <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>

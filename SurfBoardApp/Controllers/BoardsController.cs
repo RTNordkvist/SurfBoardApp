@@ -55,6 +55,7 @@ namespace SurfBoardApp.Controllers
         }
 
         // GET: Boards/Details/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -69,7 +70,7 @@ namespace SurfBoardApp.Controllers
                 return NotFound();
             }
 
-            return View(result); // todo convert to a viewmodel instead of entity model
+            return View(result);
         }
 
         // GET: Boards/Create

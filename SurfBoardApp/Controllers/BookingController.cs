@@ -23,29 +23,44 @@ namespace SurfBoardApp.Controllers
             _boardService = boardService;
         }
 
-        [Authorize]
+        // GET: Booking/Create
+        public IActionResult CreateBooking(int boardId, DateTime? startDate = null, DateTime? endDate = null)
+        {
+            var model = new CreateBookingVM()
+            {
+                BoardId = boardId,
+                StartDate = startDate.HasValue ? startDate.Value : DateTime.UtcNow.Date,
+                EndDate = endDate.HasValue ? endDate.Value : DateTime.UtcNow.Date.AddDays(3)
+            };
+
+            return View(model);
+        }
+
+        // POST: Boards/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> BookBoard(BookBoardVM model)
+        public async Task<IActionResult> CreateBooking(CreateBookingVM model)
         {
             if (!ModelState.IsValid)
-                return View(nameof(Index), await _boardService.GetBoardModels(new IndexVM { BookingStartDate = model.StartDate, BookingEndDate = model.EndDate })); //TODO is this is what is supposed to happen?
+            {
+                return View(model);
+            }
 
             if (model.EndDate < model.StartDate)
             {
                 ModelState.AddModelError("InvalidEndDate", "End date cannot be before start date");
-                return View(nameof(Index), await _boardService.GetBoardModels(new IndexVM { BookingStartDate = model.StartDate, BookingEndDate = model.EndDate })); //TODO unittest
+                return View(nameof(CreateBooking), new CreateBookingVM() { BoardId = model.BoardId, StartDate = model.StartDate, EndDate = model.EndDate, NonUserEmail = model.NonUserEmail}); //TODO unittest
             }
 
             try
             {
                 var result = await _bookingService.AddBooking(model);
-                return View(result);
+                return View("BookingConfirmation", result);
             }
             catch (UnavailableBookingException)
             {
                 ModelState.AddModelError("BoardUnavailable", "Board is unavailable for the selected period");
-                return View(nameof(Index), await _boardService.GetBoardModels(new IndexVM { BookingStartDate = model.StartDate, BookingEndDate = model.EndDate }));
+                return View(nameof(CreateBooking), new CreateBookingVM() { BoardId = model.BoardId, StartDate = model.StartDate, EndDate = model.EndDate, NonUserEmail = model.NonUserEmail }); //TODO unittest
             }
         }
 

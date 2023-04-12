@@ -51,6 +51,12 @@
                 <input asp-for="Equipment" class="form-control" />
                 <span asp-validation-for="Equipment" class="text-danger"></span>
             </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" asp-for="MembersOnly">
+                <label class="form-check-label">
+                    Members only
+                </label>
+            </div>
             <br />
             <div>
                 <label for="images">Add Images:</label>
