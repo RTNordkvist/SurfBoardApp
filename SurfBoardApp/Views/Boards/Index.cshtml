@@ -105,8 +105,8 @@
     <div class="form-actions no-color">
         <p>
             Select booking period:
-            <input asp-for="BookingStartDate" class="form-floating" />
-            <input asp-for="BookingEndDate" class="form-floating" />
+            <input asp-for="BookingStartDate" class="form-floating" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+            <input asp-for="BookingEndDate" class="form-floating" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
             <input type="submit" value="View available boards" class="btn btn-default btn-search" />
         </p>
     </div>
