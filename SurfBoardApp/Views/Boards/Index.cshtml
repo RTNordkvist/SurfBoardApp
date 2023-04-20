@@ -101,25 +101,18 @@
 
 <br>
 <!-- Booking form -->
-<div>
-    <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" style="margin-bottom: 20px">
-        Book a board
-    </button>
-</div>
-<div class="collapse @(Model.BookingStartDate != null ? "show" : "")" id="collapseExample">
-    <form asp-action="Index" method="get">
-        <div class="form-actions no-color">
-            <p>
-                Select booking period:
-                <input asp-for="BookingStartDate" class="form-floating" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
-                <input asp-for="BookingEndDate" class="form-floating" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
-                <input type="submit" value="View available boards" class="btn btn-default btn-search" />
-            </p>
-        </div>
-        <!-- Attributten "asp-validation-summary" angiver, hvordan valideringsfejl skal vises, i dette tilfælde er den sat til "Alle", hvilket betyder, at alle valideringsfejl vil blive vist. -->
-        <div asp-validation-summary="All" class="text-danger"></div>
-    </form>
-</div>
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Select booking period:
+            <input asp-for="BookingStartDate" class="form-floating" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+            <input asp-for="BookingEndDate" class="form-floating" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+            <input type="submit" value="View available boards" class="btn btn-default btn-search" />
+        </p>
+    </div>
+    <!-- Attributten "asp-validation-summary" angiver, hvordan valideringsfejl skal vises, i dette tilfælde er den sat til "Alle", hvilket betyder, at alle valideringsfejl vil blive vist. -->
+    <div asp-validation-summary="All" class="text-danger"></div>
+</form>
 
 
 <!-- Board cards -->
