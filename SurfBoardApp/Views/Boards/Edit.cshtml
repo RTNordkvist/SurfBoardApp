@@ -14,15 +14,19 @@
 <hr />
 <div class="row">
     <div class="col-md-8">
+
         <!-- Board edit form -->
         <form asp-action="Edit" enctype="multipart/form-data">
+
             <!-- Displaying validation errors -->
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <!-- Hidden input fields -->
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="ExistingImages" />
             <input type="hidden" asp-for="Version" />
             <input type="hidden" asp-for="ConfirmedOverwrite" value="false"/>
+
             <!-- Board details input fields -->
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -70,6 +74,7 @@
                     Members only
                 </label>
             </div>
+
             <!-- Image upload -->
             <br />
             <div>
@@ -78,6 +83,7 @@
             </div>
             <br />
             <br />
+
             <!-- Save and cancel buttons -->
             <br />
             <div class="form-group">
