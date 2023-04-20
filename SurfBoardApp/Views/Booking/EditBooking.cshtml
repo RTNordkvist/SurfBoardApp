@@ -1,21 +1,37 @@
-﻿@using SurfBoardApp.Blazor.Shared.ViewModels.BookingViewModels;
+﻿<!-- Use the EditBookingVM as the model for this view -->
+@using SurfBoardApp.Blazor.Shared.ViewModels.BookingViewModels;
 @model EditBookingVM
 
+<!-- Header for the page, displaying the text "Edit Booking" -->
 <h2>Edit Booking</h2>
-<br/>
+<br />
+<!-- Display the name of the board being edited -->
 <h3>Board: @Model.BoardName</h3>
-
+<!-- Begin a form that will send the user's edits to the server -->
 <form asp-action="EditBooking" method="post">
+    <!-- Display any validation errors -->
+    <div asp-validation-summary="All" class="text-danger"></div>
+    php
+    Copy code
+    <!-- Allow the user to edit the start date of the booking -->
     <div class="form-group">
         <label for="startDate">Edit Start Date:</label>
         <input type="date" class="form-control" id="startDate" name="StartDate" value="@Model.StartDate.ToString("yyyy-MM-dd")" min="@DateTime.Today.ToString("yyyy-MM-dd")">
     </div>
+
+    <!-- Allow the user to edit the end date of the booking -->
     <div class="form-group">
         <label for="endDate">Edit End Date:</label>
         <input type="date" class="form-control" id="endDate" name="EndDate" value="@Model.EndDate.ToString("yyyy-MM-dd")" min="@DateTime.Today.ToString("yyyy-MM-dd")">
     </div>
+
+    <!-- Include the ID of the booking being edited in the form -->
     <input type="hidden" asp-for="Id">
-    <br/>
-    <button type="submit" class="btn btn-primary">Save</button>
+    <br />
+
+    <!-- Allow the user to submit the edited booking -->
+    <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure you want to change the rental date?')">Save</button>
+
+    <!-- Allow the user to return to their bookings without saving changes -->
     <button type="submit" class="btn btn-primary" formaction="@Url.Action("MyBookings")">My Bookings</button>
 </form>

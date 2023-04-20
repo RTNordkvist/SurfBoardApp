@@ -112,27 +112,53 @@ namespace SurfBoardApp.Domain.Services
             return bookingConfirmation;
         }
 
-        public async Task UpdateBookingDates(EditBookingVM model)
+        //Success og Message er brugt i EditBooking i BookingController
+        //success bruges variablen til at kontrollere, om reservationsopdateringen lykkedes eller ej,
+        //og variablen message bruges til at vise fejlmeddelelser, hvis opdateringen mislykkedes.
+        public async Task<(bool success, string message, DateTime? nextAvailableDate)> UpdateBookingDates(EditBookingVM model)
         {
+            // Retrieve the booking with the given Id
             var booking = _context.Booking.FirstOrDefault(x => x.Id == model.Id);
 
+            // Check if booking exists
             if (booking == null)
             {
-                throw new BookingNotFoundException();
+                return (false, "Booking not found.", null);
             }
 
+            // Get the user Id of the currently logged in user
             var userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
 
+            // Check if the current user is authorized to update the booking
             if (userId != booking.CustomerId)
             {
-                throw new BookingNotFoundException(); // For security reasons the system don't reveal that the booking was actually found but doesn't belong to the user
+                return (false, "You are not authorized to update this booking.", null);
+            }
+
+            // Check if the board is available for the new date range, if not - return an error message
+            if (await _context.Booking.AnyAsync(x => x.StartDate <= model.EndDate && x.EndDate >= model.StartDate && x.BoardId == booking.BoardId && x.Id != booking.Id))
+            {
+                // Get the next available date for the board
+                var nextAvailableDate = await _context.Booking
+                    .Where(x => x.BoardId == booking.BoardId && x.EndDate < model.StartDate)
+                    .OrderByDescending(x => x.EndDate)
+                    .Select(x => x.EndDate)
+                    .FirstOrDefaultAsync();
+
+                // Return an error message with the next available date
+                return (false, "The board is not available in the selected date.", null);
             }
 
             // Update the start and end date
             booking.StartDate = model.StartDate;
             booking.EndDate = model.EndDate;
             await _context.SaveChangesAsync();
+
+            // Return success message
+            return (true, "Booking dates updated successfully.", null);
         }
+
+
 
         /// <summary>
         /// Removes a booking based on the primary key (booking id)
