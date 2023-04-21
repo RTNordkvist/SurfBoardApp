@@ -12,7 +12,13 @@
     max-height: 200px;
 }
 
-
+.col-md-4 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, auto);
+    grid-column-gap: 10px;
+    grid-row-gap: 10px;
+}
 
 /* Set base font size, position, and minimum height for the HTML element */
 html {
