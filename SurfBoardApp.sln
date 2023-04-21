@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfBoardApp.Domain", "Surf
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfBoardApp.Blazor.Shared", "SurfBoardApp.Blazor.Shared\SurfBoardApp.Blazor.Shared.csproj", "{4F6BB9A7-FCE4-4DFA-B4CA-050971AB6987}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurfAppAPI", "..\SurfAppAPI\SurfAppAPI\SurfAppAPI.csproj", "{84517341-5595-458F-B942-D6617581A64B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,10 +33,6 @@ Global
 		{4F6BB9A7-FCE4-4DFA-B4CA-050971AB6987}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F6BB9A7-FCE4-4DFA-B4CA-050971AB6987}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F6BB9A7-FCE4-4DFA-B4CA-050971AB6987}.Release|Any CPU.Build.0 = Release|Any CPU
-		{84517341-5595-458F-B942-D6617581A64B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{84517341-5595-458F-B942-D6617581A64B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{84517341-5595-458F-B942-D6617581A64B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{84517341-5595-458F-B942-D6617581A64B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
