@@ -131,8 +131,8 @@ namespace SurfBoardApp.Controllers
 
             try
             {
-                await _boardService.UpdateBoard(model);
-                return RedirectToAction(nameof(Index));
+                int savedBoardId = await _boardService.UpdateBoard(model);
+                return RedirectToAction(nameof(Edit), new { id = savedBoardId });
             }
             catch (BoardNotFoundException)
             {

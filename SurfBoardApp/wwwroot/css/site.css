@@ -3,12 +3,24 @@
     text-decoration: none;
 }
 
+.board-image {
+    object-fit: contain;
+    width: 100%;
+    height: 100px;
+}
+.edit-board-image {
+    max-height: 200px;
+}
+
+
+
 /* Set base font size, position, and minimum height for the HTML element */
 html {
     font-size: 14px;
     position: relative;
     min-height: 100%;
 }
+
 
 /* Set font size for HTML element when screen size is greater than or equal to 768px */
 @media (min-width: 768px) {

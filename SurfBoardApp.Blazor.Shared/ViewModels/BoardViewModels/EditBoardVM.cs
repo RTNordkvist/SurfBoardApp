@@ -1,5 +1,7 @@
-﻿using SurfBoardApp.Data.Models;
+﻿using Microsoft.AspNetCore.Http;
+using SurfBoardApp.Data.Models;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels
@@ -13,5 +15,8 @@ namespace SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels
         public int Version { get; set; }
 
         public bool ConfirmedOverwrite { get; set; }
+
+        // Add the Images property
+        public List<IFormFile>? Images { get; set; }
     }
 }
