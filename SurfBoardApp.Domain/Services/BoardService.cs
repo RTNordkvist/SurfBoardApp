@@ -276,7 +276,7 @@ namespace SurfBoardApp.Domain.Services
             return board.Id;
         }
 
-        public async Task UpdateBoard(EditBoardVM model)
+        public async Task<int> UpdateBoard(EditBoardVM model)
         {
             var board = await _context.Board.Include(x => x.Images).FirstOrDefaultAsync(x => x.Id == model.Id);
 
@@ -290,6 +290,10 @@ namespace SurfBoardApp.Domain.Services
                 throw new OutdatedBoardInformationException();
             }
 
+            // Save the existing images to a separate variable
+            var existingImages = board.Images;
+
+            // Update the board properties except the Images property
             board.Id = model.Id;
             board.Name = model.Name;
             board.Length = model.Length;
@@ -299,19 +303,18 @@ namespace SurfBoardApp.Domain.Services
             board.Type = model.Type;
             board.Price = model.Price;
             board.Equipment = model.Equipment;
-            board.Images = model.ExistingImages;
             board.MembersOnly = model.MembersOnly;
             board.Version += 1;
 
             if (model.Images != null)
             {
-                //If there is no existing images for the board, a new empty list is created to contain the new images
-                if (board.Images == null)
+                // If there are no existing images for the board, create a new empty list to contain the new images
+                if (existingImages == null)
                 {
-                    board.Images = new List<Image>();
+                    existingImages = new List<Image>();
                 }
 
-                //New files are read and converted to the Image Class and added to the Board
+                // New files are read and converted to the Image class and added to the existingImages list
                 foreach (var file in model.Images)
                 {
                     using (var ms = new MemoryStream())
@@ -320,20 +323,29 @@ namespace SurfBoardApp.Domain.Services
                         var fileBytes = ms.ToArray();
                         string s = Convert.ToBase64String(fileBytes);
 
-                        // An Image obejct is created and populated with a base 54 encoded string which can be explicit set by an img source
-                        var Image = new Image
+                        // An Image object is created and populated with a base 64 encoded string which can be explicitly set by an img source
+                        var image = new Image
                         {
                             BoardId = board.Id,
                             Picture = "data:" + file.ContentType + ";base64, " + s
                         };
-                        board.Images.Add(Image);
+                        existingImages.Add(image);
                     }
-                };
+                }
             }
+
+            // Update the board's Images property with the updated existingImages list
+            board.Images = existingImages;
 
             _context.Update(board);
             await _context.SaveChangesAsync();
+
+            return board.Id;
         }
+
+
+
+
 
         public async Task RemoveBoard(int id)
         {

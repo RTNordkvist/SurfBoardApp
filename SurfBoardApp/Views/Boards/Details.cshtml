@@ -12,9 +12,10 @@
 
 <!-- This div contains buttons for editing and deleting the model.  -->
 <div>
+
     <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger">Delete</a>
     <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
+
     <!-- This button takes the user back to the index page -->
     <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>
-
