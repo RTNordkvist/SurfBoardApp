@@ -2,7 +2,10 @@
     color: inherit;
     text-decoration: none;
 }
-
+.small-card{
+    max-width: 400px;
+    margin: 0 auto;
+}
 /* Set base font size, position, and minimum height for the HTML element */
 html {
     font-size: 14px;
