@@ -9,6 +9,7 @@ using System.Configuration;
 using SurfBoardApp.Data;
 using SurfBoardApp.Domain.Services;
 using SurfBoardApp.ModelBinding;
+using WeatherAPI.Data;
 
 namespace SurfBoardApp
 {
@@ -50,6 +51,7 @@ namespace SurfBoardApp
             builder.Services.AddScoped<BoardService>();
             builder.Services.AddScoped<BookingService>();
             builder.Services.AddScoped<BoardCounterMiddleware>();
+            builder.Services.AddScoped<OpenWeatherAPIService>();
 
             //External Logins
             builder.Services.AddAuthentication().AddGoogle(googleOptions =>
