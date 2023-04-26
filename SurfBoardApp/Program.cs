@@ -52,6 +52,7 @@ namespace SurfBoardApp
             builder.Services.AddScoped<BookingService>();
             builder.Services.AddScoped<BoardCounterMiddleware>();
             builder.Services.AddScoped<OpenWeatherAPIService>();
+            builder.Services.AddServerSideBlazor();
 
             //External Logins
             builder.Services.AddAuthentication().AddGoogle(googleOptions =>
@@ -100,6 +101,7 @@ namespace SurfBoardApp
                 name: "default",
                 pattern: "{controller=Boards}/{action=Index}/{id?}");
             app.MapRazorPages();
+            app.MapBlazorHub();
 
             app.Run();
         }

@@ -1,4 +1,6 @@
 ﻿@using SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels;
+@using SurfBoardApp.RazorClassLibrary.Blazor.Shared;
+@using Microsoft.AspNetCore.Mvc.Rendering;
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Needed for the Advanced Search Button Script-->
 @model IndexVM
 
@@ -6,6 +8,11 @@
     ViewData["Title"] = "Index";
 }
 <h1>Boards</h1>
+
+<div class="card">
+    @(await Html.RenderComponentAsync<Component1>(RenderMode.ServerPrerendered))
+</div>
+
 <style>
     .col-md-4 {
         display: grid;
