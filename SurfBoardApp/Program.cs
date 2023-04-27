@@ -9,7 +9,6 @@ using System.Configuration;
 using SurfBoardApp.Data;
 using SurfBoardApp.Domain.Services;
 using SurfBoardApp.ModelBinding;
-using WeatherAPI.Data;
 
 namespace SurfBoardApp
 {

@@ -1,7 +1,7 @@
 ﻿using SurfBoardApp.Data.OpenWeatherAPIModels;
 using System.Text.Json;
 
-namespace WeatherAPI.Data
+namespace SurfBoardApp.Domain.Services
 {
     public class OpenWeatherAPIService
     {
