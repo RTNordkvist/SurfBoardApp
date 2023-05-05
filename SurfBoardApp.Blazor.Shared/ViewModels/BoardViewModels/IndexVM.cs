@@ -1,5 +1,4 @@
-﻿using SurfBoardApp.Data.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels
 {

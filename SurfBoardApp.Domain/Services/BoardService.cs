@@ -39,9 +39,25 @@ namespace SurfBoardApp.Domain.Services
                 Volume = board.Volume,
                 Type = board.Type,
                 Price = board.Price,
-                Equipment = board.Equipment,
-                Images = board.Images
+                Equipment = board.Equipment
             };
+
+            if (board.Images != null)
+            {
+                model.Images = new List<ImageVM>();
+
+                foreach (var image in board.Images)
+                {
+                    var imageVM = new ImageVM
+                    {
+                        Id = image.Id,
+                        BoardId = image.BoardId,
+                        Picture = image.Picture
+                    };
+                    model.Images.Add(imageVM);
+                }
+            }
+
 
             // The view model is returned
             return model;
@@ -65,10 +81,25 @@ namespace SurfBoardApp.Domain.Services
                 Type = board.Type,
                 Price = board.Price,
                 Equipment = board.Equipment,
-                ExistingImages = board.Images,
                 MembersOnly = board.MembersOnly,
                 Version = board.Version
             };
+
+            if (board.Images != null)
+            {
+                boardModel.ExistingImages = new List<ImageVM>();
+
+                foreach (var image in board.Images)
+                {
+                    var imageVM = new ImageVM
+                    {
+                        Id = image.Id,
+                        BoardId = image.BoardId,
+                        Picture = image.Picture
+                    };
+                    boardModel.ExistingImages.Add(imageVM);
+                }
+            }
 
             // The view model is returned
             return boardModel;
@@ -96,7 +127,7 @@ namespace SurfBoardApp.Domain.Services
                 Name = x.Name,
                 Type = x.Type,
                 Price = x.Price,
-                Image = x.Images != null ? x.Images.FirstOrDefault() : null //Checks if Images is null. Returns first picture in the list if it's not null. Otherwise returns null.
+                Image = x.Images != null ? x.Images.Select(y => new ImageVM {Id = y.Id, BoardId = y.BoardId, Picture = y.Picture }).FirstOrDefault() : null //Checks if Images is null. Returns first picture in the list if it's not null. Otherwise returns null.
             }).AsNoTracking();
 
             // The list of view models is projected to a paginated list
@@ -299,9 +330,24 @@ namespace SurfBoardApp.Domain.Services
             board.Type = model.Type;
             board.Price = model.Price;
             board.Equipment = model.Equipment;
-            board.Images = model.ExistingImages;
             board.MembersOnly = model.MembersOnly;
             board.Version += 1;
+
+            if (model.ExistingImages != null)
+            {
+                board.Images = new List<Image>();
+
+                foreach (var image in model.ExistingImages)
+                {
+                    var existingImage = new Image
+                    {
+                        Id = image.Id,
+                        BoardId = image.BoardId,
+                        Picture = image.Picture
+                    };
+                    board.Images.Add(existingImage);
+                }
+            }
 
             if (model.Images != null)
             {

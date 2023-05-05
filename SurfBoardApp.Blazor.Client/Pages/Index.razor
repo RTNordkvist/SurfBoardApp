@@ -1,0 +1,42 @@
+﻿@page "/index"
+@using SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels;
+@inject HttpClient Http
+
+<PageTitle>Index</PageTitle>
+
+<h3>Boards</h3>
+
+@if (boards == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var board in boards)
+            {
+                <tr>
+                    <td>@board.Id</td>
+                    <td>@board.Name</td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private BoardVM[]? boards;
+
+    protected override async Task OnInitializedAsync()
+    {
+        boards = await Http.GetFromJsonAsync<BoardVM[]>("api/boards/GetBoards");
+    }
+}

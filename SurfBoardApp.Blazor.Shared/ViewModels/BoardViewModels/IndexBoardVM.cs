@@ -1,5 +1,4 @@
-﻿using SurfBoardApp.Data.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels
 {
@@ -13,6 +12,6 @@ namespace SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels
 
         public decimal? Price { get; set; }
 
-        public Image? Image { get; set; }
+        public ImageVM? Image { get; set; }
     }
 }
