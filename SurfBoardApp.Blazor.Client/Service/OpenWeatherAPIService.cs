@@ -1,4 +1,4 @@
-﻿using SurfBoardApp.Data.OpenWeatherAPIModels;
+﻿using SurfBoardApp.Blazor.Client.Data.OpenWeatherAPIModels;
 using System.Text.Json;
 
 namespace SurfBoardApp.Blazor.Client.Service
@@ -16,11 +16,11 @@ namespace SurfBoardApp.Blazor.Client.Service
              return currentWeather;
          }
         */
-        public async Task<WeatherForecast> GetWeatherForecast(string city)
+        public async Task<WeatherForecast> GetWeatherForecast(string city, int days = 7)
         {
             var httpClient = new HttpClient();
 
-            var respons = await httpClient.GetStringAsync($"https://api.openweathermap.org/data/2.5/forecast?q={city}&appid=544ad375f5007cc6a734fd13b0a0f8fe");
+            var respons = await httpClient.GetStringAsync($"https://api.openweathermap.org/data/2.5/forecast?q={city}&appid=544ad375f5007cc6a734fd13b0a0f8fe&units=metric&cnt={days * 8}");
 
             var weatherforecast = JsonSerializer.Deserialize<WeatherForecast>(respons);
 
