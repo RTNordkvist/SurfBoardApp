@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SurfBoardApp.Blazor.Shared\SurfBoardApp.Blazor.Shared.csproj" />
+    <ProjectReference Include="..\SurfBoardApp.Data\SurfBoardApp.Data.csproj" />
   </ItemGroup>
 
 </Project>
