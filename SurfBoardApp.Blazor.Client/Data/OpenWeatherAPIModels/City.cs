@@ -4,15 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SurfBoardApp.Data.OpenWeatherAPIModels
+namespace SurfBoardApp.Blazor.Client.Data.OpenWeatherAPIModels
 {
-    public class Sys
+    public class City
     {
-        public int type { get; set; }
         public int id { get; set; }
+        public string? name { get; set; }
+        public Coord coord { get; set; }
         public string? country { get; set; }
+        public int population { get; set; }
+        public int timezone { get; set; }
         public int sunrise { get; set; }
         public int sunset { get; set; }
-        public string? pod { get; set; }
     }
 }

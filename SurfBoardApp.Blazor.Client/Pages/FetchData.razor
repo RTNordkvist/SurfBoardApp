@@ -1,57 +1,150 @@
 ﻿@page "/fetchdata"
+@using SurfBoardApp.Blazor.Client.Data.OpenWeatherAPIModels;
 @inject HttpClient Http
+@inject SurfBoardApp.Blazor.Client.Service.OpenWeatherAPIService WeatherAPIService
 
 <PageTitle>Weather forecast</PageTitle>
 
 <h1>Weather forecast</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
+<div class="form-group">
+    <label for="cityInput">City:</label>
+    <input type="text" class="form-control" id="cityInput" @bind="@city" @oninput="ValidateCity" />
+    <label for="daysSlider">Days: @days</label>
+    <input type="range" class="form-control-range" id="daysSlider" min="1" max="7" @bind-value="days" />
+</div>
 
-@if (forecasts == null)
+<button class="btn btn-primary" @onclick="FetchWeather" style="margin-bottom: 10px;">Fetch Weather</button>
+
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger mt-3" role="alert">
+        @errorMessage
+    </div>
+}
+else if (forecast == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="row" style="display: flex; flex-wrap: wrap;">
+        @foreach (var group in forecast.list.GroupBy(item => UnixTimeStampToDateTime(item.dt).Date).Take(days))
+        {
+            <div class="col-sm-3 mb-3">
+                <div class="card" style="width: 100%;" @onclick="() => ShowDetails(group)">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@UnixTimeStampToDateTime(group.First().dt).ToString("ddd, MMM dd, h:mm tt")</h5>
+                        <img src="@($"https://openweathermap.org/img/wn/{group.First().weather[0].icon}.png")" alt="@group.First().weather[0].description" width="60" height="60" />
+                        <p class="card-text">@Math.Round(group.Average(item => item.main.temp), 1)°C / @Math.Round(group.Average(item => (item.main.temp * 9 / 5) + 32), 1)°F </p>
+                        <p class="card-text">Wind speed: @Math.Round(group.Average(item => item.wind.speed), 1) m/s</p>
+                    </div>
+                </div>
+                @if (selectedGroup == group)
+                {
+                    <div class="card mt-3">
+                        <ul class="list-group list-group-flush">
+                            @foreach (var item in group)
+                            {
+                                <li class="list-group-item">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <h6>@UnixTimeStampToDateTime(item.dt).ToString("hh:mm tt")</h6>
+                                            <img src="@($"https://openweathermap.org/img/wn/{item.weather[0].icon}.png")" alt="@item.weather[0].description" width="60" height="60" />
+                                        </div>
+                                        <div class="col-8">
+                                            <p>@Math.Round(item.main.temp, 1)°C / @Math.Round((item.main.temp * 9 / 5) + 32, 1)°F</p>
+                                            <p>@item.weather[0].description</p>
+                                            <p>Wind speed: @Math.Round(item.wind.speed, 1) m/s</p>
+                                            <p>@UnixTimeStampToDateTime(item.dt).ToString("h:mm tt")</p>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+            </div>
+        }
+
+    </div>
 }
-
 @code {
-    private WeatherForecast[]? forecasts;
+    // Variables to store the city, number of days, weather forecast data, selected group, and error message
+    private WeatherForecast? forecast;
+    private string city;
+    private int days = 7;
+    private IGrouping<DateTime, List>? selectedGroup;
+    private string errorMessage;
 
-    protected override async Task OnInitializedAsync()
+    // Fetches the weather forecast data for the specified city and number of days
+    private async Task FetchWeather()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+        // Check if the city input is empty or only contains whitespace
+        if (string.IsNullOrWhiteSpace(city))
+        {
+            // Clear the previous weather forecast data
+            forecast = null;
+
+            // Display an error message
+            errorMessage = "Please enter a city.";
+            return;
+        }
+
+        // Check if the city input contains invalid characters (i.e., anything other than letters or spaces)
+        if (city.Any(c => !char.IsLetter(c) && c != ' '))
+        {
+            // Clear the previous weather forecast data
+            forecast = null;
+
+            // Display an error message
+            errorMessage = "Invalid city name. Please enter a valid city.";
+            return;
+        }
+
+        // Clear the error message and fetch the weather forecast data
+        errorMessage = "";
+        forecast = await WeatherAPIService.GetWeatherForecast(city, days);
+
+        // Check if the city is not found
+        if (forecast.cod == "404")
+        {
+            // Clear the previous weather forecast data
+            forecast = null;
+
+            // Display an error message
+            errorMessage = "City not found. Please enter a valid city.";
+            return;
+        }
     }
 
-    public class WeatherForecast
+    private void ShowDetails(IGrouping<DateTime, List> group)
     {
-        public DateTime Date { get; set; }
-
-        public int TemperatureC { get; set; }
-
-        public string? Summary { get; set; }
-
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        if (selectedGroup == group)
+        {
+            selectedGroup = null;
+        }
+        else
+        {
+            selectedGroup = group;
+        }
     }
+
+    // Validates the city input to only allow letters and spaces
+    private void ValidateCity(ChangeEventArgs e)
+    {
+        var input = (string)e.Value;
+        city = new string(input.Where(c => char.IsLetter(c) || c == ' ').ToArray());
+    }
+
+    // Converts Unix timestamp to DateTime
+    private DateTime UnixTimeStampToDateTime(double unixTimeStamp)
+    {
+        DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+        dateTime = dateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+        dateTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 12, 0, 0);
+        return dateTime;
+    }
+
 }

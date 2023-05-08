@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SurfBoardApp.Data.OpenWeatherAPIModels
+namespace SurfBoardApp.Blazor.Client.Data.OpenWeatherAPIModels
 {
     public class Rain
     {
