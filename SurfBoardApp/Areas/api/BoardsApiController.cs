@@ -16,7 +16,7 @@ using SurfBoardApp.Data.Models;
 using SurfBoardApp.Domain.Exceptions;
 using SurfBoardApp.Domain.Services;
 
-namespace SurfBoardApp.Controllers
+namespace SurfBoardApp.Areas.api
 {
     public class BoardsApiController : Controller
     {
@@ -29,7 +29,7 @@ namespace SurfBoardApp.Controllers
         }
 
         // GET: Boards
-        public async Task<IActionResult> Index(IndexVM model)
+        public async Task<IActionResult> GetBoards(IndexVM model)
         {
             //sets pagenumber and pagesize. Can later be changed to user input.
             if (model.PageNumber == null)
@@ -40,24 +40,24 @@ namespace SurfBoardApp.Controllers
             model.PageSize = 12;
 
             if (!ModelState.IsValid)
-                return View(model);
+                return BadRequest(ModelState); // fejlkode
 
             if (model.BookingEndDate < model.BookingStartDate)
             {
                 ModelState.AddModelError("InvalidEndDate", "End date cannot be before start date");
                 model.BookingEndDate = null;
                 model.Boards = new PaginatedList<IndexBoardVM>(new(), 0, 1, model.PageSize);
-                return View(model);
+                return BadRequest(ModelState);
             }
 
             var result = await _boardService.GetBoardModels(model);
 
-            return View(result);
+            return Ok(result);
         }
 
         // GET: Boards/Details/5
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> GetBoard(int? id)
         {
             if (id == null)
             {
@@ -71,50 +71,23 @@ namespace SurfBoardApp.Controllers
                 return NotFound();
             }
 
-            return View(result);
-        }
-
-        // GET: Boards/Create
-        [Authorize(Roles = "Admin")]
-        public IActionResult Create()
-        {
-            return View();
+            return Ok(result);
         }
 
         // POST: Boards/Create
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateBoardVM model)
+        public async Task<IActionResult> CreateBoard(CreateBoardVM model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            await _boardService.AddBoard(model);
+            var result = await _boardService.AddBoard(model);
 
-            return RedirectToAction(nameof(Index));
-        }
-
-        // TODO: Refactor from here and below -> move responsibility to BoardService
-        // GET: Boards/Edit/5
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var result = await _boardService.GetEditBoard((int)id);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return View(result);
+            return Ok(result);
         }
 
         // POST: Boards/Edit/5
@@ -123,7 +96,7 @@ namespace SurfBoardApp.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditBoardVM model)
+        public async Task<IActionResult> EditBoard(EditBoardVM model)
         {
             if (!ModelState.IsValid)
             {
@@ -133,7 +106,7 @@ namespace SurfBoardApp.Controllers
             try
             {
                 await _boardService.UpdateBoard(model);
-                return RedirectToAction(nameof(Index));
+                return Ok();
             }
             catch (BoardNotFoundException)
             {
@@ -141,32 +114,11 @@ namespace SurfBoardApp.Controllers
             }
             catch (OutdatedBoardInformationException)
             {
-                
                 var updatedModel = await _boardService.GetEditBoard(model.Id);
 
                 var viewModel = new ConfirmEditBoardVM { PersistedData = updatedModel, UserInput = model };
 
-                return View("ConfirmEdit", viewModel);
-            }
-        }
-
-        // GET: Boards/Delete/5
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            try
-            {
-                var result = await _boardService.GetBoard((int)id);
-                return View(result);
-            }
-            catch (BoardNotFoundException)
-            {
-                return NotFound();
+                return Ok(viewModel);
             }
         }
 
@@ -174,12 +126,12 @@ namespace SurfBoardApp.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteBoard(int id)
         {
             try
             {
                 await _boardService.RemoveBoard(id);
-                return RedirectToAction(nameof(Index));
+                return Ok();
             }
             catch (BoardNotFoundException)
             {
@@ -193,13 +145,12 @@ namespace SurfBoardApp.Controllers
         [ValidateAntiForgeryToken]
         // This method can only be accessed by users with the "Admin" role
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RemoveImage(int boardId, int imageId)
+        public async Task<IActionResult> DeleteImage(int boardId, int imageId)
         {
             try
             {
                 await _boardService.RemoveImage(boardId, imageId);
-                // Redirect to the Edit method of the current controller with the boardId parameter
-                return RedirectToAction(nameof(Edit), new { id = boardId });
+                return Ok();
             }
             catch (BoardNotFoundException)
             {
@@ -208,7 +159,6 @@ namespace SurfBoardApp.Controllers
             catch (ImageNotFoundException)
             {
                 return NotFound();
-
             }
         }
     }

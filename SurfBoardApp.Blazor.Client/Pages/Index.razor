@@ -1,4 +1,5 @@
 ﻿@page "/index"
+@using SurfBoardApp.Blazor.Client.Components;
 @using SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels;
 @inject HttpClient Http
 
@@ -6,7 +7,7 @@
 
 <h3>Boards</h3>
 
-@if (boards == null)
+@if (_boards == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -20,9 +21,9 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var board in boards)
+            @foreach (var board in _boards)
             {
-                <tr>
+                <tr @onclick="async () => await HandleBoardClicked(board)">
                     <td>@board.Id</td>
                     <td>@board.Name</td>
 
@@ -30,13 +31,24 @@ else
             }
         </tbody>
     </table>
+
+    <!-- Modal -->
+    <BoardModal @ref="_boardModal" Model=_board />
 }
 
 @code {
-    private BoardVM[]? boards;
+    private BoardVM[]? _boards;
+    private BoardVM _board = new();
+    private BoardModal? _boardModal;
 
     protected override async Task OnInitializedAsync()
     {
-        boards = await Http.GetFromJsonAsync<BoardVM[]>("api/boards/GetBoards");
+        _boards = await Http.GetFromJsonAsync<BoardVM[]>("api/boards/GetBoards"); //TODO: Flyt metoden til ApiService
+    }
+
+    private async Task HandleBoardClicked(BoardVM board)
+    {
+        _board = board;
+        await _boardModal.OpenModal();
     }
 }

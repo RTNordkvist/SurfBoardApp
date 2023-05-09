@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using SurfBoardApp.Blazor.Client;
+using SurfBoardApp.Blazor.Client.Service;
 
 namespace SurfBoardApp.Blazor.Client
 {
@@ -13,6 +14,8 @@ namespace SurfBoardApp.Blazor.Client
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+            builder.Services.AddScoped<ApiService>();
 
             await builder.Build().RunAsync();
         }

@@ -1,0 +1,51 @@
+﻿@using SurfBoardApp.Blazor.Client.Service;
+@using SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels;
+@inject ApiService apiService
+
+<div class="modal fade @_modalClass" id="board-modal" tabindex="-1" style="display: @_modalDisplay;">
+    <div class="modal-dialog modal-xl" role="document" style="z-index: 1055;">
+        <div class="modal-content">
+            <div class="modal-header" style="display: block;">
+                <div class="row">
+                    <div class="col-12">
+                        <h3 type="text" class="modal-title" >@Model.Name</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                    <div class="form-group">
+                        <p>@Model.Name</p>
+                    </div>
+            </div>
+        </div>
+    </div>
+    <div @onclick="CloseModal" class="modal-backdrop fade @_modalClass"></div>
+</div>
+
+@code {
+    [Parameter]
+    public BoardVM Model { get; set; }
+
+    private string _modalDisplay;
+    private string _modalClass;
+
+    private bool _showSecondaryStakeholdersMenu;
+
+    public async Task OpenModal()
+    {
+        _modalDisplay = "block;";
+        await Task.Delay(100); //Delay allows bootstrap to perform nice fade animation
+        _modalClass = "show";
+        StateHasChanged();
+    }
+
+    public async Task CloseModal()
+    {
+        _modalClass = "";
+        await Task.Delay(250);
+        _modalDisplay = "none;";
+        StateHasChanged();
+
+        Model = new();
+    }
+}
