@@ -29,7 +29,6 @@
     <ProjectReference Include="..\SurfBoardApp.Blazor.Shared\SurfBoardApp.Blazor.Shared.csproj" />
     <ProjectReference Include="..\SurfBoardApp.Data\SurfBoardApp.Data.csproj" />
     <ProjectReference Include="..\SurfBoardApp.Domain\SurfBoardApp.Domain.csproj" />
-    <ProjectReference Include="..\SurfBoardApp.RazorClassLibrary.Blazor.Shared\SurfBoardApp.RazorClassLibrary.Blazor.Shared.csproj" />
   </ItemGroup>
 
 </Project>
