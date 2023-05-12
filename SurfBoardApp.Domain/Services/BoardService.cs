@@ -5,6 +5,7 @@ using SurfBoardApp.Blazor.Shared.ViewModels;
 using SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels;
 using SurfBoardApp.Data;
 using SurfBoardApp.Data.Models;
+using SurfBoardApp.Data.OpenWeatherAPIModels;
 using SurfBoardApp.Domain.Exceptions;
 
 namespace SurfBoardApp.Domain.Services
@@ -63,6 +64,32 @@ namespace SurfBoardApp.Domain.Services
             return model;
         }
 
+        public async Task<List<BoardVM>> GetBoards()
+        {
+            // All boards from the DBcontext is found
+            var boards = _context.Board
+                .Include(x => x.Images)
+                .Include(x => x.Bookings)
+                .OrderBy(x => x.Name)
+                .AsQueryable();
+
+            var model = await boards.Select(board => new BoardVM
+            {
+                Id = board.Id,
+                Name = board.Name,
+                Length = board.Length,
+                Width = board.Width,
+                Thickness = board.Thickness,
+                Volume = board.Volume,
+                Type = board.Type,
+                Price = board.Price,
+                Equipment = board.Equipment,
+                Images = board.Images != null ? board.Images.Select(x => new ImageVM { Id = x.Id, BoardId = x.BoardId, Picture = x.Picture }).ToList() : null
+            }).ToListAsync();
+
+            return model;
+        }
+
         // Receives an id of a board and returns a board view model for editing
         public async Task<EditBoardVM> GetEditBoard(int id)
         {
@@ -106,7 +133,7 @@ namespace SurfBoardApp.Domain.Services
         }
 
         // Receives a view model 
-        public async Task<IndexVM> GetBoardModels(IndexVM model)
+        public async Task<IndexVM> GetIndexModel(IndexVM model)
         {
             // All boards from the DBcontext is found
             var boards = _context.Board
@@ -127,7 +154,7 @@ namespace SurfBoardApp.Domain.Services
                 Name = x.Name,
                 Type = x.Type,
                 Price = x.Price,
-                Image = x.Images != null ? x.Images.Select(y => new ImageVM {Id = y.Id, BoardId = y.BoardId, Picture = y.Picture }).FirstOrDefault() : null //Checks if Images is null. Returns first picture in the list if it's not null. Otherwise returns null.
+                Image = x.Images != null ? x.Images.Select(y => new ImageVM { Id = y.Id, BoardId = y.BoardId, Picture = y.Picture }).FirstOrDefault() : null //Checks if Images is null. Returns first picture in the list if it's not null. Otherwise returns null.
             }).AsNoTracking();
 
             // The list of view models is projected to a paginated list

@@ -1,0 +1,20 @@
+﻿@using SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels;
+
+<div class="index-card card mb-2 h-100 d-flex flex-column">
+    <!-- Board image -->
+    <img class="card-img-top" src="@Model.Images?.FirstOrDefault()?.Picture" alt="Board Image">
+    <div class="card-body flex-grow-1">
+        <!-- Board name -->
+        <h5 class="card-title">@Model.Name</h5>
+    </div>
+    <div class="card-footer d-flex justify-content-center" style="min-height: 41px;">
+        <!-- Board type -->
+        <p class="card-text">@Model.Type</p>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public BoardVM Model { get; set; }
+}

@@ -18,7 +18,14 @@ using SurfBoardApp.Domain.Services;
 
 namespace SurfBoardApp.Areas.api
 {
-    public class BoardsApiController : Controller
+    [Route("api/boards/[action]")]
+    // forklaring på hvorfor vi bruger [Route("api/boards")] istedet for [Route("api/[controller] : 
+    //Brug [Route("api/boards")]i stedet for [Route("api/[controller]")] anses for at være mere RESTful,
+    //fordi det overholder de almindelige konventioner for en RESTful API.
+    //RESTful API'er anbefales det at bruge små bogstaver og flertal ressourcenavne i URL'erne.
+    //Dette gør API'en mere konsistent og lettere for kunder at forstå og bruge.
+    //[Route("api/boards/[Action]")]
+    public class BoardsApiController: Controller
     {
         //DBContext is injected through dependency injection
         private readonly BoardService _boardService;
@@ -28,34 +35,13 @@ namespace SurfBoardApp.Areas.api
             _boardService = boardService;
         }
 
-        // GET: Boards
-        public async Task<IActionResult> GetBoards(IndexVM model)
+        public async Task<IActionResult> GetBoards()
         {
-            //sets pagenumber and pagesize. Can later be changed to user input.
-            if (model.PageNumber == null)
-            {
-                model.PageNumber = 1;
-            }
-
-            model.PageSize = 12;
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState); // fejlkode
-
-            if (model.BookingEndDate < model.BookingStartDate)
-            {
-                ModelState.AddModelError("InvalidEndDate", "End date cannot be before start date");
-                model.BookingEndDate = null;
-                model.Boards = new PaginatedList<IndexBoardVM>(new(), 0, 1, model.PageSize);
-                return BadRequest(ModelState);
-            }
-
-            var result = await _boardService.GetBoardModels(model);
+            var result = await _boardService.GetBoards();
 
             return Ok(result);
         }
 
-        // GET: Boards/Details/5
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetBoard(int? id)
         {
@@ -74,35 +60,21 @@ namespace SurfBoardApp.Areas.api
             return Ok(result);
         }
 
-        // POST: Boards/Create
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateBoard(CreateBoardVM model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
             var result = await _boardService.AddBoard(model);
 
             return Ok(result);
         }
 
-        // POST: Boards/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditBoard(EditBoardVM model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
             try
             {
                 await _boardService.UpdateBoard(model);
@@ -122,7 +94,6 @@ namespace SurfBoardApp.Areas.api
             }
         }
 
-        // POST: Boards/Delete/5
         [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

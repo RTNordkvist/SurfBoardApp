@@ -18,12 +18,12 @@ using SurfBoardApp.Domain.Services;
 
 namespace SurfBoardApp.Controllers
 {
-    public class BoardsApiController : Controller
+    public class BoardsController : Controller
     {
         //DBContext is injected through dependency injection
         private readonly BoardService _boardService;
 
-        public BoardsApiController(BoardService boardService)
+        public BoardsController(BoardService boardService)
         {
             _boardService = boardService;
         }
@@ -50,7 +50,7 @@ namespace SurfBoardApp.Controllers
                 return View(model);
             }
 
-            var result = await _boardService.GetBoardModels(model);
+            var result = await _boardService.GetIndexModel(model);
 
             return View(result);
         }

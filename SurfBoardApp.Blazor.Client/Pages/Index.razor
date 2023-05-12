@@ -1,55 +1,58 @@
 ﻿@page "/"
 @page "/index"
+@using SurfBoardApp.Blazor.Client.ClientModels;
 @using SurfBoardApp.Blazor.Client.Components;
+@using SurfBoardApp.Blazor.Client.Service;
 @using SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels;
 @inject HttpClient Http
+@inject ApiService apiservice
 
 <PageTitle>Index</PageTitle>
 
 <h3>Boards</h3>
 
-@if (_boards == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var board in _boards)
-            {
-                <tr @onclick="async () => await HandleBoardClicked(board)">
-                    <td>@board.Id</td>
-                    <td>@board.Name</td>
+<!-- Board cards -->
+<div class="row">
+    <!-- Loop through the collection of boards -->
+    @foreach (var board in _boards
+        .Where(x => _filter.MinLength == null ? true : x.Length >= _filter.MinLength && _filter.MaxLength == null ? true : x.Length <= _filter.MaxLength)
+        .Where(x => _filter.MinWidth == null ? true : x.Width >= _filter.MinWidth && _filter.MaxWidth == null ? true : x.Width <= _filter.MaxWidth)
+        .Where(x => _filter.MinThickness == null ? true : x.Thickness >= _filter.MinThickness && _filter.MaxThickness == null ? true : x.Thickness <= _filter.MaxThickness)
+        .Where(x => _filter.MinVolume == null ? true : x.Volume >= _filter.MinVolume && _filter.MaxVolume == null ? true : x.Volume <= _filter.MaxVolume)
+        .Where(x => _filter.MinPrice == null ? true : x.Price >= _filter.MinPrice && _filter.MaxVolume == null ? true : x.Price <= _filter.MaxPrice))
+    {
+        <div class="col-sm-2 cursor-pointer" @onclick="async () => await HandleBoardClicked(board)">
+            <BoardCard @ref="_boardCard" Model=board />
+        </div>
+    }
+</div>
 
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <!-- Modal -->
-    <BoardModal @ref="_boardModal" Model=_board />
-}
+<!-- Modal -->
+<BoardModal @ref="_boardModal" Model=_board />
 
 @code {
-    private BoardVM[]? _boards;
+    private List<BoardVM>? _boards = new();
     private BoardVM _board = new();
+
     private BoardModal? _boardModal;
+    private BoardCard? _boardCard;
+
+    private BoardFilterOptions _filter = new();
 
     protected override async Task OnInitializedAsync()
     {
-        _boards = await Http.GetFromJsonAsync<BoardVM[]>("api/boards/GetBoards"); //TODO: Flyt metoden til ApiService
+        _boards = await apiservice.GetBoards();
+        _filter.Reset();
     }
 
     private async Task HandleBoardClicked(BoardVM board)
     {
         _board = board;
         await _boardModal.OpenModal();
+    }
+
+    private void SearchOnChange(ChangeEventArgs args)
+    {
+        _filter.SearchValue = (string)args.Value;
     }
 }
