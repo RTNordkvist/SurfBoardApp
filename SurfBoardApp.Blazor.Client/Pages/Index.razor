@@ -19,7 +19,7 @@
         .Where(x => _filter.MinWidth == null ? true : x.Width >= _filter.MinWidth && _filter.MaxWidth == null ? true : x.Width <= _filter.MaxWidth)
         .Where(x => _filter.MinThickness == null ? true : x.Thickness >= _filter.MinThickness && _filter.MaxThickness == null ? true : x.Thickness <= _filter.MaxThickness)
         .Where(x => _filter.MinVolume == null ? true : x.Volume >= _filter.MinVolume && _filter.MaxVolume == null ? true : x.Volume <= _filter.MaxVolume)
-        .Where(x => _filter.MinPrice == null ? true : x.Price >= _filter.MinPrice && _filter.MaxVolume == null ? true : x.Price <= _filter.MaxPrice))
+        .Where(x => _filter.MinPrice == null ? true : x.Price >= _filter.MinPrice && _filter.MaxPrice == null ? true : x.Price <= _filter.MaxPrice))
     {
         <div class="col-sm-2 cursor-pointer" @onclick="async () => await HandleBoardClicked(board)">
             <BoardCard @ref="_boardCard" Model=board />
