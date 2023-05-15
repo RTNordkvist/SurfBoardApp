@@ -106,6 +106,7 @@ namespace SurfBoardApp
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Boards}/{action=Index}/{id?}");
+
             app.MapRazorPages();
             app.MapBlazorHub();
 
