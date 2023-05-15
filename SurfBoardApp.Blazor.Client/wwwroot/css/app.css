@@ -74,3 +74,30 @@ a, .btn-link {
     height: 200px;
     align-items: center;
 }
+
+/*Project styles*/
+
+.fixed-ratio {
+    aspect-ratio: initial;
+    height: 200px;
+}
+
+.input-edit {
+    border: 1px solid rgba(0,0,0,0);
+}
+
+    .input-edit:hover {
+        border: 1px solid #f0f0f0;
+    }
+
+    .input-edit:focus {
+        outline: 1px solid lightgrey;
+    }
+
+.pi-description {
+    width: 100%;
+    resize: none;
+    padding: 3px;
+    padding-top: 0px;
+    height: fit-content;
+}

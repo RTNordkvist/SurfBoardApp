@@ -19,5 +19,6 @@ namespace SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels
         public decimal? Price { get; set; }
         public string? Equipment { get; set; }
         public List<ImageVM>? Images { get; set; }
+        public bool MembersOnly { get; set; }
     }
 }

@@ -5,38 +5,8 @@
 <div class="modal fade @_modalClass" id="board-modal" tabindex="-1" style="display: @_modalDisplay;">
     <div class="modal-dialog modal-xl" role="document" style="z-index: 1055;">
         <div class="modal-content">
-            <div class="modal-header" style="display: block;">
-                <div class="row">
-                    <div class="col-12">
-                        <h3 type="text" class="modal-title">@Model.Name</h3>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-body">
-                <dl class="row">
-                    <dt class="col-sm-2 row-cols-1">Length</dt>
-                    <dd class="col-sm-10">@Model.Length</dd>
-                    <dt class="col-sm-2">Width</dt>
-                    <dd class="col-sm-10">@Model.Width</dd>
-                    <dt class="col-sm-2">Thickness</dt>
-                    <dd class="col-sm-10">@Model.Thickness</dd>
-                    <dt class="col-sm-2">Volume</dt>
-                    <dd class="col-sm-10">@Model.Volume</dd>
-                    <dt class="col-sm-2">Type</dt>
-                    <dd class="col-sm-10">@Model.Type</dd>
-                    <dt class="col-sm-2">Price</dt>
-                    <dd class="col-sm-10">@Model.Price </dd>
-                    <dt class="col-sm-2">Equipment</dt>
-                    <dd class="col-sm-10">@Model.Equipment</dd>
-                </dl>
-                @if (Model.Images != null)
-                {
-                    @foreach (var image in Model.Images)
-                    {
-                        <img src="@image.Picture" style="max-width:250px; max-height:250px" />
-                    }
-                }
-            </div>
+            @*<BoardInfo @ref="_boardInfo" Model=Model />*@
+            <BoardInput @ref="_boardInput" Model=Model OnClosed="CloseModal"/>
         </div>
     </div>
     <div @onclick="CloseModal" class="modal-backdrop fade @_modalClass"></div>
@@ -49,7 +19,8 @@
     private string _modalDisplay = "none;";
     private string _modalClass = "";
 
-    private bool _showSecondaryStakeholdersMenu;
+    private BoardInfo? _boardInfo;
+    private BoardInput? _boardInput;
 
     public async Task OpenModal()
     {

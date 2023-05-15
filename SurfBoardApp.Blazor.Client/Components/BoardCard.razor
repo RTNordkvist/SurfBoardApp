@@ -2,7 +2,9 @@
 
 <div class="index-card card mb-2 h-100 d-flex flex-column">
     <!-- Board image -->
-    <img class="card-img-top" src="@Model.Images?.FirstOrDefault()?.Picture" alt="Board Image">
+    <div style="height: 200px; width:200px; align-content: center;">
+        <img class="card-img-top" style="aspect-ratio: initial" src="@Model.Images?.FirstOrDefault()?.Picture" alt="Board Image">
+    </div>
     <div class="card-body flex-grow-1">
         <!-- Board name -->
         <h5 class="card-title">@Model.Name</h5>
