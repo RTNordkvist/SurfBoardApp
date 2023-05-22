@@ -49,6 +49,7 @@ namespace SurfBoardApp
 
             builder.Services.AddScoped<BoardService>();
             builder.Services.AddScoped<BookingService>();
+            builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<BoardCounterMiddleware>();
             builder.Services.AddScoped<OpenWeatherAPIService>();
             builder.Services.AddServerSideBlazor();

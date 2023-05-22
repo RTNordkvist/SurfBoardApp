@@ -1,17 +1,32 @@
-﻿@inherits LayoutComponentBase
+﻿@using SurfBoardApp.Blazor.Client.Service;
+@using SurfBoardApp.Blazor.Shared.ViewModels.ApplicationUserViewModels;
+@inherits LayoutComponentBase
+@inject ApiService apiservice
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+<CascadingValue Value="currentUser">
+    <div class="page">
+        <div class="sidebar">
+            <NavMenu />
         </div>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+        <main>
+            <div class="top-row px-4">
+                <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            </div>
+
+            <article class="content px-4">
+                @Body
+            </article>
+        </main>
+    </div>
+</CascadingValue>
+
+@code
+{
+    private UserVM currentUser;
+
+    protected override async Task OnInitializedAsync()
+    {
+        currentUser = await apiservice.GetCurrentUser();
+    }
+}

@@ -40,6 +40,7 @@ namespace SurfBoardApp.Domain.Services
                 Volume = board.Volume,
                 Type = board.Type,
                 Price = board.Price,
+                MembersOnly = board.MembersOnly,
                 Equipment = board.Equipment
             };
 
@@ -84,6 +85,7 @@ namespace SurfBoardApp.Domain.Services
                 Type = board.Type,
                 Price = board.Price,
                 Equipment = board.Equipment,
+                MembersOnly = board.MembersOnly,
                 Images = board.Images != null ? board.Images.Select(x => new ImageVM { Id = x.Id, BoardId = x.BoardId, Picture = x.Picture }).ToList() : null
             }).ToListAsync();
 
