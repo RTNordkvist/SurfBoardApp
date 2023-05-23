@@ -136,8 +136,10 @@
             }
             <a href="@url" class="index-card card mb-2 h-100 d-flex flex-column">
                 <!-- Board image -->
-                <img class="card-img-top" src="@board.Image?.Picture" alt="Board Image">
-                <div class="card-body flex-grow-1">
+                <div class="card-img-top d-flex justify-content-center">
+                    <img style="max-height: 95%; max-width: 95%" src="@board.Image?.Picture" alt="Board Image">
+                </div>
+                <div class="card-body d-flex justify-content-center">
                     <!-- Board name -->
                     <h5 class="card-title">@board.Name</h5>
                 </div>

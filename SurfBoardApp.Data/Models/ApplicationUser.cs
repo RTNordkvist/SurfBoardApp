@@ -9,8 +9,11 @@ namespace SurfBoardApp.Data.Models
 
         public string? FullName
         {
-            get { return FirstName + " " + LastName; }
+            get
+            {
+                if (FirstName != null && LastName != null) {return FirstName + " " + LastName; }
+                else { return null; }
+            }
         }
-
     }
 }
