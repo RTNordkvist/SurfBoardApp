@@ -18,7 +18,7 @@ using SurfBoardApp.Domain.Services;
 
 namespace SurfBoardApp.Areas.api
 {
-    [Route("api/boards/[action]")]
+    [Route("api/boards/[action]/{id?}")]
     // forklaring på hvorfor vi bruger [Route("api/boards")] istedet for [Route("api/[controller] : 
     //Brug [Route("api/boards")]i stedet for [Route("api/[controller]")] anses for at være mere RESTful,
     //fordi det overholder de almindelige konventioner for en RESTful API.
@@ -42,7 +42,6 @@ namespace SurfBoardApp.Areas.api
             return Ok(result);
         }
 
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetBoard(int? id)
         {
             if (id == null)
