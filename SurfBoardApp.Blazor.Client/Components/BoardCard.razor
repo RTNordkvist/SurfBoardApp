@@ -2,10 +2,10 @@
 
 <div class="index-card card mb-2 h-100 d-flex flex-column">
     <!-- Board image -->
-    <div style="height: 200px; width:200px; align-content: center;">
-        <img class="card-img-top" style="aspect-ratio: initial" src="@Model.Images?.FirstOrDefault()?.Picture" alt="Board Image">
+    <div class="card-img-top d-flex justify-content-center">
+        <img style="max-height: 95%; max-width: 95%" src="@Model.Images?.FirstOrDefault()?.Picture">
     </div>
-    <div class="card-body flex-grow-1">
+    <div class="card-body d-flex justify-content-center">
         <!-- Board name -->
         <h5 class="card-title">@Model.Name</h5>
     </div>

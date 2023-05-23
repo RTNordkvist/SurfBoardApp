@@ -1,12 +1,19 @@
 ﻿@using SurfBoardApp.Blazor.Client.Service;
+@using SurfBoardApp.Blazor.Shared.ViewModels.ApplicationUserViewModels;
 @using SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels;
 @inject ApiService apiService
 
 <div class="modal fade @_modalClass" id="board-modal" tabindex="-1" style="display: @_modalDisplay;">
     <div class="modal-dialog modal-xl" role="document" style="z-index: 1055;">
         <div class="modal-content">
-            @*<BoardInfo @ref="_boardInfo" Model=Model />*@
-            <BoardInput @ref="_boardInput" Model=Model OnClosed="CloseModal"/>
+            @if (CurrentUser != null && CurrentUser.Roles.Contains(UserRoles.Admin))
+            {
+                <BoardInput @ref="_boardInput" Model=Model OnClosed="CloseModal" />
+            }
+            else
+            {
+                <BoardInfo @ref="_boardInfo" Model=Model OnClosed="CloseModal"/>
+            }
         </div>
     </div>
     <div @onclick="CloseModal" class="modal-backdrop fade @_modalClass"></div>
@@ -15,6 +22,9 @@
 @code {
     [Parameter]
     public BoardVM? Model { get; set; }
+
+    [CascadingParameter]
+    public UserVM CurrentUser { get; set; }
 
     private string _modalDisplay = "none;";
     private string _modalClass = "";

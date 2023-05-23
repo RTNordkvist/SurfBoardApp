@@ -27,7 +27,6 @@ namespace SurfBoardApp.Areas.api
     //[Route("api/boards/[Action]")]
     public class BoardsApiController: Controller
     {
-        //DBContext is injected through dependency injection
         private readonly BoardService _boardService;
 
         public BoardsApiController(BoardService boardService)
@@ -62,7 +61,7 @@ namespace SurfBoardApp.Areas.api
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateBoard(CreateBoardVM model)
+        public async Task<IActionResult> CreateBoard([FromBody] CreateBoardVM model)
         {
             var result = await _boardService.AddBoard(model);
 
@@ -72,12 +71,14 @@ namespace SurfBoardApp.Areas.api
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditBoard(EditBoardVM model)
+        public async Task<IActionResult> EditBoard([FromBody] EditBoardVM model)
         {
             try
             {
                 await _boardService.UpdateBoard(model);
-                return Ok();
+                var requiredConfirmation = new RequiredConfirmationVM<ConfirmEditBoardVM>() { RequiresConfirmation = false};
+
+                return Ok(requiredConfirmation);
             }
             catch (BoardNotFoundException)
             {
@@ -89,14 +90,16 @@ namespace SurfBoardApp.Areas.api
 
                 var viewModel = new ConfirmEditBoardVM { PersistedData = updatedModel, UserInput = model };
 
-                return Ok(viewModel);
+                var requiredConfirmation = new RequiredConfirmationVM<ConfirmEditBoardVM>() {RequiresConfirmation = true, Data = viewModel };
+
+                return Ok(requiredConfirmation);
             }
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteBoard(int id)
+        public async Task<IActionResult> DeleteBoard([FromQuery] int id)
         {
             try
             {

@@ -3,6 +3,7 @@
 @using SurfBoardApp.Blazor.Client.ClientModels;
 @using SurfBoardApp.Blazor.Client.Components;
 @using SurfBoardApp.Blazor.Client.Service;
+@using SurfBoardApp.Blazor.Shared.ViewModels.ApplicationUserViewModels;
 @using SurfBoardApp.Blazor.Shared.ViewModels.BoardViewModels;
 @inject HttpClient Http
 @inject ApiService apiservice
@@ -11,17 +12,20 @@
 
 <h3>Boards</h3>
 
+<button type="button" class="btn btn-link btn-sm" @onclick="async () => await HandleBoardClicked(new BoardVM())">Register new board</button>
+
 <!-- Board cards -->
 <div class="row">
     <!-- Loop through the collection of boards -->
     @foreach (var board in _boards
-        .Where(x => _filter.MinLength == null ? true : x.Length >= _filter.MinLength && _filter.MaxLength == null ? true : x.Length <= _filter.MaxLength)
-        .Where(x => _filter.MinWidth == null ? true : x.Width >= _filter.MinWidth && _filter.MaxWidth == null ? true : x.Width <= _filter.MaxWidth)
-        .Where(x => _filter.MinThickness == null ? true : x.Thickness >= _filter.MinThickness && _filter.MaxThickness == null ? true : x.Thickness <= _filter.MaxThickness)
-        .Where(x => _filter.MinVolume == null ? true : x.Volume >= _filter.MinVolume && _filter.MaxVolume == null ? true : x.Volume <= _filter.MaxVolume)
-        .Where(x => _filter.MinPrice == null ? true : x.Price >= _filter.MinPrice && _filter.MaxPrice == null ? true : x.Price <= _filter.MaxPrice))
+    .Where(x => _filter.MinLength == null ? true : x.Length >= _filter.MinLength && _filter.MaxLength == null ? true : x.Length <= _filter.MaxLength)
+    .Where(x => _filter.MinWidth == null ? true : x.Width >= _filter.MinWidth && _filter.MaxWidth == null ? true : x.Width <= _filter.MaxWidth)
+    .Where(x => _filter.MinThickness == null ? true : x.Thickness >= _filter.MinThickness && _filter.MaxThickness == null ? true : x.Thickness <= _filter.MaxThickness)
+    .Where(x => _filter.MinVolume == null ? true : x.Volume >= _filter.MinVolume && _filter.MaxVolume == null ? true : x.Volume <= _filter.MaxVolume)
+    .Where(x => _filter.MinPrice == null ? true : x.Price >= _filter.MinPrice && _filter.MaxPrice == null ? true : x.Price <= _filter.MaxPrice)
+    .Where(x => CurrentUser != null ? true : x.MembersOnly == false))
     {
-        <div class="col-sm-2 cursor-pointer" @onclick="async () => await HandleBoardClicked(board)">
+        <div class="col-sm-2 cursor-pointer mt-4" @onclick="async () => await HandleBoardClicked(board)">
             <BoardCard @ref="_boardCard" Model=board />
         </div>
     }
@@ -31,6 +35,9 @@
 <BoardModal @ref="_boardModal" Model=_board />
 
 @code {
+    [CascadingParameter]
+    public UserVM CurrentUser { get; set; }
+
     private List<BoardVM>? _boards = new();
     private BoardVM _board = new();
 
