@@ -53,5 +53,17 @@ namespace SurfBoardApp.Blazor.Shared.ViewModels
             // Return a new instance of PaginatedList
             return new PaginatedList<T>(items, count, pageIndex, pageSize);
         }
+
+        public static async Task<PaginatedList<T>> Create(IQueryable<T> source, int pageIndex, int pageSize)
+        {
+            // Count the total number of items in the source
+            var count = source.Count();
+
+            // Get the items for the current page
+            var items = source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+
+            // Return a new instance of PaginatedList
+            return new PaginatedList<T>(items, count, pageIndex, pageSize);
+        }
     }
 }
