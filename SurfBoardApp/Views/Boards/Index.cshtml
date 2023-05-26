@@ -7,9 +7,23 @@
 @{
     ViewData["Title"] = "Index";
 }
-<h1>Boards</h1>
 
-<div class="card small-card">
+
+ <br />
+ 
+<h1>Welcome</h1>
+<h6>
+    Are you ready to ride the waves and experience the thrill of surfing? 
+    Look no further! At Surfboard Dude, we offer top-quality surfboards for all skill levels, 
+    whether you're a beginner or a seasoned pro.
+</h6>
+<h6>
+    Grab your board, feel the ocean beneath your feet, and let the adrenaline rush take over. 
+    Book your surfboard now and get ready to ride the waves like never before!
+</h6>
+<br />
+<br />
+<div class="card small-card" style="float: right;">
     @(await Html.RenderComponentAsync<WeatherComponent>(RenderMode.ServerPrerendered))
 </div>
 
@@ -18,8 +32,8 @@
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         grid-template-rows: repeat(2, auto);
-        grid-column-gap: 10px;
-        grid-row-gap: 10px;
+        grid-column-gap: 15px;
+        grid-row-gap: 15px;
     }
 </style>
 
@@ -27,9 +41,9 @@
     <div class="form-row">
         <div class="col-md-4">
             <div class="form-group">
-                <label for="searchParameter">Search by:</label>
+                <label for="searchParameter">Search boards by:</label>
                 <select asp-for="SearchParameter" class="form-control classic" id="searchParameter">
-                    <option value="">-- Select parameter --</option>
+                    <option value="">-- Select --</option>
                     <option value="name">Name</option>
                     <option value="type">Type</option>
                     <option value="price">Price</option>
@@ -165,3 +179,4 @@
         });
     });
 </script>
+
