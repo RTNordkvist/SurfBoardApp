@@ -23,7 +23,7 @@
                 {
                     <tr>
                         <td>
-                            <a href="@Url.Action("BoardDetails", new { id = booking.BoardId })">@booking.BoardName</a>
+                            <a href="@Url.Action("Details", "Board", new { id = booking.BoardId })">@booking.BoardName</a>
                         </td>
                         <td>@booking.StartDate.ToShortDateString()</td>
                         <td>@booking.EndDate.ToShortDateString()</td>
