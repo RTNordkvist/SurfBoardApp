@@ -3,7 +3,15 @@
 @inject HttpClient Http
 
 <PageTitle>Index</PageTitle>
-
+<style>
+    .card{
+        width: 700px;
+        border: none;
+    }
+</style>
+<div class="card small-card">
+    <FetchData/>
+</div>
 <h3>Boards</h3>
 
 @if (boards == null)

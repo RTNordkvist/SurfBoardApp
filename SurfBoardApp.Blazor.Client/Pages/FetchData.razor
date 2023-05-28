@@ -3,18 +3,16 @@
 @inject HttpClient Http
 @inject SurfBoardApp.Blazor.Client.Service.OpenWeatherAPIService WeatherAPIService
 
-<PageTitle>Weather forecast</PageTitle>
-
-<h1>Weather forecast</h1>
+<h3>Weather forecast</h3>
 
 <div class="form-group">
-    <label for="cityInput">City:</label>
-    <input type="text" class="form-control" id="cityInput" @bind="@city" @oninput="ValidateCity" />
+    <label for="cityInput">Enter City:</label>
+    <input type="text" style="width: 200px;" class="form-control" id="cityInput" @bind="@city" @oninput="ValidateCity" />
     <label for="daysSlider">Days: @days</label>
     <input type="range" class="form-control-range" id="daysSlider" min="1" max="7" @bind-value="days" />
 </div>
 
-<button class="btn btn-primary" @onclick="FetchWeather" style="margin-bottom: 10px;">Fetch Weather</button>
+<button class="btn btn-primary" @onclick="FetchWeather" style="margin-bottom: 10px; width:200px;">Fetch Weather</button>
 
 
 @if (!string.IsNullOrEmpty(errorMessage))
@@ -33,7 +31,7 @@ else
         @foreach (var group in forecast.list.GroupBy(item => UnixTimeStampToDateTime(item.dt).Date).Take(days))
         {
             <div class="col-sm-3 mb-3">
-                <div class="card" style="width: 100%;" @onclick="() => ShowDetails(group)">
+                <div class="card" style="width: 100%; border: solid; border-color: dimgrey;" @onclick="() => ShowDetails(group)">
                     <div class="card-body text-center">
                         <h5 class="card-title">@UnixTimeStampToDateTime(group.First().dt).ToString("ddd, MMM dd, h:mm tt")</h5>
                         <img src="@($"https://openweathermap.org/img/wn/{group.First().weather[0].icon}.png")" alt="@group.First().weather[0].description" width="60" height="60" />
