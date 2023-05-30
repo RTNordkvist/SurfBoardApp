@@ -2,6 +2,8 @@
 
 @model List<MyBookingVM>
 
+    <br/>
+
 <h2>My Bookings</h2>
 
 @if (Model.Any())
@@ -20,7 +22,9 @@
                 @foreach (var booking in Model)
                 {
                     <tr>
-                        <td>@booking.BoardName</td>
+                        <td>
+                            <a href="@Url.Action("CreateBooking", new { boardId = booking.BoardId, startDate = DateTime.UtcNow.Date, endDate = DateTime.UtcNow.Date.AddDays(1)})">@booking.BoardName</a>
+                        </td>
                         <td>@booking.StartDate.ToShortDateString()</td>
                         <td>@booking.EndDate.ToShortDateString()</td>
                         <td>
@@ -29,9 +33,11 @@
                                 <a asp-controller="Booking" asp-action="DeleteBooking" asp-route-id="@booking.BookingId" onclick="return confirm('Are you sure you want to delete this booking?')" class="btn btn-danger rounded">Delete Booking</a>
                             </div>
                         </td>
-
                     </tr>
                 }
+
+
+
             </tbody>
         </table>
     </div>
