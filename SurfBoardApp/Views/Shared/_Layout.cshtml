@@ -14,7 +14,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar">
+        <nav class="navbar navbar-expand-sm navbar-custom" style="background-color:lightgray">
             <div class="container-fluid">
                 <a href="@Url.Action("Index", "Boards")">
                     <img src="https://i.imgur.com/3la4IwW.png" class="logo">
@@ -23,7 +23,7 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="d-sm-inline-flex">
+                <h7 class="d-sm-inline-flex">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Boards" asp-action="Index">Home</a>
@@ -43,7 +43,8 @@
                         }
                     </ul>
                     <partial name="_LoginPartial" />
-                </div>
+                </>
+                </h7>
             </div>
         </nav>
     </header>

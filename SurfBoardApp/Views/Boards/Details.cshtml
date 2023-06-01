@@ -6,6 +6,7 @@
 }
 
 <!-- View component showing details of the board  -->
+<br/>
 <div class="row">
     @(await Component.InvokeAsync("BoardDetails", new { boardId = Model.Id }))
 </div>
