@@ -42,9 +42,18 @@ namespace SurfBoardApp.Blazor.Client.Service
             throw new Exception();
         }
 
-        public async Task<UserVM> GetCurrentUser()
+        public async Task<UserVM?> GetCurrentUser()
         {
-            var result = await _httpClient.GetFromJsonAsync<UserVM>("api/user/GetCurrentUser");
+            UserVM? result;
+
+            try
+            {
+                result = await _httpClient.GetFromJsonAsync<UserVM?>("api/user/GetCurrentUser");
+            }
+            catch (JsonException)
+            {
+                result = null;
+            }
 
             return result;
         }

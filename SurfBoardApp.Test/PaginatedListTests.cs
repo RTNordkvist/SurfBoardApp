@@ -27,22 +27,6 @@ namespace SurfBoardApp.Test
         }
 
         [TestMethod]
-        public async Task EmptyListTest()
-        {
-            // Arrange
-            var queryable = new int[0].AsQueryable();
-            int pageSize = 5;
-            int pageIndex = 1;
-
-            // Act
-            var paginatedList = await PaginatedList<int>.Create(queryable, pageIndex, pageSize);
-
-            // Assert
-            Assert.AreEqual(0, paginatedList.Count);
-            Assert.AreEqual(0, paginatedList.TotalPages);
-        }
-
-        [TestMethod]
         public async Task NullListTest()
         {
             // Arrange
@@ -59,6 +43,22 @@ namespace SurfBoardApp.Test
                 // Assert
                 Assert.AreEqual(typeof(ArgumentNullException), ex.GetType());
             }
+        }
+
+        [TestMethod]
+        public async Task EmptyListTest()
+        {
+            // Arrange
+            var queryable = new int[0].AsQueryable();
+            int pageSize = 5;
+            int pageIndex = 1;
+
+            // Act
+            var paginatedList = await PaginatedList<int>.Create(queryable, pageIndex, pageSize);
+
+            // Assert
+            Assert.AreEqual(0, paginatedList.Count);
+            Assert.AreEqual(0, paginatedList.TotalPages);
         }
 
         [TestMethod]

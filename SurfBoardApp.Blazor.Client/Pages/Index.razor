@@ -36,7 +36,7 @@
 
 @code {
     [CascadingParameter]
-    public UserVM CurrentUser { get; set; }
+    public UserVM? CurrentUser { get; set; }
 
     private List<BoardVM>? _boards = new();
     private BoardVM _board = new();
