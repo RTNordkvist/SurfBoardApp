@@ -362,22 +362,6 @@ namespace SurfBoardApp.Domain.Services
             board.MembersOnly = model.MembersOnly;
             board.Version += 1;
 
-            if (model.ExistingImages != null)
-            {
-                board.Images = new List<Image>();
-
-                foreach (var image in model.ExistingImages)
-                {
-                    var existingImage = new Image
-                    {
-                        Id = image.Id,
-                        BoardId = image.BoardId,
-                        Picture = image.Picture
-                    };
-                    board.Images.Add(existingImage);
-                }
-            }
-
             if (model.Images != null)
             {
                 //If there is no existing images for the board, a new empty list is created to contain the new images
