@@ -62,6 +62,11 @@ namespace SurfBoardApp.Controllers
                 ModelState.AddModelError("BoardUnavailable", "Board is unavailable for the selected period");
                 return View(nameof(CreateBooking), new CreateBookingVM() { BoardId = model.BoardId, StartDate = model.StartDate, EndDate = model.EndDate, NonUserEmail = model.NonUserEmail }); //TODO unittest
             }
+            catch (NoOfBookingsLimitReachedException)
+            {
+                ModelState.AddModelError("BookingLimitReached", "You have reached your limit for making bookings without being registered");
+                return View(nameof(CreateBooking), new CreateBookingVM() { BoardId = model.BoardId, StartDate = model.StartDate, EndDate = model.EndDate, NonUserEmail = model.NonUserEmail }); //TODO unittest
+            }
         }
 
         // Action method that displays bookings of the authenticated user

@@ -12,7 +12,10 @@
 
 <h3>Boards</h3>
 
-<button type="button" class="btn btn-link btn-sm" @onclick="async () => await HandleBoardClicked(new BoardVM())">Register new board</button>
+@if (CurrentUser != null && CurrentUser.Roles.Contains(UserRoles.Admin))
+{
+    <button type="button" class="btn btn-link btn-sm" @onclick="async () => await HandleBoardClicked(new BoardVM())">Register new board</button>
+}
 
 <!-- Board cards -->
 <div class="row">

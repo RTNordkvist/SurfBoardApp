@@ -82,6 +82,12 @@ namespace SurfBoardApp.Domain.Services
                 userId = _userManager.GetUserId(_httpContextAccessor.HttpContext.User);
             }
 
+            // Check if the user have reached the limit of bookings
+            if (userId == null && await _context.Booking.CountAsync(x => x.NonUserEmail == model.NonUserEmail) >= 3)
+            {
+                throw new NoOfBookingsLimitReachedException();
+            }
+
             // Check if the board is available, if not - throw an exception
             if (await _context.Booking.AnyAsync(x => x.StartDate <= model.EndDate && x.EndDate >= model.StartDate && x.BoardId == model.BoardId))
             {
