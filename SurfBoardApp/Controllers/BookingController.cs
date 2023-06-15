@@ -48,7 +48,7 @@ namespace SurfBoardApp.Controllers
 
             if (model.EndDate < model.StartDate)
             {
-                ModelState.AddModelError("InvalidEndDate", "End date cannot be before start date");
+                ModelState.AddModelError(nameof(CreateBookingVM.EndDate), "End date cannot be before start date");
                 return View(nameof(CreateBooking), new CreateBookingVM() { BoardId = model.BoardId, StartDate = model.StartDate, EndDate = model.EndDate, NonUserEmail = model.NonUserEmail}); //TODO unittest
             }
 
@@ -59,12 +59,12 @@ namespace SurfBoardApp.Controllers
             }
             catch (UnavailableBookingException)
             {
-                ModelState.AddModelError("BoardUnavailable", "Board is unavailable for the selected period");
+                ModelState.AddModelError(nameof(CreateBookingVM.EndDate), "Board is unavailable for the selected period");
                 return View(nameof(CreateBooking), new CreateBookingVM() { BoardId = model.BoardId, StartDate = model.StartDate, EndDate = model.EndDate, NonUserEmail = model.NonUserEmail }); //TODO unittest
             }
             catch (NoOfBookingsLimitReachedException)
             {
-                ModelState.AddModelError("BookingLimitReached", "You have reached your limit for making bookings without being registered");
+                ModelState.AddModelError(nameof(CreateBookingVM.EndDate), "You have reached your limit for making bookings without being registered");
                 return View(nameof(CreateBooking), new CreateBookingVM() { BoardId = model.BoardId, StartDate = model.StartDate, EndDate = model.EndDate, NonUserEmail = model.NonUserEmail }); //TODO unittest
             }
         }
